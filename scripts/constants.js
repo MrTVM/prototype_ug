@@ -9,11 +9,13 @@ export const points = [
       coordinate: "55.751244, 37.618423",
       municipalDistrict: "Центральный"
     },
-    ownership: {
-      cadastralNumber: "77:01:0001001:45",
-      ownershipForm: "Муниципальная",
-      vri: "Для размещения инженерной инфраструктуры"
-    },
+    ownerships: [
+      {
+        cadastralNumber: "77:01:0001001:45",
+        ownershipForm: "Муниципальная",
+        vri: "Для размещения инженерной инфраструктуры"
+      }
+    ],
     balanceHolder: {
       name: "ГБУ «Мосводоканалсеть»"
     },
@@ -40,11 +42,18 @@ export const points = [
       coordinate: "55.7608, 37.606",
       municipalDistrict: "Тверской"
     },
-    ownership: {
-      cadastralNumber: "77:01:0002002:17",
-      ownershipForm: "Муниципальная",
-      vri: "Для размещения автомобильных дорог"
-    },
+    ownerships: [
+      {
+        cadastralNumber: "77:01:0002002:17",
+        ownershipForm: "Муниципальная",
+        vri: "Для размещения автомобильных дорог"
+      },
+      {
+        cadastralNumber: "77:01:0002002:18",
+        ownershipForm: "Государственная",
+        vri: "Для размещения дорожной инфраструктуры"
+      }
+    ],
     balanceHolder: {
       name: "ГБУ «Автомобильные дороги ЦАО»"
     },
@@ -71,11 +80,23 @@ export const points = [
       coordinate: "55.739, 37.617",
       municipalDistrict: "Якиманка"
     },
-    ownership: {
-      cadastralNumber: "77:01:0003003:9",
-      ownershipForm: "Государственная",
-      vri: "Для размещения объектов энергоснабжения"
-    },
+    ownerships: [
+      {
+        cadastralNumber: "77:01:0003003:9",
+        ownershipForm: "Государственная",
+        vri: "Для размещения объектов энергоснабжения"
+      },
+      {
+        cadastralNumber: "77:01:0003003:10",
+        ownershipForm: "Муниципальная",
+        vri: "Для размещения инженерной инфраструктуры"
+      },
+      {
+        cadastralNumber: "77:01:0003003:11",
+        ownershipForm: "Частная",
+        vri: "Для эксплуатации трансформаторного пункта"
+      }
+    ],
     balanceHolder: {
       name: "ПАО «Мосэнергосеть»"
     },
@@ -101,11 +122,7 @@ export const points = [
       coordinate: "55.7632, 37.5647",
       municipalDistrict: "Пресненский"
     },
-    ownership: {
-      cadastralNumber: "77:01:0004004:3",
-      ownershipForm: "Муниципальная",
-      vri: "Для общего пользования и благоустройства"
-    },
+    ownerships: [],
     balanceHolder: {
       name: "ГБУ «Жилищник Пресненского района»"
     },
@@ -132,11 +149,13 @@ export const points = [
       coordinate: "55.7492, 37.655",
       municipalDistrict: "Басманный"
     },
-    ownership: {
-      cadastralNumber: "77:01:0005005:22",
-      ownershipForm: "Муниципальная",
-      vri: "Для размещения улично-дорожной сети"
-    },
+    ownerships: [
+      {
+        cadastralNumber: "77:01:0005005:22",
+        ownershipForm: "Муниципальная",
+        vri: "Для размещения улично-дорожной сети"
+      }
+    ],
     balanceHolder: {
       name: "ГБУ «Автодорсервис Басманный»"
     },
@@ -162,11 +181,18 @@ export const points = [
       coordinate: "55.706, 37.61",
       municipalDistrict: "Донской"
     },
-    ownership: {
-      cadastralNumber: "77:01:0006006:5",
-      ownershipForm: "Не определена",
-      vri: "Требует уточнения"
-    },
+    ownerships: [
+      {
+        cadastralNumber: "77:01:0006006:5",
+        ownershipForm: "Не определена",
+        vri: "Требует уточнения"
+      },
+      {
+        cadastralNumber: "77:01:0006006:6",
+        ownershipForm: "Муниципальная",
+        vri: "Для обслуживания городской территории"
+      }
+    ],
     balanceHolder: {
       name: "Не определён"
     },

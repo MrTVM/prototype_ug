@@ -239,11 +239,12 @@ export function createModal() {
     const garCoordinate = gar.coordinate || coords;
     const garObjectType = gar.objectType || "—";
     const garMunicipalDistrict = gar.municipalDistrict || "—";
-    const ownership = item.ownership || {};
-    const cadastralNumber = ownership.cadastralNumber || "—";
-    const ownershipForm = ownership.ownershipForm || "—";
-    const vri = ownership.vri || "—";
-    const authoritySource = `${item.authority || ""} ${ownershipForm}`.toLowerCase();
+    const ownerships = Array.isArray(item.ownerships) ? item.ownerships : [];
+    const ownershipForms = ownerships
+      .map((entry) => entry?.ownershipForm)
+      .filter(Boolean)
+      .join(" ");
+    const authoritySource = `${item.authority || ""} ${ownershipForms}`.toLowerCase();
     const authorityValue = authoritySource.includes("част")
       ? "частный"
       : authoritySource.includes("муницип")
@@ -358,11 +359,16 @@ export function createModal() {
     propOk.innerHTML = `<div class="text-xs font-semibold text-emerald-800">✅ Собственность</div>`;
     const propItems = document.createElement("div");
     propItems.className = "ml-2";
-    createBulletList(propItems, [
-      `Кадастровый номер: ${cadastralNumber}`,
-      `Форма собственности: ${ownershipForm}`,
-      `ВРИ: ${vri}`
-    ]);
+    const ownershipLines =
+      ownerships.length > 0
+        ? ownerships.map((entry, index) => {
+            const cadastralNumber = entry?.cadastralNumber || "—";
+            const ownershipForm = entry?.ownershipForm || "—";
+            const vri = entry?.vri || "—";
+            return `${index + 1}) КН: ${cadastralNumber}; Форма: ${ownershipForm}; ВРИ: ${vri}`;
+          })
+        : ["Объекты собственности не найдены"];
+    createBulletList(propItems, ownershipLines);
     propOk.appendChild(propItems);
 
     const balanceInfo = document.createElement("div");
