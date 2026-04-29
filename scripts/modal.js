@@ -252,7 +252,7 @@ export function createModal() {
     systemBox.appendChild(sysTitle);
 
     const jurisdictionBox = document.createElement("div");
-    jurisdictionBox.className = "rounded-xl border border-slate-200 bg-white/60 p-3";
+    jurisdictionBox.className = "p-3";
     createText(jurisdictionBox, "text-xs font-semibold text-slate-900", "📍 ЮРИСДИКЦИЯ");
     const jurGrid = document.createElement("div");
     jurGrid.className = "mt-3 space-y-3";
@@ -300,7 +300,7 @@ export function createModal() {
     jurisdictionBox.appendChild(jurGrid);
 
     const contractBox = document.createElement("div");
-    contractBox.className = "rounded-xl border border-slate-200 bg-white/60 p-3";
+    contractBox.className = "p-3";
     createText(contractBox, "text-xs font-semibold text-slate-900", "📋 КОНТРАКТНЫЕ ОБЯЗАТЕЛЬСТВА");
     const contractItems = document.createElement("div");
     contractItems.className = "mt-3 space-y-3";
@@ -327,7 +327,7 @@ export function createModal() {
     const deadlineStr = `${pad2(recommendedDeadline.getDate())}.${pad2(recommendedDeadline.getMonth() + 1)}.${recommendedDeadline.getFullYear()}`;
 
     const auditBox = document.createElement("div");
-    auditBox.className = "rounded-xl border border-slate-200 bg-white/60 p-3";
+    auditBox.className = "p-3";
     createText(auditBox, "text-xs font-semibold text-slate-900", "🗂 АУДИТ-ЛОГ (автоматически)");
     const audit = document.createElement("div");
     audit.className = "mt-3 space-y-1";
@@ -354,9 +354,56 @@ export function createModal() {
     }
     auditBox.appendChild(audit);
 
-    systemBox.appendChild(jurisdictionBox);
-    systemBox.appendChild(contractBox);
-    systemBox.appendChild(auditBox);
+    const contextTabsWrap = document.createElement("div");
+    contextTabsWrap.className = "rounded-xl border border-slate-200 bg-white overflow-hidden";
+
+    const contextTabsBar = document.createElement("div");
+    contextTabsBar.className = "flex flex-wrap items-end gap-1 bg-slate-50 border-b border-slate-200 px-2 pt-2";
+
+    const contextPanels = {
+      jurisdiction: jurisdictionBox,
+      contract: contractBox,
+      audit: auditBox
+    };
+    const contextTabButtons = {};
+
+    const makeContextTab = (key, label) => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "rounded-t-lg px-3 py-1.5 text-xs font-medium transition border";
+      btn.textContent = label;
+      btn.addEventListener("click", () => activateContextTab(key));
+      contextTabButtons[key] = btn;
+      contextTabsBar.appendChild(btn);
+    };
+
+    const activateContextTab = (key) => {
+      Object.entries(contextPanels).forEach(([k, panel]) => {
+        panel.classList.toggle("hidden", k !== key);
+      });
+      Object.entries(contextTabButtons).forEach(([k, btn]) => {
+        const active = k === key;
+        btn.classList.toggle("bg-white", active);
+        btn.classList.toggle("text-slate-900", active);
+        btn.classList.toggle("border-slate-200", active);
+        btn.classList.toggle("border-b-white", active);
+        btn.classList.toggle("bg-transparent", !active);
+        btn.classList.toggle("text-slate-600", !active);
+        btn.classList.toggle("border-transparent", !active);
+        btn.classList.toggle("hover:text-slate-900", !active);
+      });
+    };
+
+    makeContextTab("jurisdiction", "Юрисдикция");
+    makeContextTab("contract", "Контрактные обязательства");
+    makeContextTab("audit", "Аудит-лог");
+    activateContextTab("jurisdiction");
+
+    contextTabsWrap.appendChild(contextTabsBar);
+    contextTabsWrap.appendChild(jurisdictionBox);
+    contextTabsWrap.appendChild(contractBox);
+    contextTabsWrap.appendChild(auditBox);
+    systemBox.appendChild(contextTabsWrap);
 
     // 🎛 ДЕЙСТВИЯ ПОЛЬЗОВАТЕЛЯ (как в docs/modal.md)
     const actionsBox = createBox({
