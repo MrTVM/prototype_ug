@@ -134,6 +134,7 @@ export function createModal() {
 
   const title = el("modal-title");
   const address = el("modal-address");
+  const summary = el("modal-summary");
   const photo = el("modal-photo");
   const structured = el("modal-structured");
   const leftActions = el("modal-left-actions");
@@ -141,6 +142,7 @@ export function createModal() {
   if (!modal) throw new Error('Missing element: "modal"');
   if (!structured) throw new Error('Missing element: "modal-structured"');
   if (!leftActions) throw new Error('Missing element: "modal-left-actions"');
+  if (!summary) throw new Error('Missing element: "modal-summary"');
 
   let isOpen = false;
   let currentItem = null;
@@ -187,9 +189,6 @@ export function createModal() {
     const contractor =
       /дорог|благо|территор|коммун/i.test(String(item.theme || "")) ? "ООО «Асфальт»" : "ООО «Спектр»";
 
-    const templateTable = document.createElement("div");
-    templateTable.className = "space-y-3";
-
     // Компактный блок в стиле "адреса" (одна тонкая рамка).
     const summaryBlock = document.createElement("div");
     summaryBlock.className = "rounded-xl border border-slate-200/90 bg-white px-3 py-3 space-y-3";
@@ -235,7 +234,6 @@ export function createModal() {
     summaryBlock.appendChild(headerGrid);
     summaryBlock.appendChild(applicantInfo);
     summaryBlock.appendChild(textInfo);
-    templateTable.appendChild(summaryBlock);
 
     const systemBox = document.createElement("div");
     systemBox.className = "space-y-4";
@@ -473,8 +471,8 @@ export function createModal() {
       })()
     });
 
-    const rightContent = createSectionStack([templateTable, systemBox]);
-    return { rightContent, actionsBox };
+    const rightContent = createSectionStack([systemBox]);
+    return { rightContent, actionsBox, summaryBlock };
   };
 
   const open = (item) => {
@@ -499,7 +497,9 @@ export function createModal() {
     `;
     photo.src = item.photoSrc;
 
-    const { rightContent, actionsBox } = buildStructured(item);
+    const { rightContent, actionsBox, summaryBlock } = buildStructured(item);
+    summary.innerHTML = "";
+    summary.appendChild(summaryBlock);
     structured.innerHTML = "";
     structured.appendChild(rightContent);
     leftActions.innerHTML = "";
@@ -520,6 +520,7 @@ export function createModal() {
     if (!isOpen) return;
     isOpen = false;
     currentItem = null;
+    summary.innerHTML = "";
     leftActions.innerHTML = "";
 
     modal.classList.remove("modal-open");
