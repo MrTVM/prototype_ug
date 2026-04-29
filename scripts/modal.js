@@ -159,6 +159,14 @@ export function createModal() {
     const cadastralNumber = ownership.cadastralNumber || "—";
     const ownershipForm = ownership.ownershipForm || "—";
     const vri = ownership.vri || "—";
+    const authoritySource = `${item.authority || ""} ${ownershipForm}`.toLowerCase();
+    const authorityValue = authoritySource.includes("част")
+      ? "частный"
+      : authoritySource.includes("муницип")
+        ? "муниципальный"
+        : authoritySource.includes("регион")
+          ? "региональный"
+          : "федеральный";
     const balanceHolder = item.balanceHolder || {};
     const balanceHolderName = balanceHolder.name || "Не определён";
     const isBalanceHolderDefined = !/не определ/i.test(balanceHolderName);
@@ -249,6 +257,16 @@ export function createModal() {
     const jurGrid = document.createElement("div");
     jurGrid.className = "mt-3 space-y-3";
 
+    const authorityInfo = document.createElement("div");
+    authorityInfo.className = "space-y-2";
+    authorityInfo.innerHTML = `<div class="text-xs font-semibold text-emerald-800">✅ Полномочия: ${escapeText(
+      authorityValue
+    )}</div>`;
+    const authorityItems = document.createElement("div");
+    authorityItems.className = "ml-2";
+    createBulletList(authorityItems, ["Класс полномочий определён автоматически"]);
+    authorityInfo.appendChild(authorityItems);
+
     const propOk = document.createElement("div");
     propOk.className = "space-y-2";
     propOk.innerHTML = `<div class="text-xs font-semibold text-emerald-800">✅ Собственность</div>`;
@@ -275,6 +293,7 @@ export function createModal() {
     ]);
     balanceInfo.appendChild(balanceItems);
 
+    jurGrid.appendChild(authorityInfo);
     jurGrid.appendChild(propOk);
     jurGrid.appendChild(balanceInfo);
 
@@ -335,9 +354,6 @@ export function createModal() {
 • Шаблон: «Уведомление о дефекте с фотофиксацией»
 • Статус: ${statusToDraftLabel(status)}`)
     );
-    actionsList.appendChild(recommendedItem("📊 Добавить в дашборд контроля качества", " " ));
-    actionsList.appendChild(recommendedItem("⚠️ Эскалировать", "— не применимо (юрисдикция ОМСУ)"));
-
     recommendedBox.appendChild(actionsList);
 
     const whyBox = document.createElement("div");
