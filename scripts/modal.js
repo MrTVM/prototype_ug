@@ -324,64 +324,7 @@ export function createModal() {
     `;
     contractItems.appendChild(contractDetails);
 
-    const recommendedBox = document.createElement("div");
-    recommendedBox.className = "rounded-xl border border-slate-200 bg-white/60 p-3";
-    createText(recommendedBox, "text-xs font-semibold text-slate-900", "🎯 РЕКОМЕНДУЕМЫЕ ДЕЙСТВИЯ (предзаполнены)");
-
     const deadlineStr = `${pad2(recommendedDeadline.getDate())}.${pad2(recommendedDeadline.getMonth() + 1)}.${recommendedDeadline.getFullYear()}`;
-
-    const actionsList = document.createElement("div");
-    actionsList.className = "mt-3 space-y-2";
-
-    const recommendedItem = (label, sub) => {
-      const row = document.createElement("div");
-      row.className = "rounded-xl border border-slate-200 bg-white/70 px-3 py-2";
-      const top = document.createElement("div");
-      top.className = "text-xs font-semibold text-slate-900";
-      top.textContent = label;
-      const s = document.createElement("div");
-      s.className = "text-xs text-slate-600 mt-1 whitespace-pre-line";
-      s.textContent = sub;
-      row.appendChild(top);
-      row.appendChild(s);
-      return row;
-    };
-
-    actionsList.appendChild(
-      recommendedItem("✉️ Создать поручение подрядчику ← РЕКОМЕНДУЕТСЯ", `• Исполнитель: ${contractor}
-• Срок исполнения: ${deadlineStr} (5 дней)
-• Основание: п.3.1 Договора №45/25
-• Шаблон: «Уведомление о дефекте с фотофиксацией»
-• Статус: ${statusToDraftLabel(status)}`)
-    );
-    recommendedBox.appendChild(actionsList);
-
-    const whyBox = document.createElement("div");
-    whyBox.className = "rounded-xl border border-slate-200 bg-white/60 p-3";
-    createText(whyBox, "text-xs font-semibold text-slate-900", "🔍 ПОЧЕМУ СИСТЕМА ЭТО ПРЕДЛАГАЕТ?");
-    const whyItems = document.createElement("div");
-    whyItems.className = "mt-3";
-    createBulletList(whyItems, [
-      `Адрес: ${city}`,
-      "Тип объекта: дорога местного значения",
-      "В ЕИС найден действующий контракт → можно направить требование",
-      "СЛА: 5 дней → дедлайн: " + deadlineStr
-    ]);
-    const whyLinks = document.createElement("div");
-    whyLinks.className = "mt-3 flex flex-wrap gap-2";
-    const mkLink = (text) => {
-      const a = document.createElement("a");
-      a.href = "#";
-      a.className = "text-xs font-semibold text-slate-900 hover:underline";
-      a.textContent = text;
-      a.addEventListener("click", (e) => e.preventDefault());
-      return a;
-    };
-    whyLinks.appendChild(mkLink("❓ Оспорить рекомендацию"));
-    whyLinks.appendChild(mkLink("📥 Скачать обоснование"));
-
-    whyBox.appendChild(whyItems);
-    whyBox.appendChild(whyLinks);
 
     const auditBox = document.createElement("div");
     auditBox.className = "rounded-xl border border-slate-200 bg-white/60 p-3";
@@ -413,8 +356,6 @@ export function createModal() {
 
     systemBox.appendChild(jurisdictionBox);
     systemBox.appendChild(contractBox);
-    systemBox.appendChild(recommendedBox);
-    systemBox.appendChild(whyBox);
     systemBox.appendChild(auditBox);
 
     // 🎛 ДЕЙСТВИЯ ПОЛЬЗОВАТЕЛЯ (как в docs/modal.md)
@@ -424,9 +365,16 @@ export function createModal() {
         const wrapper = document.createElement("div");
         wrapper.className = "space-y-3";
 
-        const orderText = document.createElement("div");
-        orderText.className = "rounded-xl border border-slate-200 bg-slate-50 p-3";
-        orderText.innerHTML = `
+        const tabsWrap = document.createElement("div");
+        tabsWrap.className = "space-y-3";
+
+        const tabsBar = document.createElement("div");
+        tabsBar.className = "flex flex-wrap gap-2";
+
+        const panelText = document.createElement("div");
+        panelText.className = "rounded-xl border border-slate-200 bg-slate-50 p-3";
+
+        panelText.innerHTML = `
           <div class="text-xs font-semibold text-slate-900 mb-2">Текст поручения (по рекомендации)</div>
           <div class="text-xs text-slate-700 whitespace-pre-line">Направить подрядчику ${escapeText(
             contractor
@@ -437,6 +385,87 @@ export function createModal() {
 Основание: п.3.1 Договора №45/25.
 Приложения: ${escapeText(attachmentLabel)}.</div>
         `;
+
+        const panelRecommendation = document.createElement("div");
+        panelRecommendation.className = "rounded-xl border border-slate-200 bg-white/70 p-3 hidden";
+        panelRecommendation.innerHTML = `
+          <div class="text-xs font-semibold text-slate-900">✉️ Создать поручение подрядчику ← РЕКОМЕНДУЕТСЯ</div>
+          <div class="text-xs text-slate-600 mt-2 whitespace-pre-line">• Исполнитель: ${escapeText(contractor)}
+• Срок исполнения: ${escapeText(deadlineStr)} (5 дней)
+• Основание: п.3.1 Договора №45/25
+• Шаблон: «Уведомление о дефекте с фотофиксацией»
+• Статус: ${escapeText(statusToDraftLabel(status))}</div>
+        `;
+
+        const panelWhy = document.createElement("div");
+        panelWhy.className = "rounded-xl border border-slate-200 bg-white/70 p-3 hidden";
+        const whyTitle = document.createElement("div");
+        whyTitle.className = "text-xs font-semibold text-slate-900";
+        whyTitle.textContent = "🔍 Почему система это предлагает";
+        panelWhy.appendChild(whyTitle);
+        const whyItems = document.createElement("div");
+        whyItems.className = "mt-2";
+        createBulletList(whyItems, [
+          `Адрес: ${city}`,
+          "Тип объекта: дорога местного значения",
+          "В ЕИС найден действующий контракт → можно направить требование",
+          "СЛА: 5 дней → дедлайн: " + deadlineStr
+        ]);
+        panelWhy.appendChild(whyItems);
+
+        const whyLinks = document.createElement("div");
+        whyLinks.className = "mt-3 flex flex-wrap gap-2";
+        const mkLink = (text) => {
+          const a = document.createElement("a");
+          a.href = "#";
+          a.className = "text-xs font-semibold text-slate-900 hover:underline";
+          a.textContent = text;
+          a.addEventListener("click", (e) => e.preventDefault());
+          return a;
+        };
+        whyLinks.appendChild(mkLink("❓ Оспорить рекомендацию"));
+        whyLinks.appendChild(mkLink("📥 Скачать обоснование"));
+        panelWhy.appendChild(whyLinks);
+
+        const panels = {
+          text: panelText,
+          recommendation: panelRecommendation,
+          why: panelWhy
+        };
+
+        const tabButtons = {};
+        const makeTab = (key, label) => {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className =
+            "rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50 transition";
+          btn.textContent = label;
+          btn.addEventListener("click", () => activateTab(key));
+          tabButtons[key] = btn;
+          tabsBar.appendChild(btn);
+        };
+
+        const activateTab = (key) => {
+          Object.entries(panels).forEach(([k, panel]) => {
+            panel.classList.toggle("hidden", k !== key);
+          });
+          Object.entries(tabButtons).forEach(([k, btn]) => {
+            const active = k === key;
+            btn.classList.toggle("bg-slate-900", active);
+            btn.classList.toggle("text-white", active);
+            btn.classList.toggle("border-slate-900", active);
+          });
+        };
+
+        makeTab("text", "Текст поручения");
+        makeTab("recommendation", "Рекомендация");
+        makeTab("why", "Почему");
+        activateTab("text");
+
+        tabsWrap.appendChild(tabsBar);
+        tabsWrap.appendChild(panelText);
+        tabsWrap.appendChild(panelRecommendation);
+        tabsWrap.appendChild(panelWhy);
 
         const row = document.createElement("div");
         row.className = "flex flex-wrap gap-3 items-center";
@@ -481,7 +510,7 @@ export function createModal() {
           })
         );
 
-        wrapper.appendChild(orderText);
+        wrapper.appendChild(tabsWrap);
         wrapper.appendChild(row);
         return wrapper;
       })()
