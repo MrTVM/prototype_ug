@@ -1,0 +1,18 @@
+@keyframes slideUp {
+  from {
+    transform: translateY(110%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+/* Полноэкранная модалка: анимация снизу вверх */
+.modal-panel {
+  transform: translateY(110%);
+}
+
+.modal-open .modal-panel {
+  animation: slideUp 320ms ease-out both;
+}
+

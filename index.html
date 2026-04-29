@@ -6,6 +6,193 @@
     <title>Прототип интерфейса</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+
+  <body class="bg-slate-50 text-slate-900 font-sans">
+    <header class="h-16 fixed top-0 left-0 right-0 z-50 border-b border-slate-200/70 bg-white/80 backdrop-blur">
+      <div class="h-full max-w-6xl mx-auto px-4 grid grid-cols-[1fr_auto_1fr] items-center">
+        <div class="flex items-center gap-3">
+          <div class="h-9 w-9 rounded-xl bg-slate-900 text-white flex items-center justify-center shadow-sm">
+            <span class="text-sm font-semibold">UG</span>
+          </div>
+          <div class="leading-tight">
+            <div class="text-sm font-semibold tracking-tight">Prototype</div>
+            <div class="text-xs text-slate-500 -mt-0.5">Диспетчер обращений</div>
+          </div>
+        </div>
+
+        <nav class="justify-self-center flex items-center gap-1 bg-slate-100/80 p-1 rounded-xl border border-slate-200">
+          <button
+            type="button"
+            data-view-btn="map"
+            class="view-btn px-4 py-2 rounded-xl text-sm font-medium transition bg-transparent text-slate-700 hover:bg-white hover:shadow-sm"
+          >
+            Карта
+          </button>
+          <button
+            type="button"
+            data-view-btn="table"
+            class="view-btn px-4 py-2 rounded-xl text-sm font-medium transition bg-transparent text-slate-700 hover:bg-white hover:shadow-sm"
+          >
+            Таблица
+          </button>
+          <button
+            type="button"
+            data-view-btn="cards"
+            class="view-btn px-4 py-2 rounded-xl text-sm font-medium transition bg-transparent text-slate-700 hover:bg-white hover:shadow-sm"
+          >
+            Карточки
+          </button>
+        </nav>
+
+        <div class="justify-self-end"></div>
+      </div>
+    </header>
+
+    <main class="pt-16">
+      <section id="view-map" class="hidden h-screen -mt-16">
+        <div class="h-full relative">
+          <div id="yandex-map" class="absolute inset-0 rounded-xl overflow-hidden bg-slate-100 border border-slate-200"></div>
+          <div
+            id="map-fallback"
+            class="absolute inset-0 rounded-xl bg-white/90 border border-slate-200 flex flex-col items-center justify-center text-center p-6"
+          >
+            <div class="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center mb-4 text-slate-700">?</div>
+            <div class="font-semibold">Карта недоступна</div>
+            <div class="text-sm text-slate-600 mt-1">
+              Проверьте API key Яндекс Карт и интернет соединение.
+            </div>
+          </div>
+
+          <div class="absolute bottom-4 left-4 right-4 flex items-center justify-between gap-3 pointer-events-none">
+            <div class="pointer-events-none hidden sm:block bg-white/80 border border-slate-200 px-4 py-2 rounded-xl shadow-sm">
+              Клик по метке открывает карточку.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="view-table" class="hidden max-w-6xl mx-auto px-4">
+        <div class="rounded-xl bg-white border border-slate-200 shadow-sm overflow-hidden">
+          <div class="p-5 flex items-end justify-between gap-4 border-b border-slate-200/70">
+            <div>
+              <h1 class="text-lg font-semibold tracking-tight">Список обращений</h1>
+              <p class="text-sm text-slate-600 mt-0.5">Наведение подсвечивает строку, клик открывает детали.</p>
+            </div>
+            <div class="text-xs text-slate-500">
+              Всего: <span id="table-count" class="font-semibold text-slate-700">—</span>
+            </div>
+          </div>
+
+          <div class="overflow-auto" style="max-height: calc(100vh - 14rem)">
+            <table class="min-w-full border-collapse">
+              <thead class="bg-slate-50">
+                <tr class="text-xs text-slate-500 uppercase tracking-wider">
+                  <th class="text-left font-semibold py-3 px-5">Тема</th>
+                  <th class="text-left font-semibold py-3 px-5">Адрес</th>
+                  <th class="text-left font-semibold py-3 px-5">Статус</th>
+                </tr>
+              </thead>
+              <tbody id="table-body" class="divide-y divide-slate-100"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section id="view-cards" class="hidden max-w-6xl mx-auto px-4 pb-8">
+        <div class="rounded-xl bg-white border border-slate-200 shadow-sm p-5">
+          <div class="flex items-end justify-between gap-4 mb-5">
+            <div>
+              <h1 class="text-lg font-semibold tracking-tight">Карточки</h1>
+              <p class="text-sm text-slate-600 mt-0.5">Grid-раскладка с быстрым доступом к деталям.</p>
+            </div>
+            <div class="text-xs text-slate-500">
+              Всего: <span id="cards-count" class="font-semibold text-slate-700">—</span>
+            </div>
+          </div>
+
+          <div id="cards-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+        </div>
+      </section>
+    </main>
+
+    <div id="modal" class="fixed inset-0 z-60 hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <div id="modal-overlay" class="absolute inset-0 bg-slate-950/55"></div>
+
+      <div class="modal-panel relative w-full h-full bg-white">
+        <div class="p-6 h-full flex flex-col">
+          <div class="flex items-center justify-between gap-4">
+            <div class="text-sm text-slate-500">Детали обращения</div>
+            <button
+              type="button"
+              id="modal-close"
+              class="rounded-xl border border-slate-200 bg-white hover:bg-slate-50 px-4 py-2 text-sm font-medium shadow-sm"
+            >
+              Закрыть
+            </button>
+          </div>
+
+          <div class="mt-6 flex-1 grid grid-cols-1 md:grid-cols-[1.15fr_0.85fr] gap-6 items-start overflow-auto pr-1">
+            <div class="rounded-xl bg-slate-100 border border-slate-200 overflow-hidden">
+              <img id="modal-photo" alt="Фото" class="w-full h-full object-cover min-h-[220px] md:min-h-[340px]" src="" />
+            </div>
+
+            <div class="space-y-5">
+              <div>
+                <h2 id="modal-title" class="text-2xl font-semibold tracking-tight"></h2>
+                <div id="modal-address" class="text-sm text-slate-600 mt-2"></div>
+              </div>
+
+              <div class="flex flex-wrap gap-2 items-center">
+                <span id="modal-status-badge" class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-semibold"></span>
+                <span class="text-xs text-slate-500">Источник:</span>
+                <a
+                  id="modal-source"
+                  href="#"
+                  target="_blank"
+                  rel="noreferrer"
+                  class="text-sm font-medium text-slate-900 hover:underline"
+                ></a>
+              </div>
+
+              <div class="text-sm text-slate-700 leading-relaxed">
+                <p id="modal-description" class="whitespace-pre-wrap"></p>
+              </div>
+
+              <div class="pt-2">
+                <a
+                  id="modal-action"
+                  href="#"
+                  target="_blank"
+                  rel="noreferrer"
+                  class="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 text-white px-5 py-3 text-sm font-semibold shadow-sm hover:bg-slate-800 transition"
+                >
+                  Открыть ссылку
+                </a>
+              </div>
+
+              <div class="text-xs text-slate-500">
+                Подсказка: можно закрыть модалку клавишей <span class="font-semibold text-slate-700">Esc</span>.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="./scripts/main.js"></script>
+  </body>
+</html>
+
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Прототип интерфейса</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
       @keyframes slideUp {
