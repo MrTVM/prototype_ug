@@ -9,6 +9,14 @@ export const points = [
       coordinate: "55.751244, 37.618423",
       municipalDistrict: "Центральный"
     },
+    ownership: {
+      cadastralNumber: "77:01:0001001:45",
+      ownershipForm: "Муниципальная",
+      vri: "Для размещения инженерной инфраструктуры"
+    },
+    balanceHolder: {
+      name: "ГБУ «Мосводоканалсеть»"
+    },
     theme: "Ремонт коммуникаций",
     address: "Москва, ул. Примерная, 1",
     status: "В работе",
@@ -28,6 +36,14 @@ export const points = [
       objectType: "Дорога местного значения",
       coordinate: "55.7608, 37.606",
       municipalDistrict: "Тверской"
+    },
+    ownership: {
+      cadastralNumber: "77:01:0002002:17",
+      ownershipForm: "Муниципальная",
+      vri: "Для размещения автомобильных дорог"
+    },
+    balanceHolder: {
+      name: "ГБУ «Автомобильные дороги ЦАО»"
     },
     theme: "Восстановление дорожного полотна",
     address: "Москва, пр-т Тестовый, 17",
@@ -49,6 +65,14 @@ export const points = [
       coordinate: "55.739, 37.617",
       municipalDistrict: "Якиманка"
     },
+    ownership: {
+      cadastralNumber: "77:01:0003003:9",
+      ownershipForm: "Государственная",
+      vri: "Для размещения объектов энергоснабжения"
+    },
+    balanceHolder: {
+      name: "ПАО «Мосэнергосеть»"
+    },
     theme: "Устранение аварии электроснабжения",
     address: "Москва, ул. Сервисная, 9",
     status: "Завершено",
@@ -68,6 +92,14 @@ export const points = [
       objectType: "Общественная территория",
       coordinate: "55.7632, 37.5647",
       municipalDistrict: "Пресненский"
+    },
+    ownership: {
+      cadastralNumber: "77:01:0004004:3",
+      ownershipForm: "Муниципальная",
+      vri: "Для общего пользования и благоустройства"
+    },
+    balanceHolder: {
+      name: "ГБУ «Жилищник Пресненского района»"
     },
     theme: "Очистка и благоустройство территории",
     address: "Москва, наб. Прототипная, 3",
@@ -89,6 +121,14 @@ export const points = [
       coordinate: "55.7492, 37.655",
       municipalDistrict: "Басманный"
     },
+    ownership: {
+      cadastralNumber: "77:01:0005005:22",
+      ownershipForm: "Муниципальная",
+      vri: "Для размещения улично-дорожной сети"
+    },
+    balanceHolder: {
+      name: "ГБУ «Автодорсервис Басманный»"
+    },
     theme: "Приостановка работ по согласованию",
     address: "Москва, ул. Адаптерная, 22",
     status: "Приостановлено",
@@ -108,6 +148,14 @@ export const points = [
       objectType: "Городская территория",
       coordinate: "55.706, 37.61",
       municipalDistrict: "Донской"
+    },
+    ownership: {
+      cadastralNumber: "77:01:0006006:5",
+      ownershipForm: "Не определена",
+      vri: "Требует уточнения"
+    },
+    balanceHolder: {
+      name: "Не определён"
     },
     theme: "Отмена заявки по причине несоответствия",
     address: "Москва, ул. Несовпадений, 5",

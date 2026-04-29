@@ -151,6 +151,13 @@ export function createModal() {
     const garCoordinate = gar.coordinate || coords;
     const garObjectType = gar.objectType || "—";
     const garMunicipalDistrict = gar.municipalDistrict || "—";
+    const ownership = item.ownership || {};
+    const cadastralNumber = ownership.cadastralNumber || "—";
+    const ownershipForm = ownership.ownershipForm || "—";
+    const vri = ownership.vri || "—";
+    const balanceHolder = item.balanceHolder || {};
+    const balanceHolderName = balanceHolder.name || "Не определён";
+    const isBalanceHolderDefined = !/не определ/i.test(balanceHolderName);
     const complaintNo = `${now.getFullYear()}-${pad2(now.getMonth() + 1)}-${pad2(now.getDate())}-${(parseInt(
       String(item.id || "").replace(/\D/g, "").slice(-4) || "1234",
       10
@@ -263,23 +270,29 @@ export function createModal() {
     const propItems = document.createElement("div");
     propItems.className = "ml-2";
     createBulletList(propItems, [
-      "Кадастровый номер: 77:01:0001001:45",
-      "Форма собственности: муниципальная",
-      "ВРИ: «Для размещения автомобильных дорог»"
+      `Кадастровый номер: ${cadastralNumber}`,
+      `Форма собственности: ${ownershipForm}`,
+      `ВРИ: ${vri}`
     ]);
     propOk.appendChild(propItems);
 
-    const balanceWarn = document.createElement("div");
-    balanceWarn.className = "space-y-2";
-    balanceWarn.innerHTML = `<div class="text-xs font-semibold text-rose-800">⚠️ Балансодержатель: не определён</div>`;
-    const warnItems = document.createElement("div");
-    warnItems.className = "ml-2";
-    createBulletList(warnItems, ["Требует уточнения в реестре имущества"]);
-    balanceWarn.appendChild(warnItems);
+    const balanceInfo = document.createElement("div");
+    balanceInfo.className = "space-y-2";
+    balanceInfo.innerHTML = `<div class="text-xs font-semibold ${
+      isBalanceHolderDefined ? "text-emerald-800" : "text-rose-800"
+    }">${isBalanceHolderDefined ? "✅" : "⚠️"} Балансодержатель: ${escapeText(balanceHolderName)}</div>`;
+    const balanceItems = document.createElement("div");
+    balanceItems.className = "ml-2";
+    createBulletList(balanceItems, [
+      isBalanceHolderDefined
+        ? "Данные получены из реестра балансодержателей"
+        : "Требует уточнения в реестре имущества"
+    ]);
+    balanceInfo.appendChild(balanceItems);
 
     jurGrid.appendChild(addressOk);
     jurGrid.appendChild(propOk);
-    jurGrid.appendChild(balanceWarn);
+    jurGrid.appendChild(balanceInfo);
 
     jurisdictionBox.appendChild(jurGrid);
 
