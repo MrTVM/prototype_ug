@@ -136,11 +136,13 @@ export function createModal() {
   const address = el("modal-address");
   const summary = el("modal-summary");
   const photo = el("modal-photo");
-  const structured = el("modal-structured");
+  const rightColumn = el("modal-right-column");
+  const hint = el("modal-hint");
   const leftActions = el("modal-left-actions");
 
   if (!modal) throw new Error('Missing element: "modal"');
-  if (!structured) throw new Error('Missing element: "modal-structured"');
+  if (!rightColumn) throw new Error('Missing element: "modal-right-column"');
+  if (!hint) throw new Error('Missing element: "modal-hint"');
   if (!leftActions) throw new Error('Missing element: "modal-left-actions"');
   if (!summary) throw new Error('Missing element: "modal-summary"');
 
@@ -245,11 +247,6 @@ export function createModal() {
 
     const systemBox = document.createElement("div");
     systemBox.className = "space-y-4";
-
-    const sysTitle = document.createElement("div");
-    sysTitle.className = "text-sm font-semibold text-slate-900";
-    sysTitle.textContent = "🤖 КОНТЕКСТ (авто-загрузка)";
-    systemBox.appendChild(sysTitle);
 
     const jurisdictionBox = document.createElement("div");
     jurisdictionBox.className = "p-3";
@@ -406,9 +403,7 @@ export function createModal() {
     systemBox.appendChild(contextTabsWrap);
 
     // 🎛 ДЕЙСТВИЯ ПОЛЬЗОВАТЕЛЯ (как в docs/modal.md)
-    const actionsBox = createBox({
-      title: "🎛 ДЕЙСТВИЯ ПОЛЬЗОВАТЕЛЯ",
-      children: (() => {
+    const actionsBox = (() => {
         const wrapper = document.createElement("div");
         wrapper.className = "space-y-3";
 
@@ -565,8 +560,7 @@ export function createModal() {
         wrapper.appendChild(tabsWrap);
         wrapper.appendChild(row);
         return wrapper;
-      })()
-    });
+      })();
 
     const rightContent = createSectionStack([systemBox]);
     return { rightContent, actionsBox, summaryBlock };
@@ -597,8 +591,10 @@ export function createModal() {
     const { rightContent, actionsBox, summaryBlock } = buildStructured(item);
     summary.innerHTML = "";
     summary.appendChild(summaryBlock);
-    structured.innerHTML = "";
-    structured.appendChild(rightContent);
+    const prevDynamic = rightColumn.querySelector('[data-modal-dynamic="context"]');
+    if (prevDynamic) prevDynamic.remove();
+    rightContent.setAttribute("data-modal-dynamic", "context");
+    rightColumn.insertBefore(rightContent, hint);
     leftActions.innerHTML = "";
     leftActions.appendChild(actionsBox);
 
@@ -619,6 +615,8 @@ export function createModal() {
     currentItem = null;
     summary.innerHTML = "";
     leftActions.innerHTML = "";
+    const prevDynamic = rightColumn.querySelector('[data-modal-dynamic="context"]');
+    if (prevDynamic) prevDynamic.remove();
 
     modal.classList.remove("modal-open");
     modal.classList.add("hidden");
