@@ -50,14 +50,6 @@ export const points = [
         balanceHolder: {
           name: "ГБУ «Автомобильные дороги ЦАО»"
         }
-      },
-      {
-        cadastralNumber: "77:01:0002002:18",
-        ownershipForm: "федеральная",
-        vri: "Для размещения дорожной инфраструктуры",
-        balanceHolder: {
-          name: "ГБУ «Автомобильные дороги ЦАО»"
-        }
       }
     ],
     theme: "Восстановление дорожного полотна",
@@ -66,9 +58,7 @@ export const points = [
     description:
       "Заявка направлена в профильный отдел.\nОжидаем подтверждение графика работ.",
     photoGallery: [
-      "https://picsum.photos/seed/p2-1/1200/800",
-      "https://picsum.photos/seed/p2-2/1200/800",
-      "https://picsum.photos/seed/p2-3/1200/800"
+      "https://picsum.photos/seed/p2-1/1200/800"
     ],
     source: "https://example.com/complaint/p2",
     coords: [55.7608, 37.606]

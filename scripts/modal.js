@@ -240,10 +240,11 @@ export function createModal() {
     const garObjectType = gar.objectType || "—";
     const garMunicipalDistrict = gar.municipalDistrict || "—";
     const ownerships = Array.isArray(item.ownerships) ? item.ownerships : [];
-    const ownershipForms = ownerships
-      .map((entry) => entry?.ownershipForm)
-      .filter(Boolean)
-      .join(" ");
+    const ownershipFormsList = ownerships
+      .map((entry) => String(entry?.ownershipForm || "").toLowerCase().trim())
+      .filter(Boolean);
+    const uniqueOwnershipForms = [...new Set(ownershipFormsList)];
+    const ownershipForms = uniqueOwnershipForms.join(" ");
     const authoritySource = `${item.authority || ""} ${ownershipForms}`.toLowerCase();
     const authorityValue = authoritySource.includes("част")
       ? "частный"
@@ -252,6 +253,9 @@ export function createModal() {
         : authoritySource.includes("регион")
           ? "региональный"
           : "федеральный";
+    const hasAuthorityWarning =
+      uniqueOwnershipForms.length > 1 ||
+      (uniqueOwnershipForms.length === 1 && uniqueOwnershipForms[0] !== "муниципальная");
     const balanceHolderNames = ownerships
       .map((entry) => entry?.balanceHolder?.name?.trim())
       .filter(Boolean);
@@ -350,12 +354,18 @@ export function createModal() {
 
     const authorityInfo = document.createElement("div");
     authorityInfo.className = "space-y-2";
-    authorityInfo.innerHTML = `<div class="text-xs font-semibold text-emerald-800">✅ Полномочия: ${escapeText(
+    authorityInfo.innerHTML = `<div class="text-xs font-semibold ${
+      hasAuthorityWarning ? "text-rose-800" : "text-emerald-800"
+    }">${hasAuthorityWarning ? "⚠️" : "✅"} Полномочия: ${escapeText(
       authorityValue
     )}</div>`;
     const authorityItems = document.createElement("div");
     authorityItems.className = "ml-2";
-    createBulletList(authorityItems, ["Класс полномочий определён автоматически"]);
+    createBulletList(authorityItems, [
+      hasAuthorityWarning
+        ? "Обнаружены неоднозначные формы собственности, требуется проверка"
+        : "Класс полномочий определён автоматически"
+    ]);
     authorityInfo.appendChild(authorityItems);
 
     const propOk = document.createElement("div");
