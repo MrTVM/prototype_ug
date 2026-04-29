@@ -47,6 +47,18 @@ export const points = [
         cadastralNumber: "77:01:0002002:17",
         ownershipForm: "муниципальная",
         vri: "Для размещения автомобильных дорог",
+        contract: {
+          number: "45/25",
+          date: "12.03.2025",
+          subject: "Содержание дорог местного значения",
+          contractor: "ООО «Асфальт»",
+          contractorInn: "7701234567",
+          contact: "petrov@asphalt.ru | +7 (495) 123-45-67",
+          amount: "12,5 млн руб.",
+          endDate: "31.12.2026",
+          sla: "5 дней с момента фиксации",
+          penalty: "0.1% от цены этапа / день"
+        },
         balanceHolder: {
           name: "ГБУ «Автомобильные дороги ЦАО»"
         }

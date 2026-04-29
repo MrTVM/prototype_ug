@@ -263,6 +263,8 @@ export function createModal() {
     const isBalanceHolderDefined =
       uniqueBalanceHolderNames.length > 0 &&
       uniqueBalanceHolderNames.some((name) => !/не определ/i.test(name));
+    const contract =
+      ownerships.find((entry) => entry?.contract)?.contract || null;
     const complaintNo = `${now.getFullYear()}-${pad2(now.getMonth() + 1)}-${pad2(now.getDate())}-${(parseInt(
       String(item.id || "").replace(/\D/g, "").slice(-4) || "1234",
       10
@@ -348,7 +350,6 @@ export function createModal() {
 
     const jurisdictionBox = document.createElement("div");
     jurisdictionBox.className = "p-3";
-    createText(jurisdictionBox, "text-xs font-semibold text-slate-900", "📍 ЮРИСДИКЦИЯ");
     const jurGrid = document.createElement("div");
     jurGrid.className = "mt-3 space-y-3";
 
@@ -407,27 +408,44 @@ export function createModal() {
 
     const contractBox = document.createElement("div");
     contractBox.className = "p-3";
-    createText(contractBox, "text-xs font-semibold text-slate-900", "📋 КОНТРАКТНЫЕ ОБЯЗАТЕЛЬСТВА");
     const contractItems = document.createElement("div");
     contractItems.className = "mt-3 space-y-3";
 
     const found = document.createElement("div");
-    found.className = "text-xs font-semibold text-emerald-900";
-    found.textContent = "✅ Найдено совпадение в реестре контрактов [ЕИС 🔵 Тест]";
+    found.className = `text-xs font-semibold ${contract ? "text-emerald-900" : "text-rose-900"}`;
+    found.textContent = contract
+      ? "✅ Найдено совпадение в реестре контрактов [ЕИС 🔵 Тест]"
+      : "⚠️ Информация по обязательствам не найдена";
     contractItems.appendChild(found);
 
     const contractDetails = document.createElement("div");
     contractDetails.className = "ml-1 space-y-1 text-xs text-slate-900";
-    contractDetails.innerHTML = `
-      <div>📄 Договор № 45/25 от 12.03.2025</div>
-      <div class="text-slate-600 ml-4">• Предмет: Содержание дорог местного значения</div>
-      <div class="text-slate-600 ml-4">• Подрядчик: ${escapeText(contractor)} (ИНН 7701234567) 🏢</div>
-      <div class="text-slate-600 ml-4">• Контакт: petrov@asphalt.ru | +7 (495) 123-45-67</div>
-      <div class="text-slate-600 ml-4">• Сумма: 12,5 млн руб. | Окончание: 31.12.2026</div>
-      <div class="mt-2 text-slate-700">⏱ СЛА по договору: 5 дней с момента фиксации</div>
-      <div class="text-slate-700">💰 Штрафные санкции: 0.1% от цены этапа / день</div>
-      <div class="mt-2 font-semibold text-slate-900">🟢 Статус: ${escapeText(status)}</div>
-    `;
+    const contractNumber = contract?.number || "45/25";
+    const contractDate = contract?.date || "12.03.2025";
+    const contractSubject = contract?.subject || "Содержание дорог местного значения";
+    const contractContractor = contract?.contractor || contractor;
+    const contractContractorInn = contract?.contractorInn || "7701234567";
+    const contractContact = contract?.contact || "petrov@asphalt.ru | +7 (495) 123-45-67";
+    const contractAmount = contract?.amount || "12,5 млн руб.";
+    const contractEndDate = contract?.endDate || "31.12.2026";
+    const contractSla = contract?.sla || "5 дней с момента фиксации";
+    const contractPenalty = contract?.penalty || "0.1% от цены этапа / день";
+    if (contract) {
+      contractDetails.innerHTML = `
+        <div>📄 Договор № ${escapeText(contractNumber)} от ${escapeText(contractDate)}</div>
+        <div class="text-slate-600 ml-4">• Предмет: ${escapeText(contractSubject)}</div>
+        <div class="text-slate-600 ml-4">• Подрядчик: ${escapeText(contractContractor)} (ИНН ${escapeText(contractContractorInn)}) 🏢</div>
+        <div class="text-slate-600 ml-4">• Контакт: ${escapeText(contractContact)}</div>
+        <div class="text-slate-600 ml-4">• Сумма: ${escapeText(contractAmount)} | Окончание: ${escapeText(contractEndDate)}</div>
+        <div class="mt-2 text-slate-700">⏱ СЛА по договору: ${escapeText(contractSla)}</div>
+        <div class="text-slate-700">💰 Штрафные санкции: ${escapeText(contractPenalty)}</div>
+        <div class="mt-2 font-semibold text-slate-900">🟢 Статус: ${escapeText(status)}</div>
+      `;
+    } else {
+      contractDetails.innerHTML = `
+        <div class="text-slate-600">Для выбранного объекта данные по контрактным обязательствам отсутствуют.</div>
+      `;
+    }
     contractItems.appendChild(contractDetails);
     contractBox.appendChild(contractItems);
 
@@ -435,7 +453,6 @@ export function createModal() {
 
     const auditBox = document.createElement("div");
     auditBox.className = "p-3";
-    createText(auditBox, "text-xs font-semibold text-slate-900", "🗂 АУДИТ-ЛОГ (автоматически)");
     const audit = document.createElement("div");
     audit.className = "mt-3 space-y-1";
 
