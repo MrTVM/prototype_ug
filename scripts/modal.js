@@ -423,6 +423,23 @@ export function createModal() {
     const actionsBox = createBox({
       title: "🎛 ДЕЙСТВИЯ ПОЛЬЗОВАТЕЛЯ",
       children: (() => {
+        const wrapper = document.createElement("div");
+        wrapper.className = "space-y-3";
+
+        const orderText = document.createElement("div");
+        orderText.className = "rounded-xl border border-slate-200 bg-slate-50 p-3";
+        orderText.innerHTML = `
+          <div class="text-xs font-semibold text-slate-900 mb-2">Текст поручения (по рекомендации)</div>
+          <div class="text-xs text-slate-700 whitespace-pre-line">Направить подрядчику ${escapeText(
+            contractor
+          )} поручение на устранение дефекта.
+Адрес: ${escapeText(item.address || "—")}.
+Суть: ${escapeText(item.theme || "—")}.
+Срок исполнения: до ${escapeText(deadlineStr)} (СЛА: 5 дней).
+Основание: п.3.1 Договора №45/25.
+Приложения: ${escapeText(attachmentLabel)}.</div>
+        `;
+
         const row = document.createElement("div");
         row.className = "flex flex-wrap gap-3 items-center";
 
@@ -466,7 +483,9 @@ export function createModal() {
           })
         );
 
-        return row;
+        wrapper.appendChild(orderText);
+        wrapper.appendChild(row);
+        return wrapper;
       })()
     });
 
