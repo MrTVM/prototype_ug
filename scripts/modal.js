@@ -409,6 +409,7 @@ export function createModal() {
       <div class="mt-2 font-semibold text-slate-900">🟢 Статус: ${escapeText(status)}</div>
     `;
     contractItems.appendChild(contractDetails);
+    contractBox.appendChild(contractItems);
 
     const deadlineStr = `${pad2(recommendedDeadline.getDate())}.${pad2(recommendedDeadline.getMonth() + 1)}.${recommendedDeadline.getFullYear()}`;
 
