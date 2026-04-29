@@ -4,6 +4,11 @@ export const points = [
     requestType: "ЖКХ / Коммунальные сети",
     createdAt: "2026-04-29 09:15",
     plannedCloseAt: "2026-05-04 18:00",
+    gar: {
+      objectType: "Инженерные коммуникации",
+      coordinate: "55.751244, 37.618423",
+      municipalDistrict: "Центральный"
+    },
     theme: "Ремонт коммуникаций",
     address: "Москва, ул. Примерная, 1",
     status: "В работе",
@@ -19,6 +24,11 @@ export const points = [
     requestType: "Дороги / Ямочный ремонт",
     createdAt: "2026-04-29 10:05",
     plannedCloseAt: "2026-05-05 17:30",
+    gar: {
+      objectType: "Дорога местного значения",
+      coordinate: "55.7608, 37.606",
+      municipalDistrict: "Тверской"
+    },
     theme: "Восстановление дорожного полотна",
     address: "Москва, пр-т Тестовый, 17",
     status: "На рассмотрении",
@@ -34,6 +44,11 @@ export const points = [
     requestType: "Электроснабжение / Авария",
     createdAt: "2026-04-28 21:40",
     plannedCloseAt: "2026-04-29 14:00",
+    gar: {
+      objectType: "Объект электросетевого хозяйства",
+      coordinate: "55.739, 37.617",
+      municipalDistrict: "Якиманка"
+    },
     theme: "Устранение аварии электроснабжения",
     address: "Москва, ул. Сервисная, 9",
     status: "Завершено",
@@ -49,6 +64,11 @@ export const points = [
     requestType: "Благоустройство / Уборка",
     createdAt: "2026-04-29 08:20",
     plannedCloseAt: "2026-05-03 16:00",
+    gar: {
+      objectType: "Общественная территория",
+      coordinate: "55.7632, 37.5647",
+      municipalDistrict: "Пресненский"
+    },
     theme: "Очистка и благоустройство территории",
     address: "Москва, наб. Прототипная, 3",
     status: "Новый",
@@ -64,6 +84,11 @@ export const points = [
     requestType: "Согласования / Приостановка работ",
     createdAt: "2026-04-27 13:50",
     plannedCloseAt: "2026-05-10 12:00",
+    gar: {
+      objectType: "Улично-дорожная сеть",
+      coordinate: "55.7492, 37.655",
+      municipalDistrict: "Басманный"
+    },
     theme: "Приостановка работ по согласованию",
     address: "Москва, ул. Адаптерная, 22",
     status: "Приостановлено",
@@ -79,6 +104,11 @@ export const points = [
     requestType: "Контроль качества / Отмена",
     createdAt: "2026-04-26 11:10",
     plannedCloseAt: "2026-04-26 12:00",
+    gar: {
+      objectType: "Городская территория",
+      coordinate: "55.706, 37.61",
+      municipalDistrict: "Донской"
+    },
     theme: "Отмена заявки по причине несоответствия",
     address: "Москва, ул. Несовпадений, 5",
     status: "Отменено",

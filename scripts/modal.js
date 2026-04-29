@@ -147,6 +147,10 @@ export function createModal() {
     const now = new Date(item.createdAt);
     const city = getCity(item.address);
     const coords = formatCoords(item.coords);
+    const gar = item.gar || {};
+    const garCoordinate = gar.coordinate || coords;
+    const garObjectType = gar.objectType || "—";
+    const garMunicipalDistrict = gar.municipalDistrict || "—";
     const complaintNo = `${now.getFullYear()}-${pad2(now.getMonth() + 1)}-${pad2(now.getDate())}-${(parseInt(
       String(item.id || "").replace(/\D/g, "").slice(-4) || "1234",
       10
@@ -247,9 +251,9 @@ export function createModal() {
     const addrItems = document.createElement("div");
     addrItems.className = "ml-2";
     createBulletList(addrItems, [
-      `Координаты: ${coords}`,
-      "Тип объекта: дорога местного значения",
-      "Муниципальный район: Центральный"
+      `Координаты: ${garCoordinate}`,
+      `Тип объекта: ${garObjectType}`,
+      `Муниципальный район: ${garMunicipalDistrict}`
     ]);
     addressOk.appendChild(addrItems);
 
