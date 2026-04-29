@@ -136,9 +136,11 @@ export function createModal() {
   const address = el("modal-address");
   const photo = el("modal-photo");
   const structured = el("modal-structured");
+  const leftActions = el("modal-left-actions");
 
   if (!modal) throw new Error('Missing element: "modal"');
   if (!structured) throw new Error('Missing element: "modal-structured"');
+  if (!leftActions) throw new Error('Missing element: "modal-left-actions"');
 
   let isOpen = false;
   let currentItem = null;
@@ -468,9 +470,8 @@ export function createModal() {
       })()
     });
 
-    systemBox.appendChild(actionsBox);
-
-    return createSectionStack([templateTable, textBlock, systemBox]);
+    const rightContent = createSectionStack([templateTable, textBlock, systemBox]);
+    return { rightContent, actionsBox };
   };
 
   const open = (item) => {
@@ -479,8 +480,11 @@ export function createModal() {
     address.textContent = item.address;
     photo.src = item.photoSrc;
 
+    const { rightContent, actionsBox } = buildStructured(item);
     structured.innerHTML = "";
-    structured.appendChild(buildStructured(item));
+    structured.appendChild(rightContent);
+    leftActions.innerHTML = "";
+    leftActions.appendChild(actionsBox);
 
     isOpen = true;
     modal.classList.remove("hidden");
@@ -497,6 +501,7 @@ export function createModal() {
     if (!isOpen) return;
     isOpen = false;
     currentItem = null;
+    leftActions.innerHTML = "";
 
     modal.classList.remove("modal-open");
     modal.classList.add("hidden");
