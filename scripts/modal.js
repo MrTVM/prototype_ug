@@ -366,13 +366,13 @@ export function createModal() {
         wrapper.className = "space-y-3";
 
         const tabsWrap = document.createElement("div");
-        tabsWrap.className = "space-y-3";
+        tabsWrap.className = "rounded-xl border border-slate-200 bg-white overflow-hidden";
 
         const tabsBar = document.createElement("div");
-        tabsBar.className = "flex flex-wrap gap-2";
+        tabsBar.className = "flex flex-wrap items-end gap-1 bg-slate-50 border-b border-slate-200 px-2 pt-2";
 
         const panelText = document.createElement("div");
-        panelText.className = "rounded-xl border border-slate-200 bg-slate-50 p-3";
+        panelText.className = "p-3";
 
         panelText.innerHTML = `
           <div class="text-xs font-semibold text-slate-900 mb-2">Текст поручения (по рекомендации)</div>
@@ -387,7 +387,7 @@ export function createModal() {
         `;
 
         const panelRecommendation = document.createElement("div");
-        panelRecommendation.className = "rounded-xl border border-slate-200 bg-white/70 p-3 hidden";
+        panelRecommendation.className = "p-3 hidden";
         panelRecommendation.innerHTML = `
           <div class="text-xs font-semibold text-slate-900">✉️ Создать поручение подрядчику ← РЕКОМЕНДУЕТСЯ</div>
           <div class="text-xs text-slate-600 mt-2 whitespace-pre-line">• Исполнитель: ${escapeText(contractor)}
@@ -398,7 +398,7 @@ export function createModal() {
         `;
 
         const panelWhy = document.createElement("div");
-        panelWhy.className = "rounded-xl border border-slate-200 bg-white/70 p-3 hidden";
+        panelWhy.className = "p-3 hidden";
         const whyTitle = document.createElement("div");
         whyTitle.className = "text-xs font-semibold text-slate-900";
         whyTitle.textContent = "🔍 Почему система это предлагает";
@@ -438,7 +438,7 @@ export function createModal() {
           const btn = document.createElement("button");
           btn.type = "button";
           btn.className =
-            "rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50 transition";
+            "rounded-t-lg px-3 py-1.5 text-xs font-medium transition border";
           btn.textContent = label;
           btn.addEventListener("click", () => activateTab(key));
           tabButtons[key] = btn;
@@ -451,9 +451,14 @@ export function createModal() {
           });
           Object.entries(tabButtons).forEach(([k, btn]) => {
             const active = k === key;
-            btn.classList.toggle("bg-slate-900", active);
-            btn.classList.toggle("text-white", active);
-            btn.classList.toggle("border-slate-900", active);
+            btn.classList.toggle("bg-white", active);
+            btn.classList.toggle("text-slate-900", active);
+            btn.classList.toggle("border-slate-200", active);
+            btn.classList.toggle("border-b-white", active);
+            btn.classList.toggle("bg-transparent", !active);
+            btn.classList.toggle("text-slate-600", !active);
+            btn.classList.toggle("border-transparent", !active);
+            btn.classList.toggle("hover:text-slate-900", !active);
           });
         };
 
