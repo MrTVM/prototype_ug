@@ -31,10 +31,10 @@ export function createCardsView() {
 
       const column = document.createElement("div");
       column.className =
-        "min-w-0 w-full rounded-xl border border-slate-200 bg-slate-50/40 shadow-sm flex flex-col overflow-hidden";
+        "flex-1 min-w-0 flex flex-col px-4 py-3";
 
       const header = document.createElement("div");
-      header.className = "p-4 border-b border-slate-200/70 flex items-center justify-between gap-3";
+      header.className = "flex items-center justify-between gap-3 mb-3";
       header.innerHTML = `
         <div class="min-w-0">
           <div class="text-sm font-semibold text-slate-900 line-clamp-1">${escapeHtml(status)}</div>
@@ -47,11 +47,11 @@ export function createCardsView() {
 
       const list = document.createElement("div");
       list.className =
-        "p-4 flex-1 overflow-y-auto max-h-[calc(100vh-22rem)] space-y-3 min-h-[40px]";
+        "flex-1 overflow-y-auto max-h-[calc(100vh-22rem)] space-y-3 min-h-[40px]";
 
       if (colItems.length === 0) {
         list.innerHTML = `
-          <div class="text-sm text-slate-500 bg-white/60 border border-slate-200 rounded-xl px-4 py-6 text-center">
+          <div class="text-sm text-slate-500 bg-white/60 border border-slate-200/70 rounded-xl px-4 py-6 text-center">
             Пока пусто
           </div>
         `;
