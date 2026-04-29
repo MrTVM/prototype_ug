@@ -252,10 +252,13 @@ export function createModal() {
         : authoritySource.includes("регион")
           ? "региональный"
           : "федеральный";
-    const balanceHolder =
-      ownerships.find((entry) => entry?.balanceHolder?.name)?.balanceHolder || {};
-    const balanceHolderName = balanceHolder.name || "Не определён";
-    const isBalanceHolderDefined = !/не определ/i.test(balanceHolderName);
+    const balanceHolderNames = ownerships
+      .map((entry) => entry?.balanceHolder?.name?.trim())
+      .filter(Boolean);
+    const uniqueBalanceHolderNames = [...new Set(balanceHolderNames)];
+    const isBalanceHolderDefined =
+      uniqueBalanceHolderNames.length > 0 &&
+      uniqueBalanceHolderNames.some((name) => !/не определ/i.test(name));
     const complaintNo = `${now.getFullYear()}-${pad2(now.getMonth() + 1)}-${pad2(now.getDate())}-${(parseInt(
       String(item.id || "").replace(/\D/g, "").slice(-4) || "1234",
       10
@@ -376,14 +379,14 @@ export function createModal() {
     balanceInfo.className = "space-y-2";
     balanceInfo.innerHTML = `<div class="text-xs font-semibold ${
       isBalanceHolderDefined ? "text-emerald-800" : "text-rose-800"
-    }">${isBalanceHolderDefined ? "✅" : "⚠️"} Балансодержатель: ${escapeText(balanceHolderName)}</div>`;
+    }">${isBalanceHolderDefined ? "✅" : "⚠️"} Балансодержатели</div>`;
     const balanceItems = document.createElement("div");
     balanceItems.className = "ml-2";
-    createBulletList(balanceItems, [
-      isBalanceHolderDefined
-        ? "Данные получены из реестра балансодержателей"
-        : "Требует уточнения в реестре имущества"
-    ]);
+    const balanceLines =
+      uniqueBalanceHolderNames.length > 0
+        ? uniqueBalanceHolderNames.map((name, index) => `${index + 1}) ${name}`)
+        : ["Балансодержатели не найдены"];
+    createBulletList(balanceItems, balanceLines);
     balanceInfo.appendChild(balanceItems);
 
     jurGrid.appendChild(authorityInfo);
