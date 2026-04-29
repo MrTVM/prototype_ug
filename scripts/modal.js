@@ -190,55 +190,52 @@ export function createModal() {
     const templateTable = document.createElement("div");
     templateTable.className = "space-y-3";
 
-    // Блок: “шапка” как в примере docs/modal.md
+    // Компактный блок в стиле "адреса" (одна тонкая рамка).
+    const summaryBlock = document.createElement("div");
+    summaryBlock.className = "rounded-xl border border-slate-200/90 bg-white px-3 py-3 space-y-3";
+
     const headerGrid = document.createElement("div");
-    headerGrid.className = "grid grid-cols-1 sm:grid-cols-3 gap-3 items-start";
+    headerGrid.className = "grid grid-cols-1 sm:grid-cols-3 gap-2";
+    headerGrid.innerHTML = `
+      <div>
+        <div class="text-xs text-slate-500">ОБРАЩЕНИЕ</div>
+        <div class="text-sm font-semibold text-slate-900 mt-1">№${escapeText(complaintNo)}</div>
+      </div>
+      <div>
+        <div class="text-xs text-slate-500">Поступило</div>
+        <div class="text-sm font-semibold text-slate-900 mt-1">${escapeText(received)}</div>
+      </div>
+      <div>
+        <div class="text-xs text-slate-500">Плановая дата решения</div>
+        <div class="text-sm font-semibold text-slate-900 mt-1">${escapeText(item.plannedCloseAt || "—")}</div>
+      </div>
+    `;
 
-    const posCard = document.createElement("div");
-    posCard.className = "rounded-xl border border-slate-200 bg-white/60 p-3";
-    posCard.innerHTML = `<div class="text-xs text-slate-500">ОБРАЩЕНИЕ</div><div class="text-sm font-semibold text-slate-900 mt-1">№${escapeText(
-      complaintNo
-    )}</div>`;
-
-    const receivedCard = document.createElement("div");
-    receivedCard.className = "rounded-xl border border-slate-200 bg-white/60 p-3";
-    receivedCard.innerHTML = `<div class="text-xs text-slate-500">Поступило</div><div class="text-sm font-semibold text-slate-900 mt-1">${escapeText(
-      received
-    )}</div>`;
-
-    const cityCard = document.createElement("div");
-    cityCard.className = "rounded-xl border border-slate-200 bg-white/60 p-3";
-    cityCard.innerHTML = `<div class="text-xs text-slate-500">Город</div><div class="text-sm font-semibold text-slate-900 mt-1">${escapeText(
-      city
-    )}</div>`;
-
-    headerGrid.appendChild(posCard);
-    headerGrid.appendChild(receivedCard);
-    headerGrid.appendChild(cityCard);
-
-    const applicantCard = document.createElement("div");
-    applicantCard.className = "rounded-xl border border-slate-200 bg-white/60 p-3";
-    applicantCard.innerHTML = `
+    const applicantInfo = document.createElement("div");
+    applicantInfo.className = "pt-2 border-t border-slate-200/70";
+    applicantInfo.innerHTML = `
       <div class="text-xs text-slate-500">Заявитель</div>
       <div class="text-sm font-semibold text-slate-900 mt-1">Иванов И.И. (тел. скрыт)</div>
       <div class="text-xs text-slate-500 mt-2">Категория</div>
       <div class="text-sm font-semibold text-slate-900 mt-1">${escapeText(category)}</div>
     `;
 
-    templateTable.appendChild(headerGrid);
-    templateTable.appendChild(applicantCard);
-
-    const textBlock = document.createElement("div");
-    textBlock.className = "space-y-2";
-    createText(textBlock, "text-sm font-semibold text-slate-900", "📝 ТЕКСТ ОБРАЩЕНИЯ");
+    const textInfo = document.createElement("div");
+    textInfo.className = "pt-2 border-t border-slate-200/70 space-y-2";
+    textInfo.innerHTML = `<div class="text-sm font-semibold text-slate-900">📝 ТЕКСТ ОБРАЩЕНИЯ</div>`;
     const quote = document.createElement("div");
-    quote.className = "rounded-xl border border-slate-200 bg-white/60 p-3 text-sm text-slate-900 whitespace-pre-line";
+    quote.className = "text-sm text-slate-900 whitespace-pre-line";
     quote.textContent = `«${description.trim()}»`;
-    textBlock.appendChild(quote);
     const attach = document.createElement("div");
     attach.className = "text-xs text-slate-500";
     attach.textContent = `📎 Вложения: ${attachmentLabel}`;
-    textBlock.appendChild(attach);
+    textInfo.appendChild(quote);
+    textInfo.appendChild(attach);
+
+    summaryBlock.appendChild(headerGrid);
+    summaryBlock.appendChild(applicantInfo);
+    summaryBlock.appendChild(textInfo);
+    templateTable.appendChild(summaryBlock);
 
     const systemBox = document.createElement("div");
     systemBox.className = "space-y-4";
@@ -476,7 +473,7 @@ export function createModal() {
       })()
     });
 
-    const rightContent = createSectionStack([templateTable, textBlock, systemBox]);
+    const rightContent = createSectionStack([templateTable, systemBox]);
     return { rightContent, actionsBox };
   };
 
