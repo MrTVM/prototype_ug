@@ -12,13 +12,13 @@ export const points = [
     ownerships: [
       {
         cadastralNumber: "77:01:0001001:45",
-        ownershipForm: "Муниципальная",
-        vri: "Для размещения инженерной инфраструктуры"
+        ownershipForm: "муниципальная",
+        vri: "Для размещения инженерной инфраструктуры",
+        balanceHolder: {
+          name: "ГБУ «Мосводоканалсеть»"
+        }
       }
     ],
-    balanceHolder: {
-      name: "ГБУ «Мосводоканалсеть»"
-    },
     theme: "Ремонт коммуникаций",
     address: "Москва, ул. Примерная, 1",
     status: "В работе",
@@ -45,18 +45,21 @@ export const points = [
     ownerships: [
       {
         cadastralNumber: "77:01:0002002:17",
-        ownershipForm: "Муниципальная",
-        vri: "Для размещения автомобильных дорог"
+        ownershipForm: "муниципальная",
+        vri: "Для размещения автомобильных дорог",
+        balanceHolder: {
+          name: "ГБУ «Автомобильные дороги ЦАО»"
+        }
       },
       {
         cadastralNumber: "77:01:0002002:18",
-        ownershipForm: "Государственная",
-        vri: "Для размещения дорожной инфраструктуры"
+        ownershipForm: "федеральная",
+        vri: "Для размещения дорожной инфраструктуры",
+        balanceHolder: {
+          name: "ГБУ «Автомобильные дороги ЦАО»"
+        }
       }
     ],
-    balanceHolder: {
-      name: "ГБУ «Автомобильные дороги ЦАО»"
-    },
     theme: "Восстановление дорожного полотна",
     address: "Москва, пр-т Тестовый, 17",
     status: "На рассмотрении",
@@ -83,23 +86,29 @@ export const points = [
     ownerships: [
       {
         cadastralNumber: "77:01:0003003:9",
-        ownershipForm: "Государственная",
-        vri: "Для размещения объектов энергоснабжения"
+        ownershipForm: "федеральная",
+        vri: "Для размещения объектов энергоснабжения",
+        balanceHolder: {
+          name: "ПАО «Мосэнергосеть»"
+        }
       },
       {
         cadastralNumber: "77:01:0003003:10",
-        ownershipForm: "Муниципальная",
-        vri: "Для размещения инженерной инфраструктуры"
+        ownershipForm: "муниципальная",
+        vri: "Для размещения инженерной инфраструктуры",
+        balanceHolder: {
+          name: "ПАО «Мосэнергосеть»"
+        }
       },
       {
         cadastralNumber: "77:01:0003003:11",
-        ownershipForm: "Частная",
-        vri: "Для эксплуатации трансформаторного пункта"
+        ownershipForm: "частная",
+        vri: "Для эксплуатации трансформаторного пункта",
+        balanceHolder: {
+          name: "ПАО «Мосэнергосеть»"
+        }
       }
     ],
-    balanceHolder: {
-      name: "ПАО «Мосэнергосеть»"
-    },
     theme: "Устранение аварии электроснабжения",
     address: "Москва, ул. Сервисная, 9",
     status: "Завершено",
@@ -123,9 +132,6 @@ export const points = [
       municipalDistrict: "Пресненский"
     },
     ownerships: [],
-    balanceHolder: {
-      name: "ГБУ «Жилищник Пресненского района»"
-    },
     theme: "Очистка и благоустройство территории",
     address: "Москва, наб. Прототипная, 3",
     status: "Новый",
@@ -152,13 +158,13 @@ export const points = [
     ownerships: [
       {
         cadastralNumber: "77:01:0005005:22",
-        ownershipForm: "Муниципальная",
-        vri: "Для размещения улично-дорожной сети"
+        ownershipForm: "муниципальная",
+        vri: "Для размещения улично-дорожной сети",
+        balanceHolder: {
+          name: "ГБУ «Автодорсервис Басманный»"
+        }
       }
     ],
-    balanceHolder: {
-      name: "ГБУ «Автодорсервис Басманный»"
-    },
     theme: "Приостановка работ по согласованию",
     address: "Москва, ул. Адаптерная, 22",
     status: "Приостановлено",
@@ -184,18 +190,21 @@ export const points = [
     ownerships: [
       {
         cadastralNumber: "77:01:0006006:5",
-        ownershipForm: "Не определена",
-        vri: "Требует уточнения"
+        ownershipForm: "региональная",
+        vri: "Требует уточнения",
+        balanceHolder: {
+          name: "Не определён"
+        }
       },
       {
         cadastralNumber: "77:01:0006006:6",
-        ownershipForm: "Муниципальная",
-        vri: "Для обслуживания городской территории"
+        ownershipForm: "муниципальная",
+        vri: "Для обслуживания городской территории",
+        balanceHolder: {
+          name: "Не определён"
+        }
       }
     ],
-    balanceHolder: {
-      name: "Не определён"
-    },
     theme: "Отмена заявки по причине несоответствия",
     address: "Москва, ул. Несовпадений, 5",
     status: "Отменено",

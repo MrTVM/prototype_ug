@@ -252,7 +252,8 @@ export function createModal() {
         : authoritySource.includes("регион")
           ? "региональный"
           : "федеральный";
-    const balanceHolder = item.balanceHolder || {};
+    const balanceHolder =
+      ownerships.find((entry) => entry?.balanceHolder?.name)?.balanceHolder || {};
     const balanceHolderName = balanceHolder.name || "Не определён";
     const isBalanceHolderDefined = !/не определ/i.test(balanceHolderName);
     const complaintNo = `${now.getFullYear()}-${pad2(now.getMonth() + 1)}-${pad2(now.getDate())}-${(parseInt(
