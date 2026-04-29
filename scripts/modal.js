@@ -223,10 +223,16 @@ export function createModal() {
     const applicantInfo = document.createElement("div");
     applicantInfo.className = "pt-2 border-t border-slate-200/70";
     applicantInfo.innerHTML = `
-      <div class="text-xs text-slate-500">Заявитель</div>
-      <div class="text-sm font-semibold text-slate-900 mt-1">Иванов И.И. (тел. скрыт)</div>
-      <div class="text-xs text-slate-500 mt-2">Категория</div>
-      <div class="text-sm font-semibold text-slate-900 mt-1">${escapeText(category)}</div>
+      <div class="flex flex-wrap items-center gap-x-6 gap-y-1 text-sm text-slate-700">
+        <span>
+          <span class="text-xs text-slate-500">Заявитель:</span>
+          <span class="font-semibold text-slate-900">Иванов И.И. (тел. скрыт)</span>
+        </span>
+        <span>
+          <span class="text-xs text-slate-500">Категория:</span>
+          <span class="font-semibold text-slate-900">${escapeText(category)}</span>
+        </span>
+      </div>
     `;
 
     const textInfo = document.createElement("div");
