@@ -254,18 +254,6 @@ export function createModal() {
     const jurGrid = document.createElement("div");
     jurGrid.className = "mt-3 space-y-3";
 
-    const addressOk = document.createElement("div");
-    addressOk.className = "space-y-2";
-    addressOk.innerHTML = `<div class="text-xs font-semibold text-emerald-800">✅ Адрес валидирован ГАР</div>`;
-    const addrItems = document.createElement("div");
-    addrItems.className = "ml-2";
-    createBulletList(addrItems, [
-      `Координаты: ${garCoordinate}`,
-      `Тип объекта: ${garObjectType}`,
-      `Муниципальный район: ${garMunicipalDistrict}`
-    ]);
-    addressOk.appendChild(addrItems);
-
     const propOk = document.createElement("div");
     propOk.className = "space-y-2";
     propOk.innerHTML = `<div class="text-xs font-semibold text-emerald-800">✅ Собственность</div>`;
@@ -292,7 +280,6 @@ export function createModal() {
     ]);
     balanceInfo.appendChild(balanceItems);
 
-    jurGrid.appendChild(addressOk);
     jurGrid.appendChild(propOk);
     jurGrid.appendChild(balanceInfo);
 
@@ -496,7 +483,23 @@ export function createModal() {
   const open = (item) => {
     currentItem = item;
     title.textContent = item.theme;
-    address.textContent = item.address;
+    const gar = item.gar || {};
+    const addressLine = item.address || "—";
+    const coordsLine = gar.coordinate || formatCoords(item.coords);
+    const objectTypeLine = gar.objectType || "—";
+    const municipalDistrictLine = gar.municipalDistrict || "—";
+    address.innerHTML = `
+      <div class="rounded-xl border border-slate-200/90 bg-white px-3 py-2.5">
+        <div class="flex items-start justify-between gap-3">
+          <div class="text-sm text-slate-700 leading-relaxed">${escapeText(addressLine)}
+            <span class="inline-flex align-middle ml-2 rounded-md border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[11px] font-semibold text-emerald-700">проверено ГАР</span>
+          </div>
+        </div>
+        <div class="mt-2 text-xs text-slate-500">Координаты: ${escapeText(coordsLine)}</div>
+        <div class="text-xs text-slate-500">Тип объекта: ${escapeText(objectTypeLine)}</div>
+        <div class="text-xs text-slate-500">Муниципальный район: ${escapeText(municipalDistrictLine)}</div>
+      </div>
+    `;
     photo.src = item.photoSrc;
 
     const { rightContent, actionsBox } = buildStructured(item);
