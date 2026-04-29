@@ -139,8 +139,27 @@
           <div class="mt-6 flex-1 min-h-0 grid grid-cols-1 md:grid-cols-[1.15fr_0.85fr] gap-6 pr-1">
             <div class="flex flex-col min-h-0 h-full">
               <div class="flex-1 min-h-0 rounded-xl bg-slate-100 border border-slate-200 overflow-hidden">
-                <img id="modal-photo" alt="Фото" class="w-full h-full object-cover" src="" />
+                <div class="relative h-full">
+                  <img id="modal-photo-main" alt="Фото" class="w-full h-full object-cover" src="" />
+                  <button
+                    type="button"
+                    id="modal-photo-prev"
+                    class="absolute left-3 top-1/2 -translate-y-1/2 h-8 w-8 rounded-full border border-slate-200 bg-white/90 text-slate-700 text-sm shadow-sm hover:bg-white"
+                    aria-label="Предыдущее фото"
+                  >
+                    ‹
+                  </button>
+                  <button
+                    type="button"
+                    id="modal-photo-next"
+                    class="absolute right-3 top-1/2 -translate-y-1/2 h-8 w-8 rounded-full border border-slate-200 bg-white/90 text-slate-700 text-sm shadow-sm hover:bg-white"
+                    aria-label="Следующее фото"
+                  >
+                    ›
+                  </button>
+                </div>
               </div>
+              <div id="modal-photo-thumbs" class="mt-3 grid grid-cols-4 gap-2"></div>
               <div id="modal-left-actions" class="mt-4 shrink-0 min-h-[220px]"></div>
             </div>
 

@@ -135,7 +135,10 @@ export function createModal() {
   const title = el("modal-title");
   const address = el("modal-address");
   const summary = el("modal-summary");
-  const photo = el("modal-photo");
+  const photoMain = el("modal-photo-main");
+  const photoPrev = el("modal-photo-prev");
+  const photoNext = el("modal-photo-next");
+  const photoThumbs = el("modal-photo-thumbs");
   const rightColumn = el("modal-right-column");
   const hint = el("modal-hint");
   const leftActions = el("modal-left-actions");
@@ -145,9 +148,88 @@ export function createModal() {
   if (!hint) throw new Error('Missing element: "modal-hint"');
   if (!leftActions) throw new Error('Missing element: "modal-left-actions"');
   if (!summary) throw new Error('Missing element: "modal-summary"');
+  if (!photoMain || !photoThumbs || !photoPrev || !photoNext) {
+    throw new Error('Missing photo carousel elements');
+  }
 
   let isOpen = false;
   let currentItem = null;
+  let currentPhotos = [];
+  let currentPhotoIndex = 0;
+
+  const renderPhotoCarousel = (item) => {
+    const seedBase = String(item.id || "fallback");
+    const fallbackGallery = [
+      `https://picsum.photos/seed/${seedBase}-1/1200/800`,
+      `https://picsum.photos/seed/${seedBase}-2/1200/800`,
+      `https://picsum.photos/seed/${seedBase}-3/1200/800`
+    ];
+
+    const sourceGallery = Array.isArray(item.photoGallery)
+      ? item.photoGallery
+      : item.photoSrc
+        ? [item.photoSrc]
+        : [];
+
+    currentPhotos = sourceGallery.filter(Boolean);
+    if (currentPhotos.length === 0) {
+      currentPhotos = fallbackGallery;
+    } else if (currentPhotos.length === 1) {
+      // Даже при одном фото оставляем возможность листания на fallback-кадры.
+      currentPhotos = [currentPhotos[0], fallbackGallery[1], fallbackGallery[2]];
+    }
+
+    currentPhotoIndex = 0;
+
+    const applyMain = () => {
+      photoMain.src = currentPhotos[currentPhotoIndex];
+      photoMain.alt = `Фото ${currentPhotoIndex + 1}`;
+      photoMain.onerror = () => {
+        photoMain.onerror = null;
+        photoMain.src = fallbackGallery[currentPhotoIndex % fallbackGallery.length];
+      };
+      photoPrev.classList.toggle("hidden", currentPhotos.length <= 1);
+      photoNext.classList.toggle("hidden", currentPhotos.length <= 1);
+    };
+
+    const renderThumbs = () => {
+      photoThumbs.innerHTML = "";
+      currentPhotos.slice(0, 8).forEach((src, idx) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "rounded-lg border border-slate-200 overflow-hidden bg-white";
+        if (idx === currentPhotoIndex) btn.classList.add("ring-2", "ring-slate-400");
+        btn.innerHTML = `<img src="${escapeText(src)}" alt="Превью ${idx + 1}" class="w-full h-14 object-cover" />`;
+        const img = btn.querySelector("img");
+        if (img) {
+          img.onerror = () => {
+            img.onerror = null;
+            img.src = fallbackGallery[idx % fallbackGallery.length];
+          };
+        }
+        btn.addEventListener("click", () => {
+          currentPhotoIndex = idx;
+          applyMain();
+          renderThumbs();
+        });
+        photoThumbs.appendChild(btn);
+      });
+    };
+
+    photoPrev.onclick = () => {
+      currentPhotoIndex = (currentPhotoIndex - 1 + currentPhotos.length) % currentPhotos.length;
+      applyMain();
+      renderThumbs();
+    };
+    photoNext.onclick = () => {
+      currentPhotoIndex = (currentPhotoIndex + 1) % currentPhotos.length;
+      applyMain();
+      renderThumbs();
+    };
+
+    applyMain();
+    renderThumbs();
+  };
 
   const buildStructured = (item) => {
     const now = new Date(item.createdAt);
@@ -184,14 +266,15 @@ export function createModal() {
     // Подстановка из данных (прототипные значения, но зависят от переданного item)
     const category = item.requestType || "—";
     const description = item.description || "";
-    const photoName = item.photoSrc
-      ? String(item.photoSrc)
+    const primaryPhoto = Array.isArray(item.photoGallery) && item.photoGallery.length > 0 ? item.photoGallery[0] : item.photoSrc;
+    const photoName = primaryPhoto
+      ? String(primaryPhoto)
           .split("/")
           .pop()
           .split("?")[0]
           .trim()
       : "";
-    const attachmentLabel = item.photoSrc ? `🖼️ ${photoName || "фото"}` : "—";
+    const attachmentLabel = primaryPhoto ? `🖼️ ${photoName || "фото"}` : "—";
     const status = item.status || "—";
 
     const recommendedDeadline = new Date(now.getTime() + 5 * 24 * 60 * 60 * 1000);
@@ -592,7 +675,7 @@ export function createModal() {
         <div class="text-xs text-slate-500">Муниципальный район: ${escapeText(municipalDistrictLine)}</div>
       </div>
     `;
-    photo.src = item.photoSrc;
+    renderPhotoCarousel(item);
 
     const { rightContent, actionsBox, summaryBlock } = buildStructured(item);
     summary.innerHTML = "";

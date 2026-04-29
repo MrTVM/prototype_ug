@@ -22,8 +22,11 @@ export const points = [
     status: "В работе",
     description:
       "Планируется замена участка трубопровода.\nСроки уточняются после выезда специалиста.",
-    photoSrc:
-      "https://placehold.co/1200x800/png?text=%D0%A4%D0%BE%D1%82%D0%BE%3A+%D0%A0%D0%B5%D0%BC%D0%BE%D0%BD%D1%82+%D0%BA%D0%BE%D0%BC%D0%BC%D1%83%D0%BD%D0%B8%D0%BA%D0%B0%D1%86%D0%B8%D0%B9",
+    photoGallery: [
+      "https://picsum.photos/seed/p1-1/1200/800",
+      "https://picsum.photos/seed/p1-2/1200/800",
+      "https://picsum.photos/seed/p1-3/1200/800"
+    ],
     source: "https://example.com/complaint/p1",
     coords: [55.751244, 37.618423]
   },
@@ -50,8 +53,11 @@ export const points = [
     status: "На рассмотрении",
     description:
       "Заявка направлена в профильный отдел.\nОжидаем подтверждение графика работ.",
-    photoSrc:
-      "https://placehold.co/1200x800/png?text=%D0%A4%D0%BE%D1%82%D0%BE%3A+%D0%94%D0%BE%D1%80%D0%BE%D0%B6%D0%BD%D0%BE%D0%B5+%D0%BF%D0%BE%D0%BB%D0%BE%D1%82%D0%BD%D0%BE",
+    photoGallery: [
+      "https://picsum.photos/seed/p2-1/1200/800",
+      "https://picsum.photos/seed/p2-2/1200/800",
+      "https://picsum.photos/seed/p2-3/1200/800"
+    ],
     source: "https://example.com/complaint/p2",
     coords: [55.7608, 37.606]
   },
@@ -78,8 +84,10 @@ export const points = [
     status: "Завершено",
     description:
       "Неисправность устранена.\nПроведены проверки и включение нагрузки в штатный режим.",
-    photoSrc:
-      "https://placehold.co/1200x800/png?text=%D0%A4%D0%BE%D1%82%D0%BE%3A+%D0%AD%D0%BB%D0%B5%D0%BA%D1%82%D1%80%D0%BE%D1%81%D0%BD%D0%B0%D0%B1%D0%B6%D0%B5%D0%BD%D0%B8%D0%B5",
+    photoGallery: [
+      "https://picsum.photos/seed/p3-1/1200/800",
+      "https://picsum.photos/seed/p3-2/1200/800"
+    ],
     source: "https://example.com/complaint/p3",
     coords: [55.739, 37.617]
   },
@@ -106,8 +114,11 @@ export const points = [
     status: "Новый",
     description:
       "Требуется вывоз мусора и первичная уборка.\nПосле согласования подготовим график выездов.",
-    photoSrc:
-      "https://placehold.co/1200x800/png?text=%D0%A4%D0%BE%D1%82%D0%BE%3A+%D0%91%D0%BB%D0%B0%D0%B3%D0%BE%D1%83%D1%81%D1%82%D1%80%D0%BE%D0%B9%D1%81%D1%82%D0%B2%D0%BE",
+    photoGallery: [
+      "https://picsum.photos/seed/p4-1/1200/800",
+      "https://picsum.photos/seed/p4-2/1200/800",
+      "https://picsum.photos/seed/p4-3/1200/800"
+    ],
     source: "https://example.com/complaint/p4",
     coords: [55.7632, 37.5647]
   },
@@ -134,8 +145,10 @@ export const points = [
     status: "Приостановлено",
     description:
       "Работы приостановлены до получения дополнительных согласований.\nПланируем возобновление после решения вопроса.",
-    photoSrc:
-      "https://placehold.co/1200x800/png?text=%D0%A4%D0%BE%D1%82%D0%BE%3A+%D0%9F%D1%80%D0%B8%D0%BE%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%BB%D0%B5%D0%BD%D0%BE",
+    photoGallery: [
+      "https://picsum.photos/seed/p5-1/1200/800",
+      "https://picsum.photos/seed/p5-2/1200/800"
+    ],
     source: "https://example.com/complaint/p5",
     coords: [55.7492, 37.655]
   },
@@ -162,8 +175,10 @@ export const points = [
     status: "Отменено",
     description:
       "Заявка отклонена.\nПричина: несоответствие требованиям по регламенту.",
-    photoSrc:
-      "https://placehold.co/1200x800/png?text=%D0%A4%D0%BE%D1%82%D0%BE%3A+%D0%9E%D1%82%D0%BC%D0%B5%D0%BD%D0%B5%D0%BD%D0%BE",
+    photoGallery: [
+      "https://picsum.photos/seed/p6-1/1200/800",
+      "https://picsum.photos/seed/p6-2/1200/800"
+    ],
     source: "https://example.com/complaint/p6",
     coords: [55.706, 37.61]
   }
