@@ -144,7 +144,7 @@ export function createModal() {
   let currentItem = null;
 
   const buildStructured = (item) => {
-    const now = new Date();
+    const now = new Date(item.createdAt);
     const city = getCity(item.address);
     const coords = formatCoords(item.coords);
     const complaintNo = `${now.getFullYear()}-${pad2(now.getMonth() + 1)}-${pad2(now.getDate())}-${(parseInt(
@@ -157,7 +157,7 @@ export function createModal() {
     )}:${pad2(now.getMinutes())}`;
 
     // Подстановка из данных (прототипные значения, но зависят от переданного item)
-    const category = item.theme || "—";
+    const category = item.requestType || "—";
     const description = item.description || "";
     const photoName = item.photoSrc
       ? String(item.photoSrc)
@@ -183,7 +183,7 @@ export function createModal() {
 
     const posCard = document.createElement("div");
     posCard.className = "rounded-xl border border-slate-200 bg-white/60 p-3";
-    posCard.innerHTML = `<div class="text-xs text-slate-500">ОБРАЩЕНИЕ ИЗ ПОС</div><div class="text-sm font-semibold text-slate-900 mt-1">№${escapeText(
+    posCard.innerHTML = `<div class="text-xs text-slate-500">ОБРАЩЕНИЕ</div><div class="text-sm font-semibold text-slate-900 mt-1">№${escapeText(
       complaintNo
     )}</div>`;
 
