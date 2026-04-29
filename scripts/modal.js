@@ -245,18 +245,18 @@ export function createModal() {
 
     const sysTitle = document.createElement("div");
     sysTitle.className = "text-sm font-semibold text-slate-900";
-    sysTitle.textContent = "🤖 СИСТЕМА УЖЕ ПРОВЕРИЛА КОНТЕКСТ (авто-загрузка)";
+    sysTitle.textContent = "🤖 КОНТЕКСТ (авто-загрузка)";
     systemBox.appendChild(sysTitle);
 
     const jurisdictionBox = document.createElement("div");
     jurisdictionBox.className = "rounded-xl border border-slate-200 bg-white/60 p-3";
-    createText(jurisdictionBox, "text-xs font-semibold text-slate-900", "📍 ЮРИСДИКЦИЯ И АДРЕС");
+    createText(jurisdictionBox, "text-xs font-semibold text-slate-900", "📍 ЮРИСДИКЦИЯ");
     const jurGrid = document.createElement("div");
     jurGrid.className = "mt-3 space-y-3";
 
     const addressOk = document.createElement("div");
     addressOk.className = "space-y-2";
-    addressOk.innerHTML = `<div class="text-xs font-semibold text-emerald-800">✅ Адрес валидирован</div>`;
+    addressOk.innerHTML = `<div class="text-xs font-semibold text-emerald-800">✅ Адрес валидирован ГАР</div>`;
     const addrItems = document.createElement("div");
     addrItems.className = "ml-2";
     createBulletList(addrItems, [
