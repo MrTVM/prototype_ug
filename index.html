@@ -1,0 +1,654 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Прототип интерфейса</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+      @keyframes slideUp {
+        from {
+          transform: translateY(110%);
+        }
+        to {
+          transform: translateY(0);
+        }
+      }
+
+      /* Полноэкранная модалка: анимация снизу вверх */
+      .modal-panel {
+        transform: translateY(110%);
+      }
+      .modal-open .modal-panel {
+        animation: slideUp 320ms ease-out both;
+      }
+    </style>
+  </head>
+
+  <body class="bg-slate-50 text-slate-900 font-sans">
+    <header class="h-16 fixed top-0 left-0 right-0 z-50 border-b border-slate-200/70 bg-white/80 backdrop-blur">
+      <div class="h-full max-w-6xl mx-auto px-4 grid grid-cols-[1fr_auto_1fr] items-center">
+        <div class="flex items-center gap-3">
+          <div class="h-9 w-9 rounded-xl bg-slate-900 text-white flex items-center justify-center shadow-sm">
+            <span class="text-sm font-semibold">UG</span>
+          </div>
+          <div class="leading-tight">
+            <div class="text-sm font-semibold tracking-tight">Prototype</div>
+            <div class="text-xs text-slate-500 -mt-0.5">Диспетчер обращений</div>
+          </div>
+        </div>
+
+        <!-- Центр: переключатель видов -->
+        <nav class="justify-self-center flex items-center gap-1 bg-slate-100/80 p-1 rounded-xl border border-slate-200">
+          <button
+            type="button"
+            data-view-btn="map"
+            class="view-btn px-4 py-2 rounded-xl text-sm font-medium transition bg-transparent text-slate-700 hover:bg-white hover:shadow-sm"
+          >
+            Карта
+          </button>
+          <button
+            type="button"
+            data-view-btn="table"
+            class="view-btn px-4 py-2 rounded-xl text-sm font-medium transition bg-transparent text-slate-700 hover:bg-white hover:shadow-sm"
+          >
+            Таблица
+          </button>
+          <button
+            type="button"
+            data-view-btn="cards"
+            class="view-btn px-4 py-2 rounded-xl text-sm font-medium transition bg-transparent text-slate-700 hover:bg-white hover:shadow-sm"
+          >
+            Карточки
+          </button>
+        </nav>
+
+        <!-- Заглушка под третий столбец -->
+        <div class="justify-self-end"></div>
+      </div>
+    </header>
+
+    <main class="pt-16">
+      <!-- Карта -->
+      <section id="view-map" class="hidden h-screen -mt-16">
+        <div class="h-full relative">
+          <div id="yandex-map" class="absolute inset-0 rounded-xl overflow-hidden bg-slate-100 border border-slate-200"></div>
+          <div
+            id="map-fallback"
+            class="absolute inset-0 rounded-xl bg-white/90 border border-slate-200 flex flex-col items-center justify-center text-center p-6"
+          >
+            <div class="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center mb-4 text-slate-700">?</div>
+            <div class="font-semibold">Карта недоступна</div>
+            <div class="text-sm text-slate-600 mt-1">
+              Проверьте API key Яндекс Карт и интернет соединение.
+            </div>
+          </div>
+
+          <!-- Небольшая подсказка -->
+          <div class="absolute bottom-4 left-4 right-4 flex items-center justify-between gap-3 pointer-events-none">
+            <div class="pointer-events-none hidden sm:block bg-white/80 border border-slate-200 px-4 py-2 rounded-xl shadow-sm">
+              Клик по метке открывает карточку.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Таблица -->
+      <section id="view-table" class="hidden max-w-6xl mx-auto px-4">
+        <div class="rounded-xl bg-white border border-slate-200 shadow-sm overflow-hidden">
+          <div class="p-5 flex items-end justify-between gap-4 border-b border-slate-200/70">
+            <div>
+              <h1 class="text-lg font-semibold tracking-tight">Список обращений</h1>
+              <p class="text-sm text-slate-600 mt-0.5">Наведение подсвечивает строку, клик открывает детали.</p>
+            </div>
+            <div class="text-xs text-slate-500">
+              Всего: <span id="table-count" class="font-semibold text-slate-700">—</span>
+            </div>
+          </div>
+
+          <div class="overflow-auto" style="max-height: calc(100vh - 14rem)">
+            <table class="min-w-full border-collapse">
+              <thead class="bg-slate-50">
+                <tr class="text-xs text-slate-500 uppercase tracking-wider">
+                  <th class="text-left font-semibold py-3 px-5">Тема</th>
+                  <th class="text-left font-semibold py-3 px-5">Адрес</th>
+                  <th class="text-left font-semibold py-3 px-5">Статус</th>
+                </tr>
+              </thead>
+              <tbody id="table-body" class="divide-y divide-slate-100"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Карточки -->
+      <section id="view-cards" class="hidden max-w-6xl mx-auto px-4 pb-8">
+        <div class="rounded-xl bg-white border border-slate-200 shadow-sm p-5">
+          <div class="flex items-end justify-between gap-4 mb-5">
+            <div>
+              <h1 class="text-lg font-semibold tracking-tight">Карточки</h1>
+              <p class="text-sm text-slate-600 mt-0.5">Grid-раскладка с быстрым доступом к деталям.</p>
+            </div>
+            <div class="text-xs text-slate-500">
+              Всего: <span id="cards-count" class="font-semibold text-slate-700">—</span>
+            </div>
+          </div>
+
+          <div id="cards-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Полноэкранная модалка -->
+    <div
+      id="modal"
+      class="fixed inset-0 z-60 hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-title"
+    >
+      <div id="modal-overlay" class="absolute inset-0 bg-slate-950/55"></div>
+
+      <div class="modal-panel relative w-full h-full bg-white">
+        <div class="p-6 h-full flex flex-col">
+          <div class="flex items-center justify-between gap-4">
+            <div class="text-sm text-slate-500">Детали обращения</div>
+            <button
+              type="button"
+              id="modal-close"
+              class="rounded-xl border border-slate-200 bg-white hover:bg-slate-50 px-4 py-2 text-sm font-medium shadow-sm"
+            >
+              Закрыть
+            </button>
+          </div>
+
+          <div class="mt-6 flex-1 grid grid-cols-1 md:grid-cols-[1.15fr_0.85fr] gap-6 items-start overflow-auto pr-1">
+            <div class="rounded-xl bg-slate-100 border border-slate-200 overflow-hidden">
+              <img
+                id="modal-photo"
+                alt="Фото"
+                class="w-full h-full object-cover min-h-[220px] md:min-h-[340px]"
+                src=""
+              />
+            </div>
+
+            <div class="space-y-5">
+              <div>
+                <h2 id="modal-title" class="text-2xl font-semibold tracking-tight"></h2>
+                <div id="modal-address" class="text-sm text-slate-600 mt-2"></div>
+              </div>
+
+              <div class="flex flex-wrap gap-2 items-center">
+                <span id="modal-status-badge" class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-semibold"></span>
+                <span class="text-xs text-slate-500">Источник:</span>
+                <a id="modal-source" href="#" target="_blank" rel="noreferrer" class="text-sm font-medium text-slate-900 hover:underline"></a>
+              </div>
+
+              <div class="text-sm text-slate-700 leading-relaxed">
+                <p id="modal-description" class="whitespace-pre-wrap"></p>
+              </div>
+
+              <div class="pt-2">
+                <a
+                  id="modal-action"
+                  href="#"
+                  target="_blank"
+                  rel="noreferrer"
+                  class="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 text-white px-5 py-3 text-sm font-semibold shadow-sm hover:bg-slate-800 transition"
+                >
+                  Открыть ссылку
+                </a>
+              </div>
+
+              <div class="text-xs text-slate-500">
+                Подсказка: можно закрыть модалку клавишей <span class="font-semibold text-slate-700">Esc</span>.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module">
+      /**
+       * Данные и UI-логика сделаны независимыми:
+       * - Table/Cards рисуются сразу из массива points.
+       * - Инициализация Яндекс-карты вынесена отдельно и не влияет на остальные view.
+       */
+
+      const points = [
+        {
+          id: "p1",
+          theme: "Ремонт коммуникаций",
+          address: "Москва, ул. Примерная, 1",
+          status: "В работе",
+          description:
+            "Планируется замена участка трубопровода.\nСроки уточняются после выезда специалиста.",
+          photoSrc: "https://placehold.co/1200x800/png?text=%D0%A4%D0%BE%D1%82%D0%BE%3A+%D0%A0%D0%B5%D0%BC%D0%BE%D0%BD%D1%82+%D0%BA%D0%BE%D0%BC%D0%BC%D1%83%D0%BD%D0%B8%D0%BA%D0%B0%D1%86%D0%B8%D0%B9",
+          source: "https://example.com/complaint/p1",
+          coords: [55.751244, 37.618423]
+        },
+        {
+          id: "p2",
+          theme: "Восстановление дорожного полотна",
+          address: "Москва, пр-т Тестовый, 17",
+          status: "На рассмотрении",
+          description:
+            "Заявка направлена в профильный отдел.\nОжидаем подтверждение графика работ.",
+          photoSrc: "https://placehold.co/1200x800/png?text=%D0%A4%D0%BE%D1%82%D0%BE%3A+%D0%94%D0%BE%D1%80%D0%BE%D0%B6%D0%BD%D0%BE%D0%B5+%D0%BF%D0%BE%D0%BB%D0%BE%D1%82%D0%BD%D0%BE",
+          source: "https://example.com/complaint/p2",
+          coords: [55.7608, 37.606]
+        },
+        {
+          id: "p3",
+          theme: "Устранение аварии электроснабжения",
+          address: "Москва, ул. Сервисная, 9",
+          status: "Завершено",
+          description:
+            "Неисправность устранена.\nПроведены проверки и включение нагрузки в штатный режим.",
+          photoSrc: "https://placehold.co/1200x800/png?text=%D0%A4%D0%BE%D1%82%D0%BE%3A+%D0%AD%D0%BB%D0%B5%D0%BA%D1%82%D1%80%D0%BE%D1%81%D0%BD%D0%B0%D0%B1%D0%B6%D0%B5%D0%BD%D0%B8%D0%B5",
+          source: "https://example.com/complaint/p3",
+          coords: [55.739, 37.617]
+        },
+        {
+          id: "p4",
+          theme: "Очистка и благоустройство территории",
+          address: "Москва, наб. Прототипная, 3",
+          status: "Новый",
+          description:
+            "Требуется вывоз мусора и первичная уборка.\nПосле согласования подготовим график выездов.",
+          photoSrc: "https://placehold.co/1200x800/png?text=%D0%A4%D0%BE%D1%82%D0%BE%3A+%D0%91%D0%BB%D0%B0%D0%B3%D0%BE%D1%83%D1%81%D1%82%D1%80%D0%BE%D0%B9%D1%81%D1%82%D0%B2%D0%BE",
+          source: "https://example.com/complaint/p4",
+          coords: [55.7632, 37.5647]
+        },
+        {
+          id: "p5",
+          theme: "Приостановка работ по согласованию",
+          address: "Москва, ул. Адаптерная, 22",
+          status: "Приостановлено",
+          description:
+            "Работы приостановлены до получения дополнительных согласований.\nПланируем возобновление после решения вопроса.",
+          photoSrc: "https://placehold.co/1200x800/png?text=%D0%A4%D0%BE%D1%82%D0%BE%3A+%D0%9F%D1%80%D0%B8%D0%BE%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%BB%D0%B5%D0%BD%D0%BE",
+          source: "https://example.com/complaint/p5",
+          coords: [55.7492, 37.655]
+        },
+        {
+          id: "p6",
+          theme: "Отмена заявки по причине несоответствия",
+          address: "Москва, ул. Несовпадений, 5",
+          status: "Отменено",
+          description:
+            "Заявка отклонена.\nПричина: несоответствие требованиям по регламенту.",
+          photoSrc: "https://placehold.co/1200x800/png?text=%D0%A4%D0%BE%D1%82%D0%BE%3A+%D0%9E%D1%82%D0%BC%D0%B5%D0%BD%D0%B5%D0%BD%D0%BE",
+          source: "https://example.com/complaint/p6",
+          coords: [55.706, 37.61]
+        }
+      ];
+
+      const statusToBadge = (status) => {
+        const map = {
+          "Новый": { bg: "bg-emerald-50", text: "text-emerald-800", border: "border-emerald-200" },
+          "В работе": { bg: "bg-blue-50", text: "text-blue-800", border: "border-blue-200" },
+          "На рассмотрении": { bg: "bg-amber-50", text: "text-amber-900", border: "border-amber-200" },
+          "Завершено": { bg: "bg-slate-50", text: "text-slate-800", border: "border-slate-200" },
+          "Приостановлено": { bg: "bg-orange-50", text: "text-orange-900", border: "border-orange-200" },
+          "Отменено": { bg: "bg-rose-50", text: "text-rose-800", border: "border-rose-200" }
+        };
+        return (
+          map[status] || { bg: "bg-slate-50", text: "text-slate-700", border: "border-slate-200" }
+        );
+      };
+
+      const el = (id) => document.getElementById(id);
+
+      const ViewSwitch = (() => {
+        const root = document.body;
+        const buttons = Array.from(document.querySelectorAll("[data-view-btn]"));
+        const views = {
+          map: el("view-map"),
+          table: el("view-table"),
+          cards: el("view-cards")
+        };
+
+        const setActive = (view) => {
+          Object.entries(views).forEach(([key, node]) => {
+            node.classList.toggle("hidden", key !== view);
+          });
+
+          buttons.forEach((btn) => {
+            const isActive = btn.getAttribute("data-view-btn") === view;
+            btn.classList.toggle("bg-slate-900", isActive);
+            btn.classList.toggle("text-white", isActive);
+            btn.classList.toggle("shadow-sm", isActive);
+            btn.classList.toggle("hover:bg-slate-800", isActive);
+            btn.classList.toggle("bg-transparent", !isActive);
+            btn.classList.toggle("text-slate-700", !isActive);
+          });
+        };
+
+        buttons.forEach((btn) => {
+          btn.addEventListener("click", () => setActive(btn.dataset.viewBtn));
+        });
+
+        return { setActive };
+      })();
+
+      const Modal = (() => {
+        const modal = el("modal");
+        const closeBtn = el("modal-close");
+        const overlay = el("modal-overlay");
+
+        const title = el("modal-title");
+        const address = el("modal-address");
+        const statusBadge = el("modal-status-badge");
+        const description = el("modal-description");
+        const photo = el("modal-photo");
+        const source = el("modal-source");
+        const action = el("modal-action");
+
+        let isOpen = false;
+
+        const setStatusBadge = (status) => {
+          const b = statusToBadge(status);
+          statusBadge.className = `inline-flex items-center px-3 py-1.5 rounded-full text-sm font-semibold ${b.bg} ${b.text} border ${b.border}`;
+          statusBadge.textContent = status;
+        };
+
+        const open = (item) => {
+          title.textContent = item.theme;
+          address.textContent = item.address;
+          setStatusBadge(item.status);
+          description.textContent = item.description;
+          photo.src = item.photoSrc;
+
+          source.textContent = item.source.replace(/^https?:\/\//, "");
+          source.href = item.source;
+
+          action.href = item.source;
+          // Делаем действие универсальным: открываем источник.
+
+          isOpen = true;
+          modal.classList.remove("hidden");
+
+          // Чтобы анимация гарантированно проигрывалась при каждом открытии,
+          // сбрасываем класс и принудительно триггерим reflow.
+          modal.classList.remove("modal-open");
+          void modal.offsetWidth;
+          requestAnimationFrame(() => modal.classList.add("modal-open"));
+
+          document.body.style.overflow = "hidden";
+        };
+
+        const close = () => {
+          if (!isOpen) return;
+          isOpen = false;
+          modal.classList.remove("modal-open");
+          modal.classList.add("hidden");
+          document.body.style.overflow = "";
+        };
+
+        closeBtn.addEventListener("click", close);
+        overlay.addEventListener("click", close);
+
+        document.addEventListener("keydown", (e) => {
+          if (!isOpen) return;
+          if (e.key === "Escape") close();
+        });
+
+        return { open, close };
+      })();
+
+      const TableView = (() => {
+        const render = (items, onRowClick) => {
+          const body = el("table-body");
+          const count = el("table-count");
+          if (!body || !count) return;
+
+          count.textContent = String(items.length);
+          body.innerHTML = "";
+
+          items.forEach((item) => {
+            const b = statusToBadge(item.status);
+            const tr = document.createElement("tr");
+            tr.className =
+              "cursor-pointer transition bg-white hover:bg-slate-50";
+
+            tr.innerHTML = `
+              <td class="py-4 px-5">
+                <div class="font-semibold text-slate-900">${escapeHtml(item.theme)}</div>
+              </td>
+              <td class="py-4 px-5">
+                <div class="text-sm text-slate-600">${escapeHtml(item.address)}</div>
+              </td>
+              <td class="py-4 px-5">
+                <span class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-semibold ${b.bg} ${b.text} border ${b.border}">
+                  ${escapeHtml(item.status)}
+                </span>
+              </td>
+            `;
+
+            tr.addEventListener("click", () => onRowClick(item));
+            body.appendChild(tr);
+          });
+        };
+
+        return { render };
+      })();
+
+      const CardsView = (() => {
+        const render = (items, onCardClick) => {
+          const grid = el("cards-grid");
+          const count = el("cards-count");
+          if (!grid || !count) return;
+
+          count.textContent = String(items.length);
+          grid.innerHTML = "";
+
+          items.forEach((item) => {
+            const card = document.createElement("button");
+            card.type = "button";
+            card.className =
+              "text-left rounded-xl border border-slate-200 bg-white hover:bg-slate-50 transition shadow-sm px-4 py-4 cursor-pointer flex flex-col gap-3";
+
+            const badge = statusToBadge(item.status);
+            card.innerHTML = `
+              <div class="rounded-xl bg-gradient-to-br from-slate-100 to-slate-200 border border-slate-200 overflow-hidden h-44 flex items-center justify-center relative">
+                <div class="absolute inset-0 opacity-60"
+                  style="background-image: radial-gradient(circle at 20% 20%, rgba(15,23,42,0.10), transparent 45%),
+                                      radial-gradient(circle at 80% 40%, rgba(15,23,42,0.08), transparent 50%);">
+                </div>
+                <div class="relative z-10 text-sm font-semibold text-slate-700">Заглушка фото</div>
+              </div>
+
+              <div class="flex items-center justify-between gap-3">
+                <div class="text-sm font-semibold text-slate-900 line-clamp-1">${escapeHtml(item.theme)}</div>
+              </div>
+
+              <div class="text-sm text-slate-600 leading-relaxed line-clamp-3">${escapeHtml(item.description)}</div>
+
+              <div class="mt-auto">
+                <span class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-semibold ${badge.bg} ${badge.text} border ${badge.border}">
+                  ${escapeHtml(item.status)}
+                </span>
+              </div>
+            `;
+
+            card.addEventListener("click", () => onCardClick(item));
+            grid.appendChild(card);
+          });
+        };
+
+        return { render };
+      })();
+
+      function escapeHtml(str) {
+        return String(str)
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#039;");
+      }
+
+      const MapView = (() => {
+        const mapEl = el("yandex-map");
+        const fallback = el("map-fallback");
+        let map = null;
+        let placemarks = [];
+        let initPromise = null;
+
+        const YANDEX_MAPS_API_KEY = "6e36b74d-2152-4260-9127-6492ff601208";
+        const MAP_CENTER_FALLBACK = points[0]?.coords || [55.751244, 37.618423];
+
+        const markerSvgDataUri = (color) => {
+          const svg = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40">
+              <defs>
+                <filter id="s" x="-50%" y="-50%" width="200%" height="200%">
+                  <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="rgba(15,23,42,0.25)"/>
+                </filter>
+              </defs>
+              <path filter="url(#s)" d="M20 2C12 2 6 8 6 16c0 12 14 22 14 22s14-10 14-22c0-8-6-14-14-14z" fill="${color}"/>
+              <circle cx="20" cy="16" r="6" fill="white" opacity="0.95"/>
+            </svg>
+          `.trim();
+          return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+        };
+
+        const loadYmaps = () => {
+          if (window.ymaps) return Promise.resolve();
+          if (!YANDEX_MAPS_API_KEY || YANDEX_MAPS_API_KEY === "YOUR_API_KEY") {
+            return Promise.reject(new Error("Yandex Maps API key not set"));
+          }
+
+          return new Promise((resolve, reject) => {
+            const scriptId = "yandex-maps-script";
+            const existing = document.getElementById(scriptId);
+            if (existing) {
+              existing.addEventListener("load", resolve, { once: true });
+              existing.addEventListener("error", () => reject(new Error("Yandex maps script failed")), {
+                once: true
+              });
+              return;
+            }
+
+            const script = document.createElement("script");
+            script.id = scriptId;
+            script.src = `https://api-maps.yandex.ru/2.1/?lang=ru_RU&apikey=${encodeURIComponent(
+              YANDEX_MAPS_API_KEY
+            )}&load=package.full`;
+            script.async = true;
+            script.defer = true;
+            script.onload = resolve;
+            script.onerror = () => reject(new Error("Yandex maps script failed"));
+            document.head.appendChild(script);
+          });
+        };
+
+        const initMap = async () => {
+          fallback.classList.remove("hidden");
+          try {
+            await loadYmaps();
+            if (!window.ymaps) throw new Error("ymaps is not available after load");
+
+            await new Promise((resolve) => window.ymaps.ready(resolve));
+
+            const coords = points.map((p) => p.coords).filter(Boolean);
+            const center = coords[0] || MAP_CENTER_FALLBACK;
+
+            map = new ymaps.Map(
+              mapEl,
+              {
+                center,
+                zoom: 11
+              },
+              {
+                searchControlProvider: "yandex#search"
+              }
+            );
+
+            // Убираем fallback после успешной отрисовки
+            fallback.classList.add("hidden");
+
+            // Добавляем метки
+            placemarks = points.map((p) => {
+              const badge = statusToBadge(p.status);
+              // Превращаем цвета Tailwind в "примерные" значения для SVG.
+              // Это прототип: поэтому используем статичную палитру по статусу.
+              const statusColor = statusToColor(p.status);
+              const placemark = new ymaps.Placemark(
+                p.coords,
+                {
+                  balloonContent: ""
+                },
+                {
+                  iconLayout: "default#image",
+                  iconImageHref: markerSvgDataUri(statusColor),
+                  iconImageSize: [40, 40],
+                  iconImageOffset: [-20, -40]
+                }
+              );
+
+              placemark.events.add("click", () => Modal.open(p));
+              map.geoObjects.add(placemark);
+              return placemark;
+            });
+
+            // По желанию: подстроить приближение по точкам
+            if (coords.length > 1) {
+              const bounds = ymaps.util.bounds.fromPoints(coords);
+              map.setBounds(bounds, { checkZoomRange: true });
+            }
+          } catch (err) {
+            // Если не удалось, оставляем fallback и не ломаем другие view.
+            console.warn("Yandex map init failed:", err);
+          }
+        };
+
+        const statusToColor = (status) => {
+          const map = {
+            "Новый": "#10b981",
+            "В работе": "#2563eb",
+            "На рассмотрении": "#f59e0b",
+            "Завершено": "#334155",
+            "Приостановлено": "#f97316",
+            "Отменено": "#e11d48"
+          };
+          return map[status] || "#64748b";
+        };
+
+        return {
+          init: async () => {
+            if (map) return;
+            if (initPromise) return initPromise;
+            initPromise = initMap().finally(() => {
+              initPromise = null;
+            });
+            return initPromise;
+          }
+        };
+      })();
+
+      // --- Boot ---
+      const onOpenDetails = (item) => {
+        Modal.open(item);
+      };
+
+      TableView.render(points, onOpenDetails);
+      CardsView.render(points, onOpenDetails);
+
+      // Сначала показываем "Карточки": так быстрее проверить отрисовку без ожидания карты.
+      ViewSwitch.setActive("cards");
+
+      // Инициализируем карту только при выборе режима "Карта".
+      document.querySelectorAll("[data-view-btn]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          if (btn.getAttribute("data-view-btn") === "map") MapView.init();
+        });
+      });
+    </script>
+  </body>
+</html>
+
