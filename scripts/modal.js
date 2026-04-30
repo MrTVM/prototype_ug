@@ -1062,6 +1062,7 @@ export function createModal() {
 
         const bulkSelection = new Set();
         const bulkPoints = [item, ...relatedPoints.filter((p) => p?.id !== item?.id)];
+        const hasOnlyCurrentRelated = bulkPoints.length === 1;
         const relatedActionsBody = document.createElement("div");
         relatedActionsBody.className = "mt-2 space-y-2";
         if (bulkPoints.length === 0) {
@@ -1179,7 +1180,7 @@ export function createModal() {
               ? "rounded-xl bg-amber-100 text-amber-900 px-4 py-2 text-sm font-semibold border border-amber-200 shadow-sm hover:bg-amber-200 transition"
               : "rounded-xl bg-blue-100 text-blue-900 px-4 py-2 text-sm font-semibold border border-blue-200 shadow-sm hover:bg-blue-200 transition",
           onClick: () => {
-            if (bulkSelection.size === 0) return;
+            if (bulkSelection.size === 0 || hasOnlyCurrentRelated) return;
             close();
           }
         });
@@ -1191,9 +1192,10 @@ export function createModal() {
               ? "Запланировать по всем"
               : "Эскалировать по всем";
           bulkBtn.textContent = selectedCount > 0 ? `${base} (${selectedCount})` : base;
-          bulkBtn.disabled = selectedCount === 0;
-          bulkBtn.classList.toggle("opacity-50", selectedCount === 0);
-          bulkBtn.classList.toggle("cursor-not-allowed", selectedCount === 0);
+          const shouldDisable = selectedCount === 0 || hasOnlyCurrentRelated;
+          bulkBtn.disabled = shouldDisable;
+          bulkBtn.classList.toggle("opacity-50", shouldDisable);
+          bulkBtn.classList.toggle("cursor-not-allowed", shouldDisable);
         };
         updateBulkActionLabel();
 
