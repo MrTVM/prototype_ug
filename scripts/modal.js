@@ -146,6 +146,7 @@ export function createModal() {
   let startAuditProgressRef = null;
   let stopAuditProgressRef = null;
   let currentPhotos = [];
+  let currentAfterPhotos = [];
   let currentPhotoMetas = [];
   let currentPhotoIndex = 0;
   const pointsById = indexById(points);
@@ -211,6 +212,11 @@ export function createModal() {
       : item.photoSrc
         ? [{ source: item.photoSrc, meta: {} }]
         : [];
+    const sourceAfterGallery = Array.isArray(item.photoAfterGallery)
+      ? item.photoAfterGallery
+      : item.photoAfterSrc
+        ? [{ source: item.photoAfterSrc, meta: {} }]
+        : [];
 
     let photoEntries = sourceGallery
       .map((photo, idx) => {
@@ -232,9 +238,79 @@ export function createModal() {
       ];
     }
     currentPhotos = photoEntries.map((photo) => photo.source);
+    currentAfterPhotos = sourceAfterGallery
+      .map((photo, idx) => {
+        const normalized = typeof photo === "string" ? { source: photo, meta: {} } : photo;
+        return normalizePhotoSource(normalized?.source, `${seedBase}-after`, idx);
+      })
+      .filter(Boolean);
     currentPhotoMetas = photoEntries.map((photo) => photo.meta || {});
 
     currentPhotoIndex = 0;
+    const photoHost = photoMain?.parentElement;
+
+    const ensureCompareCurtain = () => {
+      if (!photoHost) return null;
+      let compareRoot = el("modal-photo-compare");
+      if (!compareRoot) {
+        compareRoot = document.createElement("div");
+        compareRoot.id = "modal-photo-compare";
+        compareRoot.className = "hidden absolute inset-0 z-20 pointer-events-none";
+        compareRoot.innerHTML = `
+          <div class="absolute inset-0 pointer-events-none">
+            <img id="modal-photo-after-img" alt="Фото после" class="w-full h-full object-cover" src="" />
+          </div>
+          <div class="absolute left-3 bottom-3 inline-flex items-center rounded-full border border-slate-200 bg-white/90 px-2 py-0.5 text-[11px] font-semibold text-slate-700">До</div>
+          <div class="absolute right-3 bottom-3 inline-flex items-center rounded-full border border-emerald-200 bg-emerald-50/95 px-2 py-0.5 text-[11px] font-semibold text-emerald-700">После</div>
+          <div id="modal-photo-divider" class="absolute inset-y-0 w-0.5 bg-white shadow-[0_0_0_1px_rgba(15,23,42,0.2)]"></div>
+          <input
+            id="modal-photo-compare-range"
+            type="range"
+            min="0"
+            max="100"
+            value="50"
+            class="absolute left-1/2 -translate-x-1/2 bottom-3 w-[70%] accent-slate-700 pointer-events-auto"
+            aria-label="Сравнение фото до и после"
+          />
+        `;
+        photoHost.appendChild(compareRoot);
+      }
+      return {
+        compareRoot,
+        afterImg: el("modal-photo-after-img"),
+        divider: el("modal-photo-divider"),
+        range: el("modal-photo-compare-range")
+      };
+    };
+
+    const updateCompareCurtain = () => {
+      const nodes = ensureCompareCurtain();
+      if (!nodes?.compareRoot || !nodes.afterImg || !nodes.divider || !nodes.range) return;
+      const hasAfterPhotos =
+        item.status === POINT_STATUSES.UNDER_REVIEW && currentAfterPhotos.length > 0;
+      if (!hasAfterPhotos) {
+        nodes.compareRoot.classList.add("hidden");
+        return;
+      }
+      const afterSrc = currentAfterPhotos[currentPhotoIndex % currentAfterPhotos.length];
+      nodes.afterImg.src = afterSrc;
+      nodes.afterImg.onerror = () => {
+        nodes.afterImg.onerror = null;
+        nodes.afterImg.src = createInlineFallbackImage(`${seedBase}-after`, currentPhotoIndex);
+      };
+      nodes.compareRoot.classList.remove("hidden");
+
+      const applySlider = () => {
+        const value = Number(nodes.range.value || 50);
+        nodes.afterImg.style.clipPath = `inset(0 ${100 - value}% 0 0)`;
+        nodes.divider.style.left = `${value}%`;
+      };
+      if (!nodes.range.dataset.bound) {
+        nodes.range.addEventListener("input", applySlider);
+        nodes.range.dataset.bound = "true";
+      }
+      applySlider();
+    };
 
     const updatePhotoBadge = () => {
       const badgeNodes = ensurePhotoBadge();
@@ -286,6 +362,7 @@ export function createModal() {
       photoPrev.classList.toggle("hidden", currentPhotos.length <= 1);
       photoNext.classList.toggle("hidden", currentPhotos.length <= 1);
       updatePhotoBadge();
+      updateCompareCurtain();
     };
 
     const renderThumbs = () => {

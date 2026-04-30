@@ -241,6 +241,16 @@ const pointEntities = {
         }
       }
     ],
+    photoAfterGallery: [
+      {
+        source: "https://picsum.photos/seed/p2-after-1/1200/800",
+        meta: {
+          createdAt: "2026-04-30 11:35",
+          updatedAt: "2026-04-30 11:40",
+          coordinates: "55.7608, 37.606"
+        }
+      }
+    ],
     source: POINT_SOURCES.SERVICE_112,
     relatedPoints: ["p7"],
     coords: [55.7608, 37.606]
@@ -472,6 +482,16 @@ const pointEntities = {
           createdAt: "2026-04-30 11:00",
           updatedAt: "2026-04-30 11:09",
           coordinates: "55.7599, 37.619"
+        }
+      }
+    ],
+    photoAfterGallery: [
+      {
+        source: "https://picsum.photos/seed/p8-after-1/1200/800",
+        meta: {
+          createdAt: "2026-04-30 12:00",
+          updatedAt: "2026-04-30 12:05",
+          coordinates: "55.7577, 37.6153"
         }
       }
     ],

@@ -1,3 +1,5 @@
+import { POINT_STATUSES } from "./constants.js";
+
 export function createModalActionsBox({
   ui,
   item,
@@ -19,6 +21,7 @@ export function createModalActionsBox({
 }) {
   const wrapper = document.createElement("div");
   wrapper.className = "space-y-3";
+  const isUnderReview = status === POINT_STATUSES.UNDER_REVIEW;
 
   const tabsWrap = document.createElement("div");
   tabsWrap.className = "rounded-xl border border-slate-200 bg-white overflow-hidden";
@@ -269,11 +272,13 @@ export function createModalActionsBox({
   };
 
   const bulkBtn = mkBtn({
-    label: useAssignmentFlow
-      ? "Утвердить по всем"
-      : useProcurementFlow
-        ? "Запланировать по всем"
-        : "Эскалировать по всем",
+    label: isUnderReview
+      ? "Принять по всем"
+      : useAssignmentFlow
+        ? "Утвердить по всем"
+        : useProcurementFlow
+          ? "Запланировать по всем"
+          : "Эскалировать по всем",
     className: useAssignmentFlow
       ? "rounded-xl bg-emerald-100 text-emerald-900 px-4 py-2 text-sm font-semibold border border-emerald-200 shadow-sm hover:bg-emerald-200 transition"
       : useProcurementFlow
@@ -287,11 +292,13 @@ export function createModalActionsBox({
 
   const updateBulkActionLabel = () => {
     const selectedCount = bulkSelection.size;
-    const base = useAssignmentFlow
-      ? "Утвердить по всем"
-      : useProcurementFlow
-        ? "Запланировать по всем"
-        : "Эскалировать по всем";
+    const base = isUnderReview
+      ? "Принять по всем"
+      : useAssignmentFlow
+        ? "Утвердить по всем"
+        : useProcurementFlow
+          ? "Запланировать по всем"
+          : "Эскалировать по всем";
     bulkBtn.textContent = selectedCount > 0 ? `${base} (${selectedCount})` : base;
     const shouldDisable = selectedCount === 0 || hasOnlyCurrentRelated;
     bulkBtn.disabled = shouldDisable;
@@ -303,10 +310,16 @@ export function createModalActionsBox({
   row.appendChild(
     mkBtn({
       label: useAssignmentFlow
-        ? "Утвердить поручение"
+        ? isUnderReview
+          ? "Принять"
+          : "Утвердить поручение"
         : useProcurementFlow
-          ? "Запланировать"
-          : "Эскалировать",
+          ? isUnderReview
+            ? "Принять"
+            : "Запланировать"
+          : isUnderReview
+            ? "Принять"
+            : "Эскалировать",
       className: useAssignmentFlow
         ? "rounded-xl bg-emerald-900 text-white px-4 py-2 text-sm font-semibold shadow-sm hover:bg-emerald-800 transition"
         : useProcurementFlow
@@ -333,7 +346,7 @@ export function createModalActionsBox({
 
   row.appendChild(
     mkBtn({
-      label: "Отклонить",
+      label: isUnderReview ? "Вернуть на доработку" : "Отклонить",
       className:
         "rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-100 px-4 py-2 text-sm font-medium text-rose-800 shadow-sm transition",
       onClick: () => onClose()
