@@ -1,6 +1,11 @@
 export const points = [
   {
     id: "p1",
+    applicant: {
+      id: "u-1001",
+      fio: "Иванов Иван Иванович",
+      phone: "+7 (901) 111-22-33"
+    },
     requestType: "ЖКХ / Коммунальные сети",
     createdAt: "2026-04-29 09:15",
     plannedCloseAt: "2026-05-04 18:00",
@@ -55,6 +60,11 @@ export const points = [
   },
   {
     id: "p2",
+    applicant: {
+      id: "u-1002",
+      fio: "Петров Пётр Петрович",
+      phone: "+7 (902) 222-33-44"
+    },
     requestType: "Дороги / Ямочный ремонт",
     createdAt: "2026-04-29 10:05",
     plannedCloseAt: "2026-05-05 17:30",
@@ -105,6 +115,11 @@ export const points = [
   },
   {
     id: "p3",
+    applicant: {
+      id: "u-1003",
+      fio: "Сидорова Анна Сергеевна",
+      phone: "+7 (903) 333-44-55"
+    },
     requestType: "Электроснабжение / Авария",
     createdAt: "2026-04-28 21:40",
     plannedCloseAt: "2026-04-29 14:00",
@@ -167,6 +182,11 @@ export const points = [
   },
   {
     id: "p4",
+    applicant: {
+      id: "u-1004",
+      fio: "Кузнецов Дмитрий Олегович",
+      phone: "+7 (904) 444-55-66"
+    },
     requestType: "Благоустройство / Уборка",
     createdAt: "2026-04-29 08:20",
     plannedCloseAt: "2026-05-03 16:00",
@@ -212,6 +232,11 @@ export const points = [
   },
   {
     id: "p5",
+    applicant: {
+      id: "u-1005",
+      fio: "Смирнова Елена Викторовна",
+      phone: "+7 (905) 555-66-77"
+    },
     requestType: "Согласования / Приостановка работ",
     createdAt: "2026-04-27 13:50",
     plannedCloseAt: "2026-05-10 12:00",
@@ -258,6 +283,11 @@ export const points = [
   },
   {
     id: "p6",
+    applicant: {
+      id: "u-1006",
+      fio: "Орлов Николай Андреевич",
+      phone: "+7 (906) 666-77-88"
+    },
     requestType: "Контроль качества / Отмена",
     createdAt: "2026-04-26 11:10",
     plannedCloseAt: "2026-04-26 12:00",

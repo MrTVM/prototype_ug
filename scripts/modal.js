@@ -441,6 +441,14 @@ export function createModal() {
 
     // Подстановка из данных (прототипные значения, но зависят от переданного item)
     const category = item.requestType || "—";
+    const applicant = item.applicant || {};
+    const applicantFioRaw = String(applicant.fio || "").trim();
+    const fioParts = applicantFioRaw.split(/\s+/).filter(Boolean);
+    const applicantFio =
+      fioParts.length >= 3
+        ? `${fioParts[1]} ${fioParts[2]} ${fioParts[0].charAt(0)}.`
+        : applicantFioRaw || "Не указан";
+    const applicantPhoneMasked = "скрыт";
     const description = item.description || "";
     const primaryPhoto =
       Array.isArray(item.photoGallery) && item.photoGallery.length > 0
@@ -471,7 +479,7 @@ export function createModal() {
     headerGrid.className = "grid grid-cols-1 sm:grid-cols-3 gap-2";
     headerGrid.innerHTML = `
       <div>
-        <div class="text-xs text-slate-500">ОБРАЩЕНИЕ</div>
+        <div class="text-xs text-slate-500">СООБЩЕНИЕ</div>
         <div class="text-sm font-semibold text-slate-900 mt-1">№${escapeText(complaintNo)}</div>
       </div>
       <div>
@@ -490,7 +498,7 @@ export function createModal() {
       <div class="flex flex-wrap items-center gap-x-6 gap-y-1 text-sm text-slate-700">
         <span>
           <span class="text-xs text-slate-500">Заявитель:</span>
-          <span class="font-semibold text-slate-900">Иванов И.И. (тел. скрыт)</span>
+          <span class="font-semibold text-slate-900">${escapeText(applicantFio)} (тел. ${escapeText(applicantPhoneMasked)})</span>
         </span>
         <span>
           <span class="text-xs text-slate-500">Категория:</span>
@@ -501,7 +509,7 @@ export function createModal() {
 
     const textInfo = document.createElement("div");
     textInfo.className = "pt-2 border-t border-slate-200/70 space-y-2";
-    textInfo.innerHTML = `<div class="text-sm font-semibold text-slate-900">📝 ТЕКСТ ОБРАЩЕНИЯ</div>`;
+    textInfo.innerHTML = `<div class="text-sm font-semibold text-slate-900">📝 ТЕКСТ СООБЩЕНИЯ</div>`;
     const quote = document.createElement("div");
     quote.className = "text-sm text-slate-900 whitespace-pre-line";
     quote.textContent = `«${description.trim()}»`;
@@ -632,7 +640,7 @@ export function createModal() {
       return `${pad2(t.getHours())}:${pad2(t.getMinutes())}:${pad2(t.getSeconds())}`;
     };
     const auditLines = [
-      `${mkTime(2)} — Поступление обращения из ПОС`,
+      `${mkTime(2)} — Поступление сообщения из ПОС`,
       `${mkTime(3)} — Запрос к ГАР (тестовый контур) → ✓`,
       `${mkTime(4)} — Запрос к Росреестр (мок) → ✓`,
       `${mkTime(5)} — Поиск в реестре контрактов (ЕИС-тест) → ✓`,
