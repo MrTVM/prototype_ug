@@ -20,6 +20,41 @@ function formatCoords(coords) {
   return "—";
 }
 
+function parseCoords(coords) {
+  if (Array.isArray(coords) && coords.length >= 2) {
+    return [Number(coords[0]), Number(coords[1])];
+  }
+  const raw = String(coords || "").trim();
+  if (!raw) return null;
+  const parts = raw.split(",").map((v) => Number(String(v).trim()));
+  if (parts.length < 2 || Number.isNaN(parts[0]) || Number.isNaN(parts[1])) return null;
+  return [parts[0], parts[1]];
+}
+
+function distanceMeters(a, b) {
+  const toRad = (deg) => (deg * Math.PI) / 180;
+  const [lat1, lon1] = a;
+  const [lat2, lon2] = b;
+  const earthRadiusM = 6371000;
+  const dLat = toRad(lat2 - lat1);
+  const dLon = toRad(lon2 - lon1);
+  const x =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  const y = 2 * Math.atan2(Math.sqrt(x), Math.sqrt(1 - x));
+  return earthRadiusM * y;
+}
+
+function extractDatePart(value) {
+  const raw = String(value || "").trim();
+  if (!raw) return "";
+  const isoDateMatch = raw.match(/^(\d{4}-\d{2}-\d{2})/);
+  if (isoDateMatch) return isoDateMatch[1];
+  const parsed = new Date(raw);
+  if (Number.isNaN(parsed.getTime())) return "";
+  return `${parsed.getFullYear()}-${pad2(parsed.getMonth() + 1)}-${pad2(parsed.getDate())}`;
+}
+
 function escapeText(str) {
   // Для генерации HTML не используем: только в отдельных местах (риски минимальны).
   return String(str)
@@ -136,6 +171,9 @@ export function createModal() {
   const address = el("modal-address");
   const summary = el("modal-summary");
   const photoMain = el("modal-photo-main");
+  const photoBadge = el("modal-photo-badge");
+  const photoBadgeIcon = el("modal-photo-badge-icon");
+  const photoBadgeText = el("modal-photo-badge-text");
   const photoPrev = el("modal-photo-prev");
   const photoNext = el("modal-photo-next");
   const photoThumbs = el("modal-photo-thumbs");
@@ -155,6 +193,7 @@ export function createModal() {
   let isOpen = false;
   let currentItem = null;
   let currentPhotos = [];
+  let currentPhotoMetas = [];
   let currentPhotoIndex = 0;
 
   const renderPhotoCarousel = (item) => {
@@ -168,18 +207,47 @@ export function createModal() {
     const sourceGallery = Array.isArray(item.photoGallery)
       ? item.photoGallery
       : item.photoSrc
-        ? [item.photoSrc]
+        ? [{ source: item.photoSrc, meta: {} }]
         : [];
 
-    currentPhotos = sourceGallery.filter(Boolean);
-    if (currentPhotos.length === 0) {
-      currentPhotos = fallbackGallery;
-    } else if (currentPhotos.length === 1) {
+    let photoEntries = sourceGallery
+      .map((photo) => (typeof photo === "string" ? { source: photo, meta: {} } : photo))
+      .filter((photo) => Boolean(photo?.source));
+    if (photoEntries.length === 0) {
+      photoEntries = fallbackGallery.map((src) => ({ source: src, meta: {} }));
+    } else if (photoEntries.length === 1) {
       // Даже при одном фото оставляем возможность листания на fallback-кадры.
-      currentPhotos = [currentPhotos[0], fallbackGallery[1], fallbackGallery[2]];
+      photoEntries = [
+        photoEntries[0],
+        { source: fallbackGallery[1], meta: {} },
+        { source: fallbackGallery[2], meta: {} }
+      ];
     }
+    currentPhotos = photoEntries.map((photo) => photo.source);
+    currentPhotoMetas = photoEntries.map((photo) => photo.meta || {});
 
     currentPhotoIndex = 0;
+
+    const updatePhotoBadge = () => {
+      if (!photoBadge || !photoBadgeIcon || !photoBadgeText) return;
+      const photoMeta = currentPhotoMetas[currentPhotoIndex] || {};
+      const pointCoords = parseCoords(item.coords);
+      const photoCoords = parseCoords(photoMeta.coordinates);
+      const pointDate = extractDatePart(item.createdAt);
+      const photoUpdatedDate = extractDatePart(photoMeta.updatedAt);
+      const geoMatches =
+        Boolean(pointCoords && photoCoords) && distanceMeters(pointCoords, photoCoords) <= 200;
+      const dateMatches = Boolean(pointDate) && pointDate === photoUpdatedDate;
+      const isVerified = geoMatches && dateMatches;
+
+      photoBadge.className = `absolute left-3 top-3 inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold shadow-sm ${
+        isVerified
+          ? "border border-emerald-200 bg-emerald-50/95 text-emerald-800"
+          : "border border-amber-200 bg-amber-50/95 text-amber-900"
+      }`;
+      photoBadgeIcon.textContent = isVerified ? "✅" : "⚠️";
+      photoBadgeText.textContent = isVerified ? "Фото проверено" : "Фото требует проверки";
+    };
 
     const applyMain = () => {
       photoMain.src = currentPhotos[currentPhotoIndex];
@@ -190,6 +258,7 @@ export function createModal() {
       };
       photoPrev.classList.toggle("hidden", currentPhotos.length <= 1);
       photoNext.classList.toggle("hidden", currentPhotos.length <= 1);
+      updatePhotoBadge();
     };
 
     const renderThumbs = () => {
@@ -277,7 +346,12 @@ export function createModal() {
     // Подстановка из данных (прототипные значения, но зависят от переданного item)
     const category = item.requestType || "—";
     const description = item.description || "";
-    const primaryPhoto = Array.isArray(item.photoGallery) && item.photoGallery.length > 0 ? item.photoGallery[0] : item.photoSrc;
+    const primaryPhoto =
+      Array.isArray(item.photoGallery) && item.photoGallery.length > 0
+        ? typeof item.photoGallery[0] === "string"
+          ? item.photoGallery[0]
+          : item.photoGallery[0]?.source
+        : item.photoSrc;
     const photoName = primaryPhoto
       ? String(primaryPhoto)
           .split("/")

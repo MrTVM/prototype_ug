@@ -25,9 +25,30 @@ export const points = [
     description:
       "Планируется замена участка трубопровода.\nСроки уточняются после выезда специалиста.",
     photoGallery: [
-      "https://picsum.photos/seed/p1-1/1200/800",
-      "https://picsum.photos/seed/p1-2/1200/800",
-      "https://picsum.photos/seed/p1-3/1200/800"
+      {
+        source: "https://picsum.photos/seed/p1-1/1200/800",
+        meta: {
+          createdAt: "2026-04-29 08:50",
+          updatedAt: "2026-04-29 09:05",
+          coordinates: "55.751244, 37.618423"
+        }
+      },
+      {
+        source: "https://picsum.photos/seed/p1-2/1200/800",
+        meta: {
+          createdAt: "2026-04-29 08:52",
+          updatedAt: "2026-04-29 09:06",
+          coordinates: "55.751244, 37.618423"
+        }
+      },
+      {
+        source: "https://picsum.photos/seed/p1-3/1200/800",
+        meta: {
+          createdAt: "2026-04-29 08:55",
+          updatedAt: "2026-04-29 09:10",
+          coordinates: "55.751244, 37.618423"
+        }
+      }
     ],
     source: "https://example.com/complaint/p1",
     coords: [55.751244, 37.618423]
@@ -70,7 +91,14 @@ export const points = [
     description:
       "Заявка направлена в профильный отдел.\nОжидаем подтверждение графика работ.",
     photoGallery: [
-      "https://picsum.photos/seed/p2-1/1200/800"
+      {
+        source: "https://picsum.photos/seed/p2-1/1200/800",
+        meta: {
+          createdAt: "2026-04-29 09:50",
+          updatedAt: "2026-04-29 10:00",
+          coordinates: "55.7608, 37.606"
+        }
+      }
     ],
     source: "https://example.com/complaint/p2",
     coords: [55.7608, 37.606]
@@ -117,8 +145,22 @@ export const points = [
     description:
       "Неисправность устранена.\nПроведены проверки и включение нагрузки в штатный режим.",
     photoGallery: [
-      "https://picsum.photos/seed/p3-1/1200/800",
-      "https://picsum.photos/seed/p3-2/1200/800"
+      {
+        source: "https://picsum.photos/seed/p3-1/1200/800",
+        meta: {
+          createdAt: "2026-04-27 21:15",
+          updatedAt: "2026-04-27 21:30",
+          coordinates: "55.739, 37.617"
+        }
+      },
+      {
+        source: "https://picsum.photos/seed/p3-2/1200/800",
+        meta: {
+          createdAt: "2026-04-27 21:20",
+          updatedAt: "2026-04-27 21:35",
+          coordinates: "55.739, 37.617"
+        }
+      }
     ],
     source: "https://example.com/complaint/p3",
     coords: [55.739, 37.617]
@@ -140,9 +182,30 @@ export const points = [
     description:
       "Требуется вывоз мусора и первичная уборка.\nПосле согласования подготовим график выездов.",
     photoGallery: [
-      "https://picsum.photos/seed/p4-1/1200/800",
-      "https://picsum.photos/seed/p4-2/1200/800",
-      "https://picsum.photos/seed/p4-3/1200/800"
+      {
+        source: "https://picsum.photos/seed/p4-1/1200/800",
+        meta: {
+          createdAt: "2026-04-29 08:00",
+          updatedAt: "2026-04-29 08:10",
+          coordinates: "55.7632, 37.5647"
+        }
+      },
+      {
+        source: "https://picsum.photos/seed/p4-2/1200/800",
+        meta: {
+          createdAt: "2026-04-29 08:05",
+          updatedAt: "2026-04-29 08:15",
+          coordinates: "55.7632, 37.5647"
+        }
+      },
+      {
+        source: "https://picsum.photos/seed/p4-3/1200/800",
+        meta: {
+          createdAt: "2026-04-29 08:08",
+          updatedAt: "2026-04-29 08:18",
+          coordinates: "55.7632, 37.5647"
+        }
+      }
     ],
     source: "https://example.com/complaint/p4",
     coords: [55.7632, 37.5647]
@@ -173,8 +236,22 @@ export const points = [
     description:
       "Работы приостановлены до получения дополнительных согласований.\nПланируем возобновление после решения вопроса.",
     photoGallery: [
-      "https://picsum.photos/seed/p5-1/1200/800",
-      "https://picsum.photos/seed/p5-2/1200/800"
+      {
+        source: "https://picsum.photos/seed/p5-1/1200/800",
+        meta: {
+          createdAt: "2026-04-27 13:20",
+          updatedAt: "2026-04-27 13:35",
+          coordinates: "55.7492, 37.655"
+        }
+      },
+      {
+        source: "https://picsum.photos/seed/p5-2/1200/800",
+        meta: {
+          createdAt: "2026-04-27 13:25",
+          updatedAt: "2026-04-27 13:40",
+          coordinates: "55.7492, 37.655"
+        }
+      }
     ],
     source: "https://example.com/complaint/p5",
     coords: [55.7492, 37.655]
@@ -213,8 +290,22 @@ export const points = [
     description:
       "Заявка отклонена.\nПричина: несоответствие требованиям по регламенту.",
     photoGallery: [
-      "https://picsum.photos/seed/p6-1/1200/800",
-      "https://picsum.photos/seed/p6-2/1200/800"
+      {
+        source: "https://picsum.photos/seed/p6-1/1200/800",
+        meta: {
+          createdAt: "2026-04-26 10:45",
+          updatedAt: "2026-04-26 10:55",
+          coordinates: "55.706, 37.61"
+        }
+      },
+      {
+        source: "https://picsum.photos/seed/p6-2/1200/800",
+        meta: {
+          createdAt: "2026-04-26 10:50",
+          updatedAt: "2026-04-26 11:00",
+          coordinates: "55.706, 37.61"
+        }
+      }
     ],
     source: "https://example.com/complaint/p6",
     coords: [55.706, 37.61]
