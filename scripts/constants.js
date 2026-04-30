@@ -46,7 +46,13 @@ const applicantsById = {
   "u-1003": { id: "u-1003", fio: "Сидорова Анна Сергеевна", phone: "+7 (903) 333-44-55" },
   "u-1004": { id: "u-1004", fio: "Кузнецов Дмитрий Олегович", phone: "+7 (904) 444-55-66" },
   "u-1005": { id: "u-1005", fio: "Смирнова Елена Викторовна", phone: "+7 (905) 555-66-77" },
-  "u-1006": { id: "u-1006", fio: "Орлов Николай Андреевич", phone: "+7 (906) 666-77-88" }
+  "u-1006": { id: "u-1006", fio: "Орлов Николай Андреевич", phone: "+7 (906) 666-77-88" },
+  "u-1007": { id: "u-1007", fio: "Васильева Мария Павловна", phone: "+7 (907) 123-45-67" },
+  "u-1008": { id: "u-1008", fio: "Егоров Сергей Михайлович", phone: "+7 (908) 234-56-78" },
+  "u-1009": { id: "u-1009", fio: "Фёдоров Артём Игоревич", phone: "+7 (909) 345-67-89" },
+  "u-1010": { id: "u-1010", fio: "Громова Оксана Валерьевна", phone: "+7 (910) 456-78-90" },
+  "u-1011": { id: "u-1011", fio: "Беляев Роман Константинович", phone: "+7 (911) 567-89-01" },
+  "u-1012": { id: "u-1012", fio: "Тихонова Нина Алексеевна", phone: "+7 (912) 678-90-12" }
 };
 
 const ownershipsById = {
@@ -109,6 +115,54 @@ const ownershipsById = {
     ownershipForm: OWNERSHIP_FORMS.MUNICIPAL,
     vri: "Для обслуживания городской территории",
     balanceHolder: { name: "Не определён" }
+  },
+  own_9: {
+    cadastralNumber: "77:01:0007007:14",
+    ownershipForm: OWNERSHIP_FORMS.MUNICIPAL,
+    vri: "Для размещения тротуаров и пешеходных зон",
+    balanceHolder: { name: "ГБУ «Жилищник Таганского района»" }
+  },
+  own_10: {
+    cadastralNumber: "77:01:0007007:18",
+    ownershipForm: OWNERSHIP_FORMS.PRIVATE,
+    vri: "Для размещения нежилых административных объектов",
+    balanceHolder: { name: "АО «Деловой квартал Садовое»" }
+  },
+  own_11: {
+    cadastralNumber: "77:01:0008008:31",
+    ownershipForm: OWNERSHIP_FORMS.REGIONAL,
+    vri: "Для размещения объектов транспортной инфраструктуры",
+    balanceHolder: { name: "ГКУ «Организатор перевозок»" }
+  },
+  own_12: {
+    cadastralNumber: "77:01:0009009:2",
+    ownershipForm: OWNERSHIP_FORMS.FEDERAL,
+    vri: "Для размещения линейных объектов связи",
+    balanceHolder: { name: "ФГБУ «Федеральный центр эксплуатации»" }
+  },
+  own_13: {
+    cadastralNumber: "77:01:0010010:7",
+    ownershipForm: OWNERSHIP_FORMS.MUNICIPAL,
+    vri: "Для размещения объектов благоустройства",
+    contract: {
+      number: "88/26",
+      date: "15.01.2026",
+      subject: "Комплексная уборка и обслуживание общественных территорий",
+      contractor: "ООО «ГородСервис+»",
+      contractorInn: "7707654321",
+      contact: "dispatch@gorservis.ru | +7 (495) 700-11-22",
+      amount: "9,8 млн руб.",
+      endDate: "31.12.2026",
+      sla: "3 дня с момента фиксации",
+      penalty: "0.2% от стоимости этапа / день"
+    },
+    balanceHolder: { name: "ГБУ «Автомобильные дороги ЮВАО»" }
+  },
+  own_14: {
+    cadastralNumber: "77:01:0011011:11",
+    ownershipForm: OWNERSHIP_FORMS.PRIVATE,
+    vri: "Для размещения складских помещений",
+    balanceHolder: { name: "ООО «ЛогистикПарк Нагатинский»" }
   }
 };
 
@@ -157,7 +211,7 @@ const pointEntities = {
       }
     ],
     source: POINT_SOURCES.POS,
-    relatedPoints: ["p3", "p1"],
+    relatedPoints: [],
     coords: [55.751244, 37.618423]
   },
   p2: {
@@ -188,7 +242,7 @@ const pointEntities = {
       }
     ],
     source: POINT_SOURCES.SERVICE_112,
-    relatedPoints: ["p5"],
+    relatedPoints: ["p7"],
     coords: [55.7608, 37.606]
   },
   p3: {
@@ -227,7 +281,7 @@ const pointEntities = {
       }
     ],
     source: POINT_SOURCES.EDDS,
-    relatedPoints: ["p1"],
+    relatedPoints: ["p12"],
     coords: [55.739, 37.617]
   },
   p4: {
@@ -274,7 +328,7 @@ const pointEntities = {
       }
     ],
     source: POINT_SOURCES.OFFLINE,
-    relatedPoints: [],
+    relatedPoints: ["p10"],
     coords: [55.7632, 37.5647]
   },
   p5: {
@@ -313,7 +367,7 @@ const pointEntities = {
       }
     ],
     source: POINT_SOURCES.EMAIL,
-    relatedPoints: ["p2"],
+    relatedPoints: ["p8"],
     coords: [55.7492, 37.655]
   },
   p6: {
@@ -352,8 +406,189 @@ const pointEntities = {
       }
     ],
     source: POINT_SOURCES.POS,
-    relatedPoints: [],
+    relatedPoints: ["p11"],
     coords: [55.706, 37.61]
+  },
+  p7: {
+    id: "p7",
+    applicantId: "u-1007",
+    ownershipIds: ["own_9"],
+    requestType: REQUEST_TYPES.ROADS_PATCH_REPAIR,
+    createdAt: "2026-04-30 07:42",
+    plannedCloseAt: "2026-05-06 20:00",
+    gar: {
+      objectType: "Пешеходная инфраструктура",
+      coordinate: "55.7429, 37.6538",
+      municipalDistrict: "Таганский"
+    },
+    theme: "Просадка тротуарной плитки у остановки",
+    address: "Москва, пр-т Тестовый, 17",
+    status: POINT_STATUSES.IN_PROGRESS,
+    description:
+      "У остановки образовалась просадка тротуарной плитки после дождя.\nНужно восстановить покрытие и проверить основание.",
+    photoGallery: [
+      {
+        source: "https://picsum.photos/seed/p7-1/1200/800",
+        meta: {
+          createdAt: "2026-04-30 07:31",
+          updatedAt: "2026-04-30 07:40",
+          coordinates: "55.7429, 37.6538"
+        }
+      },
+      {
+        source: "https://picsum.photos/seed/p7-2/1200/800",
+        meta: {
+          createdAt: "2026-04-30 07:33",
+          updatedAt: "2026-04-30 07:41",
+          coordinates: "55.7429, 37.6538"
+        }
+      }
+    ],
+    source: POINT_SOURCES.POS,
+    relatedPoints: ["p2"],
+    coords: [55.7429, 37.6538]
+  },
+  p8: {
+    id: "p8",
+    applicantId: "u-1008",
+    ownershipIds: ["own_10", "own_11"],
+    requestType: REQUEST_TYPES.APPROVALS_WORK_SUSPENSION,
+    createdAt: "2026-04-30 11:12",
+    plannedCloseAt: "2026-05-12 18:00",
+    gar: {
+      objectType: "Зона строительства",
+      coordinate: "55.7577, 37.6153",
+      municipalDistrict: "Тверской"
+    },
+    theme: "Шумные ночные работы без ограждения",
+    address: "Москва, ул. Адаптерная, 22",
+    status: POINT_STATUSES.UNDER_REVIEW,
+    description:
+      "На площадке ведутся ночные работы, ограждение частично демонтировано.\nНужно проверить документы и приостановить работы до устранения нарушений.",
+    photoGallery: [
+      {
+        source: "https://picsum.photos/seed/p8-1/1200/800",
+        meta: {
+          createdAt: "2026-04-30 11:00",
+          updatedAt: "2026-04-30 11:09",
+          coordinates: "55.7599, 37.619"
+        }
+      }
+    ],
+    source: POINT_SOURCES.SERVICE_112,
+    relatedPoints: ["p5"],
+    coords: [55.7577, 37.6153]
+  },
+  p9: {
+    id: "p9",
+    applicantId: "u-1009",
+    ownershipIds: ["own_12"],
+    requestType: REQUEST_TYPES.HOUSING_UTILITIES_NETWORKS,
+    createdAt: "2026-04-30 03:18",
+    plannedCloseAt: "2026-04-30 09:00",
+    gar: {
+      objectType: "Колодец инженерных сетей",
+      coordinate: "55.7332, 37.5884",
+      municipalDistrict: "Хамовники"
+    },
+    theme: "Открытый люк на техническом колодце",
+    address: "Москва, Комсомольский пр-т, 26",
+    status: POINT_STATUSES.COMPLETED,
+    description:
+      "Люк был открыт, вокруг отсутствовали предупреждающие знаки.\nУчасток оперативно оградили и закрыли колодец.",
+    photoGallery: [
+      {
+        source: "https://picsum.photos/seed/p9-1/1200/800",
+        meta: {
+          createdAt: "2026-04-30 03:05",
+          updatedAt: "2026-04-30 03:14",
+          coordinates: "55.7332, 37.5884"
+        }
+      }
+    ],
+    source: POINT_SOURCES.EDDS,
+    relatedPoints: [],
+    coords: [55.7332, 37.5884]
+  },
+  p10: {
+    id: "p10",
+    applicantId: "u-1010",
+    ownershipIds: ["own_13"],
+    requestType: REQUEST_TYPES.IMPROVEMENT_CLEANING,
+    createdAt: "2026-04-29 22:50",
+    plannedCloseAt: "2026-05-02 16:00",
+    gar: {
+      objectType: "Дворовая территория",
+      coordinate: "55.6998, 37.7274",
+      municipalDistrict: "Люблино"
+    },
+    theme: "Скопление крупногабаритного мусора во дворе",
+    address: "Москва, наб. Прототипная, 3",
+    status: POINT_STATUSES.NEW,
+    description:
+      "Во дворе складированы старые шкафы и строительный мусор.\nТребуется вывоз КГМ и санитарная обработка участка.",
+    photoGallery: [],
+    source: POINT_SOURCES.EMAIL,
+    relatedPoints: ["p4"],
+    coords: [55.6998, 37.7274]
+  },
+  p11: {
+    id: "p11",
+    applicantId: "u-1011",
+    ownershipIds: ["own_14"],
+    requestType: REQUEST_TYPES.QUALITY_CONTROL_CANCELLATION,
+    createdAt: "2026-04-28 15:22",
+    plannedCloseAt: "2026-04-28 18:00",
+    gar: {
+      objectType: "Производственная площадка",
+      coordinate: "55.6894, 37.6481",
+      municipalDistrict: "Нагатинский Затон"
+    },
+    theme: "Дублирующее обращение без новых фактов",
+    address: "Москва, ул. Несовпадений, 5",
+    status: POINT_STATUSES.CANCELED,
+    description:
+      "Обращение признано дублирующим существующий кейс.\nНовые материалы не приложены, карточка закрыта по регламенту.",
+    photoGallery: [
+      {
+        source: "https://picsum.photos/seed/p11-1/1200/800",
+        meta: {
+          createdAt: "2026-04-28 15:00",
+          updatedAt: "2026-04-27 15:10",
+          coordinates: "55.6894, 37.6481"
+        }
+      }
+    ],
+    source: POINT_SOURCES.OFFLINE,
+    relatedPoints: ["p6"],
+    coords: [55.6894, 37.6481]
+  },
+  p12: {
+    id: "p12",
+    applicantId: "u-1012",
+    ownershipIds: [],
+    requestType: REQUEST_TYPES.POWER_SUPPLY_EMERGENCY,
+    createdAt: "2026-04-30 12:28",
+    plannedCloseAt: "2026-04-30 16:00",
+    gar: {
+      objectType: "",
+      coordinate: "55.7811, 37.7003",
+      municipalDistrict: "Сокольники"
+    },
+    theme: "Кратковременные отключения света в доме",
+    address: "Москва, ул. Сервисная, 9",
+    status: POINT_STATUSES.SUSPENDED,
+    description:
+      "Зафиксированы повторные отключения электроснабжения в вечернее время.\nДо уточнения балансовой принадлежности заявка временно приостановлена.",
+    photoGallery: [
+      {
+        source: "https://picsum.photos/seed/p12-1/1200/800",
+        meta: {}
+      }
+    ],
+    source: "",
+    relatedPoints: ["p3"],
+    coords: [55.7811, 37.7003]
   }
 };
 
