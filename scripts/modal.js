@@ -1,5 +1,5 @@
 import { el } from "./utils.js";
-import { points, rules, statusToBadge } from "./constants.js";
+import { OWNERSHIP_FORMS, POINT_STATUSES, points, rules, statusToBadge } from "./constants.js";
 
 function pad2(n) {
   return String(n).padStart(2, "0");
@@ -181,17 +181,17 @@ function createSectionStack(blocks) {
 
 function statusToDraftLabel(status) {
   switch (status) {
-    case "В работе":
+    case POINT_STATUSES.IN_PROGRESS:
       return "🟡 Черновик (требует согласования)";
-    case "На рассмотрении":
+    case POINT_STATUSES.UNDER_REVIEW:
       return "🟡 Черновик (требует согласования)";
-    case "Завершено":
+    case POINT_STATUSES.COMPLETED:
       return "🟢 Завершено (можно закрывать)";
-    case "Приостановлено":
+    case POINT_STATUSES.SUSPENDED:
       return "🟠 На паузе (ожидает уточнений)";
-    case "Отменено":
+    case POINT_STATUSES.CANCELED:
       return "🔴 Отменено (закрыто)";
-    case "Новый":
+    case POINT_STATUSES.NEW:
       return "🟡 Черновик (требует согласования)";
     default:
       return "🟡 Черновик (требует согласования)";
@@ -439,7 +439,7 @@ export function createModal() {
           : "федеральный";
     const hasAuthorityWarning =
       uniqueOwnershipForms.length > 1 ||
-      (uniqueOwnershipForms.length === 1 && uniqueOwnershipForms[0] !== "муниципальная");
+      (uniqueOwnershipForms.length === 1 && uniqueOwnershipForms[0] !== OWNERSHIP_FORMS.MUNICIPAL);
     const balanceHolderNames = ownerships
       .map((entry) => entry?.balanceHolder?.name?.trim())
       .filter(Boolean);

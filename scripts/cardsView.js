@@ -1,4 +1,4 @@
-import { statusToBadge } from "./constants.js";
+import { POINT_STATUSES, statusToBadge } from "./constants.js";
 import { el, escapeHtml } from "./utils.js";
 
 export function createCardsView() {
@@ -11,12 +11,12 @@ export function createCardsView() {
     kanban.innerHTML = "";
 
     const statusOrder = [
-      "Новый",
-      "В работе",
-      "На рассмотрении",
-      "Завершено",
-      "Приостановлено",
-      "Отменено"
+      POINT_STATUSES.NEW,
+      POINT_STATUSES.IN_PROGRESS,
+      POINT_STATUSES.UNDER_REVIEW,
+      POINT_STATUSES.COMPLETED,
+      POINT_STATUSES.SUSPENDED,
+      POINT_STATUSES.CANCELED
     ];
 
     const byStatus = new Map();
