@@ -1,5 +1,5 @@
 import { el } from "./utils.js";
-import { points, rules } from "./constants.js";
+import { points, rules, statusToBadge } from "./constants.js";
 
 function pad2(n) {
   return String(n).padStart(2, "0");
@@ -663,12 +663,23 @@ export function createModal() {
       relatedWrap.appendChild(empty);
     } else {
       relatedPoints.forEach((relatedPoint) => {
+        const badge = statusToBadge(relatedPoint.status);
         const btn = document.createElement("button");
         btn.type = "button";
         btn.className =
           "w-full text-left rounded-lg border border-slate-200 bg-white hover:bg-slate-50 px-3 py-2 transition";
         btn.innerHTML = `
           <div class="text-xs font-semibold text-slate-900">${escapeText(relatedPoint.theme || relatedPoint.id)}</div>
+          <div class="mt-1 flex flex-wrap items-center gap-2">
+            <span class="inline-flex items-center rounded-full border px-2 py-0.5 text-[11px] font-medium ${escapeText(
+              `${badge.bg} ${badge.text} ${badge.border}`
+            )}">
+              ${escapeText(relatedPoint.status || "—")}
+            </span>
+            <span class="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-[11px] font-medium text-slate-700">
+              ${escapeText(relatedPoint.source || "—")}
+            </span>
+          </div>
           <div class="text-xs text-slate-600 mt-0.5">${escapeText(relatedPoint.address || "—")}</div>
           <div class="text-[11px] text-slate-500 mt-1">ID: ${escapeText(relatedPoint.id)} · ${escapeText(
           relatedPoint.requestType || "—"
@@ -862,10 +873,65 @@ export function createModal() {
         whyLinks.appendChild(mkLink("📥 Скачать обоснование"));
         panelWhy.appendChild(whyLinks);
 
+        const panelRelatedActions = document.createElement("div");
+        panelRelatedActions.className = "p-3 hidden";
+        const relatedActionsTitle = document.createElement("div");
+        relatedActionsTitle.className = "text-xs font-semibold text-slate-900";
+        relatedActionsTitle.textContent = "Похожие сообщения (массовый выбор)";
+        panelRelatedActions.appendChild(relatedActionsTitle);
+
+        const bulkSelection = new Set();
+        const bulkPoints = [item, ...relatedPoints.filter((p) => p?.id !== item?.id)];
+        const relatedActionsBody = document.createElement("div");
+        relatedActionsBody.className = "mt-2 space-y-2";
+        if (bulkPoints.length === 0) {
+          const empty = document.createElement("div");
+          empty.className = "text-xs text-slate-600";
+          empty.textContent = "Нет связанных сообщений для массового действия.";
+          relatedActionsBody.appendChild(empty);
+        } else {
+          bulkPoints.forEach((relatedPoint) => {
+            const row = document.createElement("label");
+            row.className =
+              "flex items-start gap-2 rounded-lg border border-slate-200 bg-white px-2.5 py-2 cursor-pointer hover:bg-slate-50";
+            const checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.checked = true;
+            checkbox.className = "mt-0.5 accent-slate-900";
+            bulkSelection.add(relatedPoint.id);
+            checkbox.addEventListener("change", () => {
+              if (checkbox.checked) bulkSelection.add(relatedPoint.id);
+              else bulkSelection.delete(relatedPoint.id);
+              updateBulkActionLabel();
+            });
+            const meta = document.createElement("div");
+            meta.className = "min-w-0";
+            meta.innerHTML = `
+              <div class="flex flex-wrap items-center gap-2">
+                <div class="text-xs font-semibold text-slate-900">${escapeText(relatedPoint.theme || relatedPoint.id)}</div>
+                ${
+                  relatedPoint.id === item.id
+                    ? '<span class="inline-flex items-center rounded-full border border-violet-200 bg-violet-50 px-2 py-0.5 text-[10px] font-semibold text-violet-700">текущее</span>'
+                    : ""
+                }
+              </div>
+              <div class="text-[11px] text-slate-600 mt-0.5">${escapeText(relatedPoint.address || "—")}</div>
+              <div class="text-[11px] text-slate-500 mt-0.5">ID: ${escapeText(relatedPoint.id)} · ${escapeText(
+              relatedPoint.status || "—"
+            )}</div>
+            `;
+            row.appendChild(checkbox);
+            row.appendChild(meta);
+            relatedActionsBody.appendChild(row);
+          });
+        }
+        panelRelatedActions.appendChild(relatedActionsBody);
+
         const panels = {
           text: panelText,
           recommendation: panelRecommendation,
-          why: panelWhy
+          why: panelWhy,
+          relatedActions: panelRelatedActions
         };
 
         const tabButtons = {};
@@ -900,12 +966,14 @@ export function createModal() {
         makeTab("text", "Текст поручения");
         makeTab("recommendation", "Рекомендация");
         makeTab("why", "Почему");
+        makeTab("relatedActions", "Похожие (массово)");
         activateTab("text");
 
         tabsWrap.appendChild(tabsBar);
         tabsWrap.appendChild(panelText);
         tabsWrap.appendChild(panelRecommendation);
         tabsWrap.appendChild(panelWhy);
+        tabsWrap.appendChild(panelRelatedActions);
 
         const row = document.createElement("div");
         row.className = "flex flex-wrap gap-3 items-center";
@@ -918,6 +986,26 @@ export function createModal() {
           btn.addEventListener("click", onClick);
           return btn;
         };
+
+        const bulkBtn = mkBtn({
+          label: isMunicipalAuthority ? "Утвердить по всем" : "Эскалировать по всем",
+          className: isMunicipalAuthority
+            ? "rounded-xl bg-emerald-100 text-emerald-900 px-4 py-2 text-sm font-semibold border border-emerald-200 shadow-sm hover:bg-emerald-200 transition"
+            : "rounded-xl bg-blue-100 text-blue-900 px-4 py-2 text-sm font-semibold border border-blue-200 shadow-sm hover:bg-blue-200 transition",
+          onClick: () => {
+            if (bulkSelection.size === 0) return;
+            close();
+          }
+        });
+        const updateBulkActionLabel = () => {
+          const selectedCount = bulkSelection.size;
+          const base = isMunicipalAuthority ? "Утвердить по всем" : "Эскалировать по всем";
+          bulkBtn.textContent = selectedCount > 0 ? `${base} (${selectedCount})` : base;
+          bulkBtn.disabled = selectedCount === 0;
+          bulkBtn.classList.toggle("opacity-50", selectedCount === 0);
+          bulkBtn.classList.toggle("cursor-not-allowed", selectedCount === 0);
+        };
+        updateBulkActionLabel();
 
         row.appendChild(
           mkBtn({
@@ -934,6 +1022,7 @@ export function createModal() {
             }
           })
         );
+        row.appendChild(bulkBtn);
 
         row.appendChild(
           mkBtn({
