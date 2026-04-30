@@ -917,7 +917,7 @@ export function createModal() {
       });
     };
 
-    makeContextTab("jurisdiction", "Юрисдикция");
+    makeContextTab("jurisdiction", "Полномочия");
     makeContextTab("contract", "Контрактные обязательства");
     makeContextTab("related", "Похожие сообщения");
     makeContextTab("audit", "Аудит-лог");
@@ -1057,7 +1057,7 @@ export function createModal() {
         panelRelatedActions.className = "p-3 hidden";
         const relatedActionsTitle = document.createElement("div");
         relatedActionsTitle.className = "text-xs font-semibold text-slate-900";
-        relatedActionsTitle.textContent = "Похожие сообщения (массовый выбор)";
+        relatedActionsTitle.textContent = "Похожие сообщения";
         panelRelatedActions.appendChild(relatedActionsTitle);
 
         const bulkSelection = new Set();
@@ -1146,7 +1146,7 @@ export function createModal() {
         makeTab("text", "Текст поручения");
         makeTab("recommendation", "Рекомендация");
         makeTab("why", "Почему");
-        makeTab("relatedActions", "Похожие (массово)");
+        makeTab("relatedActions", "Похожие сообщения");
         activateTab("text");
 
         tabsWrap.appendChild(tabsBar);
