@@ -124,7 +124,7 @@ function statusToDraftLabel(status) {
   return draftLabelByStatus[status] || DEFAULT_DRAFT_LABEL;
 }
 
-export function createModal() {
+export function createModal({ statusMachine = {}, onStatusChanged = () => {} } = {}) {
   const ui = createUiFactory();
   const modal = el("modal");
   const closeBtn = el("modal-close");
@@ -593,7 +593,14 @@ export function createModal() {
       status,
       primaryOwnershipForm,
       city,
-      escapeText
+      escapeText,
+      getAllowedTransitions: statusMachine.getAllowedTransitions,
+      onTransitionRequest: (nextStatus) => {
+        const transitionFn = statusMachine.transitionPointStatus;
+        if (typeof transitionFn !== "function") return;
+        const result = transitionFn(item, nextStatus);
+        if (result?.changed) onStatusChanged(item);
+      }
     });
     onRecommendationReady = revealRecommendationText;
 

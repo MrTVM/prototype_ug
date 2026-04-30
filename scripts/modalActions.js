@@ -17,7 +17,9 @@ export function createModalActionsBox({
   status,
   primaryOwnershipForm,
   city,
-  escapeText
+  escapeText,
+  getAllowedTransitions,
+  onTransitionRequest
 }) {
   const wrapper = document.createElement("div");
   wrapper.className = "space-y-3 flex flex-col h-full";
@@ -297,6 +299,37 @@ export function createModalActionsBox({
     return btn;
   };
 
+  const requestTransition = (nextStatus) => {
+    if (typeof onTransitionRequest !== "function" || !nextStatus) return false;
+    try {
+      onTransitionRequest(nextStatus);
+      return true;
+    } catch (error) {
+      console.warn("Status transition rejected:", error);
+      window.alert(`Невозможно сменить статус: ${error?.message || "неизвестная ошибка"}`);
+      return false;
+    }
+  };
+
+  const allowedTransitions = Array.isArray(getAllowedTransitions?.(status))
+    ? getAllowedTransitions(status)
+    : [];
+
+  const resolvePrimaryTargetStatus = () => {
+    if (isCompleted) return null;
+    if (status === POINT_STATUSES.UNDER_REVIEW) return POINT_STATUSES.COMPLETED;
+    if (status === POINT_STATUSES.NEW) return POINT_STATUSES.IN_PROGRESS;
+    if (status === POINT_STATUSES.IN_PROGRESS) return POINT_STATUSES.UNDER_REVIEW;
+    if (status === POINT_STATUSES.SUSPENDED) return POINT_STATUSES.IN_PROGRESS;
+    return null;
+  };
+
+  const resolveRejectTargetStatus = () => {
+    if (isCompleted) return null;
+    if (status === POINT_STATUSES.UNDER_REVIEW) return POINT_STATUSES.IN_PROGRESS;
+    return POINT_STATUSES.CANCELED;
+  };
+
   const bulkBtn = mkBtn({
     label: isUnderReview
       ? "Принять по всем"
@@ -356,8 +389,17 @@ export function createModalActionsBox({
       onClick: () => {
         const currentItem = currentItemRef();
         if (!currentItem) return;
-        window.open(currentItem.source, "_blank", "noreferrer");
-        onClose();
+        const primaryTargetStatus = resolvePrimaryTargetStatus();
+        if (!primaryTargetStatus) {
+          window.open(currentItem.source, "_blank", "noreferrer");
+          onClose();
+          return;
+        }
+        if (!allowedTransitions.includes(primaryTargetStatus)) {
+          window.alert(`Недоступный переход статуса: ${status} -> ${primaryTargetStatus}`);
+          return;
+        }
+        if (requestTransition(primaryTargetStatus)) onClose();
       }
     })
   );
@@ -380,7 +422,15 @@ export function createModalActionsBox({
         label: isUnderReview ? "Вернуть на доработку" : "Отклонить",
         className:
           "rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-100 px-4 py-2 text-sm font-medium text-rose-800 shadow-sm transition",
-        onClick: () => onClose()
+        onClick: () => {
+          const rejectTargetStatus = resolveRejectTargetStatus();
+          if (!rejectTargetStatus) return;
+          if (!allowedTransitions.includes(rejectTargetStatus)) {
+            window.alert(`Недоступный переход статуса: ${status} -> ${rejectTargetStatus}`);
+            return;
+          }
+          if (requestTransition(rejectTargetStatus)) onClose();
+        }
       })
     );
   }
