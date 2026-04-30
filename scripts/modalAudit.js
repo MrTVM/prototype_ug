@@ -170,6 +170,7 @@ export function createModalAuditSection({
   );
 
   const auditRows = [];
+  const shouldAnimateAudit = item.status === "Новый";
   for (const step of auditSteps) {
     const modeClass =
       step.mode === "Ручное"
@@ -184,7 +185,7 @@ export function createModalAuditSection({
     const modeIcon = step.mode === "Ручное" ? "✍" : "⚙";
     const statusIcon = step.status === "Успешно" ? "✓" : step.status === "Ошибка" ? "✕" : "…";
     const row = document.createElement("div");
-    row.className = "text-xs text-slate-900 hidden";
+    row.className = `text-xs text-slate-900${shouldAnimateAudit ? " hidden" : ""}`;
     row.innerHTML = `
       ${escapeText(step.dt)} | ${escapeText(step.text)}
       <span class="ml-2 inline-flex h-5 min-w-5 items-center justify-center rounded-full border px-1 text-[11px] font-semibold ${escapeText(
@@ -202,7 +203,11 @@ export function createModalAuditSection({
     audit.appendChild(row);
   }
 
-  updateAuditProgressLabel(0, auditRows.length);
+  updateAuditProgressLabel(
+    shouldAnimateAudit ? 0 : auditRows.length,
+    auditRows.length,
+    !shouldAnimateAudit
+  );
   auditBox.appendChild(auditProgress);
   auditBox.appendChild(audit);
 
@@ -216,6 +221,15 @@ export function createModalAuditSection({
   };
 
   const startAuditProgress = () => {
+    if (!shouldAnimateAudit) {
+      // Для уже обработанных статусов прогресс не анимируем,
+      // но обязательно отправляем события для бейджей/кнопок/рекомендаций.
+      if (garStepIndex >= 0) onGarVerified();
+      if (photoStepIndex >= 0) onPhotoVerified();
+      if (recommendationStepIndex >= 0) getOnRecommendationReady()?.();
+      activateContextTab("jurisdiction");
+      return;
+    }
     stopAuditProgress();
     auditProgressFinished = false;
     let garBadgeActivated = false;
