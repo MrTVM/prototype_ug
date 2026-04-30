@@ -443,6 +443,9 @@ export function createModal() {
       uniqueBalanceHolderNames.some((name) => !/не определ/i.test(name));
     const contract =
       ownerships.find((entry) => entry?.contract)?.contract || null;
+    const hasContract = Boolean(contract);
+    const useAssignmentFlow = isMunicipalAuthority && hasContract;
+    const useProcurementFlow = isMunicipalAuthority && !hasContract;
     const complaintNo = `${now.getFullYear()}-${pad2(now.getMonth() + 1)}-${pad2(now.getDate())}-${(parseInt(
       String(item.id || "").replace(/\D/g, "").slice(-4) || "1234",
       10
@@ -794,12 +797,16 @@ export function createModal() {
         panelText.innerHTML = `
           <div class="mb-2 flex flex-wrap items-center gap-2">
             <div class="text-xs font-semibold text-slate-900">${
-              isMunicipalAuthority ? "Текст поручения" : "Текст эскалации"
+              useAssignmentFlow
+                ? "Текст поручения"
+                : useProcurementFlow
+                  ? "Текст включения в план закупок"
+                  : "Текст эскалации"
             }</div>
             <span class="inline-flex items-center rounded-full border border-violet-200 bg-violet-50 px-2 py-0.5 text-[10px] font-semibold text-violet-700">по рекомендации</span>
           </div>
           <div class="text-xs text-slate-700 whitespace-pre-line">${
-            isMunicipalAuthority
+            useAssignmentFlow
               ? `Направить подрядчику ${escapeText(
                   contractor
                 )} поручение на устранение дефекта.
@@ -808,7 +815,13 @@ export function createModal() {
 Срок исполнения: до ${escapeText(deadlineStr)} (СЛА: 5 дней).
 Основание: п.3.1 Договора №45/25.
 Приложения: ${escapeText(attachmentLabel)}.`
-              : `Эскалировать обращение по компетенции.
+              : useProcurementFlow
+                ? `Включить обращение в план закупок муниципалитета.
+Категория: ${escapeText(category)}.
+Адрес: ${escapeText(item.address || "—")}.
+Основание: контрактные обязательства не найдены.
+Пакет: описание дефекта, фотофиксация, обоснование потребности.`
+                : `Эскалировать обращение по компетенции.
 Категория: ${escapeText(category)}.
 Куда: ${escapeText(escalationRule?.to || "Не определено в rules")}.
 Основание: ${escapeText(escalationRule?.basis || "Не определено в rules")}.
@@ -820,18 +833,26 @@ export function createModal() {
         panelRecommendation.className = "p-3 hidden";
         panelRecommendation.innerHTML = `
           <div class="text-xs font-semibold text-slate-900">${
-            isMunicipalAuthority
+            useAssignmentFlow
               ? "✉️ Создать поручение подрядчику ← РЕКОМЕНДУЕТСЯ"
-              : "📤 Эскалировать обращение ← РЕКОМЕНДУЕТСЯ"
+              : useProcurementFlow
+                ? "🗂️ Включить в план закупок ← РЕКОМЕНДУЕТСЯ"
+                : "📤 Эскалировать обращение ← РЕКОМЕНДУЕТСЯ"
           }</div>
           <div class="text-xs text-slate-600 mt-2 whitespace-pre-line">${
-            isMunicipalAuthority
+            useAssignmentFlow
               ? `• Исполнитель: ${escapeText(contractor)}
 • Срок исполнения: ${escapeText(deadlineStr)} (5 дней)
 • Основание: п.3.1 Договора №45/25
 • Шаблон: «Уведомление о дефекте с фотофиксацией»
 • Статус: ${escapeText(statusToDraftLabel(status))}`
-              : `• Полномочия: ${escapeText(primaryOwnershipForm || "не определены")}
+              : useProcurementFlow
+                ? `• Полномочия: ${escapeText(primaryOwnershipForm || "не определены")}
+• Решение: включить задачу в план закупок
+• Основание: контрактные обязательства отсутствуют
+• Пакет: дефектовка, фото, расчет объема работ
+• Статус: ${escapeText(statusToDraftLabel(status))}`
+                : `• Полномочия: ${escapeText(primaryOwnershipForm || "не определены")}
 • Куда эскалировать: ${escapeText(escalationRule?.to || "не найдено правило")}
 • Основание: ${escapeText(escalationRule?.basis || "не найдено правило")}
 • Пакет: ${escapeText(escalationRule?.attachments || "сформировать вручную")}
@@ -850,15 +871,21 @@ export function createModal() {
         createBulletList(whyItems, [
           `Адрес: ${city}`,
           `Категория: ${category}`,
-          isMunicipalAuthority
+          useAssignmentFlow
             ? "Муниципальные полномочия → можно сформировать поручение исполнителю"
-            : "Немуниципальные полномочия → нужна эскалация по матрице rules",
-          isMunicipalAuthority
+            : useProcurementFlow
+              ? "Муниципальные полномочия + нет контракта → включение в план закупок"
+              : "Поручение по договору недоступно → нужна эскалация по матрице rules",
+          useAssignmentFlow
             ? "В ЕИС найден действующий контракт → можно направить требование"
-            : `Точка эскалации: ${escalationRule?.to || "не определена"}`,
-          isMunicipalAuthority
+            : useProcurementFlow
+              ? "Контрактные обязательства не найдены → требуется закупочная процедура"
+              : `Точка эскалации: ${escalationRule?.to || "не определена"}`,
+          useAssignmentFlow
             ? "СЛА: 5 дней → дедлайн: " + deadlineStr
-            : `Нормативка: ${escalationRule?.basis || "не определена"}`
+            : useProcurementFlow
+              ? "Действие: сформировать карточку в план закупок"
+              : `Нормативка: ${escalationRule?.basis || "не определена"}`
         ]);
         panelWhy.appendChild(whyItems);
 
@@ -991,10 +1018,16 @@ export function createModal() {
         };
 
         const bulkBtn = mkBtn({
-          label: isMunicipalAuthority ? "Утвердить по всем" : "Эскалировать по всем",
-          className: isMunicipalAuthority
+          label: useAssignmentFlow
+            ? "Утвердить по всем"
+            : useProcurementFlow
+              ? "Запланировать по всем"
+              : "Эскалировать по всем",
+          className: useAssignmentFlow
             ? "rounded-xl bg-emerald-100 text-emerald-900 px-4 py-2 text-sm font-semibold border border-emerald-200 shadow-sm hover:bg-emerald-200 transition"
-            : "rounded-xl bg-blue-100 text-blue-900 px-4 py-2 text-sm font-semibold border border-blue-200 shadow-sm hover:bg-blue-200 transition",
+            : useProcurementFlow
+              ? "rounded-xl bg-amber-100 text-amber-900 px-4 py-2 text-sm font-semibold border border-amber-200 shadow-sm hover:bg-amber-200 transition"
+              : "rounded-xl bg-blue-100 text-blue-900 px-4 py-2 text-sm font-semibold border border-blue-200 shadow-sm hover:bg-blue-200 transition",
           onClick: () => {
             if (bulkSelection.size === 0) return;
             close();
@@ -1002,7 +1035,11 @@ export function createModal() {
         });
         const updateBulkActionLabel = () => {
           const selectedCount = bulkSelection.size;
-          const base = isMunicipalAuthority ? "Утвердить по всем" : "Эскалировать по всем";
+          const base = useAssignmentFlow
+            ? "Утвердить по всем"
+            : useProcurementFlow
+              ? "Запланировать по всем"
+              : "Эскалировать по всем";
           bulkBtn.textContent = selectedCount > 0 ? `${base} (${selectedCount})` : base;
           bulkBtn.disabled = selectedCount === 0;
           bulkBtn.classList.toggle("opacity-50", selectedCount === 0);
@@ -1012,12 +1049,16 @@ export function createModal() {
 
         row.appendChild(
           mkBtn({
-            label: isMunicipalAuthority
+            label: useAssignmentFlow
               ? "Утвердить поручение"
-              : `Эскалировать`,
-            className: isMunicipalAuthority
+              : useProcurementFlow
+                ? "Запланировать"
+                : "Эскалировать",
+            className: useAssignmentFlow
               ? "rounded-xl bg-emerald-900 text-white px-4 py-2 text-sm font-semibold shadow-sm hover:bg-emerald-800 transition"
-              : "rounded-xl bg-blue-900 text-white px-4 py-2 text-sm font-semibold shadow-sm hover:bg-blue-800 transition",
+              : useProcurementFlow
+                ? "rounded-xl bg-amber-900 text-white px-4 py-2 text-sm font-semibold shadow-sm hover:bg-amber-800 transition"
+                : "rounded-xl bg-blue-900 text-white px-4 py-2 text-sm font-semibold shadow-sm hover:bg-blue-800 transition",
             onClick: () => {
               if (!currentItem) return;
               window.open(currentItem.source, "_blank", "noreferrer");
