@@ -132,6 +132,7 @@ export function createModal({ statusMachine = {}, onStatusChanged = () => {} } =
 
   const title = el("modal-title");
   const address = el("modal-address");
+  const headerStatusBadge = el("modal-header-status");
   const summary = el("modal-summary");
   const photoMain = el("modal-photo-main");
   const photoPrev = el("modal-photo-prev");
@@ -618,6 +619,12 @@ export function createModal({ statusMachine = {}, onStatusChanged = () => {} } =
       initialPhotoBadgeNodes.badge.style.visibility = "hidden";
     }
     title.textContent = item.theme;
+    const headerStatus = item.status || "—";
+    const headerStatusColors = statusToBadge(headerStatus);
+    if (headerStatusBadge) {
+      headerStatusBadge.textContent = headerStatus;
+      headerStatusBadge.className = `inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-semibold ${headerStatusColors.bg} ${headerStatusColors.text} ${headerStatusColors.border}`;
+    }
     const gar = item.gar || {};
     const addressLine = item.address || "—";
     const coordsLine = gar.coordinate || formatCoords(item.coords);
