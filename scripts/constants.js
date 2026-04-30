@@ -56,6 +56,7 @@ export const points = [
       }
     ],
     source: "ПОС",
+    relatedPoints: ["p3"],
     coords: [55.751244, 37.618423]
   },
   {
@@ -111,6 +112,7 @@ export const points = [
       }
     ],
     source: "112",
+    relatedPoints: ["p5"],
     coords: [55.7608, 37.606]
   },
   {
@@ -178,6 +180,7 @@ export const points = [
       }
     ],
     source: "ЕДДС",
+    relatedPoints: ["p1"],
     coords: [55.739, 37.617]
   },
   {
@@ -228,6 +231,7 @@ export const points = [
       }
     ],
     source: "Офлайн",
+    relatedPoints: [],
     coords: [55.7632, 37.5647]
   },
   {
@@ -279,6 +283,7 @@ export const points = [
       }
     ],
     source: "Email",
+    relatedPoints: ["p2"],
     coords: [55.7492, 37.655]
   },
   {
@@ -338,6 +343,7 @@ export const points = [
       }
     ],
     source: "ПОС",
+    relatedPoints: [],
     coords: [55.706, 37.61]
   }
 ];
