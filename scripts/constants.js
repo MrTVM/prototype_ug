@@ -290,6 +290,16 @@ const pointEntities = {
         }
       }
     ],
+    photoAfterGallery: [
+      {
+        source: "https://picsum.photos/seed/p3-after-1/1200/800",
+        meta: {
+          createdAt: "2026-04-29 13:30",
+          updatedAt: "2026-04-29 13:40",
+          coordinates: "55.739, 37.617"
+        }
+      }
+    ],
     source: POINT_SOURCES.EDDS,
     relatedPoints: ["p12"],
     coords: [55.739, 37.617]
@@ -522,6 +532,16 @@ const pointEntities = {
         meta: {
           createdAt: "2026-04-30 03:05",
           updatedAt: "2026-04-30 03:14",
+          coordinates: "55.7332, 37.5884"
+        }
+      }
+    ],
+    photoAfterGallery: [
+      {
+        source: "https://picsum.photos/seed/p9-after-1/1200/800",
+        meta: {
+          createdAt: "2026-04-30 08:45",
+          updatedAt: "2026-04-30 08:50",
           coordinates: "55.7332, 37.5884"
         }
       }

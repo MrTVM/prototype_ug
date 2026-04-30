@@ -287,7 +287,8 @@ export function createModal() {
       const nodes = ensureCompareCurtain();
       if (!nodes?.compareRoot || !nodes.afterImg || !nodes.divider || !nodes.range) return;
       const hasAfterPhotos =
-        item.status === POINT_STATUSES.UNDER_REVIEW && currentAfterPhotos.length > 0;
+        (item.status === POINT_STATUSES.UNDER_REVIEW || item.status === POINT_STATUSES.COMPLETED) &&
+        currentAfterPhotos.length > 0;
       if (!hasAfterPhotos) {
         nodes.compareRoot.classList.add("hidden");
         return;

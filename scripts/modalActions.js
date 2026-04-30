@@ -20,8 +20,9 @@ export function createModalActionsBox({
   escapeText
 }) {
   const wrapper = document.createElement("div");
-  wrapper.className = "space-y-3";
+  wrapper.className = "space-y-3 flex flex-col h-full";
   const isUnderReview = status === POINT_STATUSES.UNDER_REVIEW;
+  const isCompleted = status === POINT_STATUSES.COMPLETED;
 
   const tabsWrap = document.createElement("div");
   tabsWrap.className = "rounded-xl border border-slate-200 bg-white overflow-hidden";
@@ -258,8 +259,33 @@ export function createModalActionsBox({
   tabsWrap.appendChild(panelWhy);
   tabsWrap.appendChild(panelRelatedActions);
 
+  if (isCompleted) {
+    const reportBox = ui.createPaddedSection();
+    reportBox.className = "rounded-xl border border-emerald-200 bg-white px-3 py-3";
+    const completedAt = item.plannedCloseAt || item.createdAt || "—";
+    reportBox.innerHTML = `
+      <div class="flex items-start justify-between gap-3">
+        <div class="text-sm font-semibold text-slate-900">Отчет по выполненным работам</div>
+        <span class="inline-flex items-center rounded-full border border-emerald-200 bg-emerald-100 px-2 py-0.5 text-[11px] font-semibold text-emerald-800">
+          Выполнено
+        </span>
+      </div>
+      <div class="mt-3 space-y-1.5 text-xs text-slate-700">
+        <div><span class="text-slate-500">Подрядчик:</span> ${escapeText(contractor)}</div>
+        <div><span class="text-slate-500">Дата завершения:</span> ${escapeText(completedAt)}</div>
+        <div><span class="text-slate-500">Адрес:</span> ${escapeText(item.address || "—")}</div>
+        <div><span class="text-slate-500">Результат:</span> дефект устранен, фото до/после загружены, контрольный осмотр выполнен.</div>
+        <div class="pt-1 flex items-center gap-3">
+          <a href="#" class="text-xs font-semibold text-slate-900 hover:underline">Скачать XML</a>
+          <a href="#" class="text-xs font-semibold text-slate-900 hover:underline">Скачать PDF</a>
+        </div>
+      </div>
+    `;
+    wrapper.appendChild(reportBox);
+  }
+
   const row = document.createElement("div");
-  row.className = "hidden flex flex-wrap gap-3 items-center";
+  row.className = `${isCompleted ? "" : "hidden "}flex flex-wrap gap-3 items-center mt-auto pt-3`;
   row.setAttribute("data-user-actions-row", "true");
 
   const mkBtn = ({ label, className, onClick }) => {
@@ -309,17 +335,19 @@ export function createModalActionsBox({
 
   row.appendChild(
     mkBtn({
-      label: useAssignmentFlow
-        ? isUnderReview
-          ? "Принять"
-          : "Утвердить поручение"
-        : useProcurementFlow
+      label: isCompleted
+        ? "Отправить отчет"
+        : useAssignmentFlow
           ? isUnderReview
             ? "Принять"
-            : "Запланировать"
-          : isUnderReview
-            ? "Принять"
-            : "Эскалировать",
+            : "Утвердить поручение"
+          : useProcurementFlow
+            ? isUnderReview
+              ? "Принять"
+              : "Запланировать"
+            : isUnderReview
+              ? "Принять"
+              : "Эскалировать",
       className: useAssignmentFlow
         ? "rounded-xl bg-emerald-900 text-white px-4 py-2 text-sm font-semibold shadow-sm hover:bg-emerald-800 transition"
         : useProcurementFlow
@@ -333,29 +361,38 @@ export function createModalActionsBox({
       }
     })
   );
-  row.appendChild(bulkBtn);
+  if (!isCompleted) {
+    row.appendChild(bulkBtn);
+  }
 
   row.appendChild(
     mkBtn({
-      label: "Редактировать",
+      label: isCompleted ? "В архив" : "Редактировать",
       className:
         "rounded-xl border border-slate-200 bg-white hover:bg-slate-50 px-4 py-2 text-sm font-medium shadow-sm transition",
       onClick: () => onClose()
     })
   );
 
-  row.appendChild(
-    mkBtn({
-      label: isUnderReview ? "Вернуть на доработку" : "Отклонить",
-      className:
-        "rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-100 px-4 py-2 text-sm font-medium text-rose-800 shadow-sm transition",
-      onClick: () => onClose()
-    })
-  );
+  if (!isCompleted) {
+    row.appendChild(
+      mkBtn({
+        label: isUnderReview ? "Вернуть на доработку" : "Отклонить",
+        className:
+          "rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-100 px-4 py-2 text-sm font-medium text-rose-800 shadow-sm transition",
+        onClick: () => onClose()
+      })
+    );
+  }
 
-  hideRecommendationText();
-  wrapper.appendChild(tabsWrap);
+  if (!isCompleted) {
+    hideRecommendationText();
+    wrapper.appendChild(tabsWrap);
+  }
   wrapper.appendChild(row);
 
-  return { actionsBox: wrapper, onRecommendationReady: revealRecommendationText };
+  return {
+    actionsBox: wrapper,
+    onRecommendationReady: isCompleted ? () => {} : revealRecommendationText
+  };
 }
