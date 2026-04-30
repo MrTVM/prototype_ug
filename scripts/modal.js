@@ -225,6 +225,8 @@ export function createModal() {
 
   let isOpen = false;
   let currentItem = null;
+  let startAuditProgressRef = null;
+  let stopAuditProgressRef = null;
   let currentPhotos = [];
   let currentPhotoMetas = [];
   let currentPhotoIndex = 0;
@@ -701,6 +703,15 @@ export function createModal() {
 
     const auditBox = document.createElement("div");
     auditBox.className = "p-3";
+    const auditProgress = document.createElement("div");
+    auditProgress.className = "inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-[11px] font-semibold text-slate-700";
+    const updateAuditProgressLabel = (shownCount, totalCount, done = false) => {
+      const shown = Math.max(0, Math.min(shownCount, totalCount));
+      auditProgress.textContent = done
+        ? `Прогресс проверки: ${shown}/${totalCount} (завершено)`
+        : `Прогресс проверки: ${shown}/${totalCount}`;
+    };
+    updateAuditProgressLabel(0, 0);
     const audit = document.createElement("div");
     audit.className = "mt-3 space-y-1";
 
@@ -843,6 +854,7 @@ export function createModal() {
       }
     ];
 
+    const auditRows = [];
     for (const step of auditSteps) {
       const modeClass =
         step.mode === "Ручное"
@@ -858,7 +870,7 @@ export function createModal() {
       const statusIcon =
         step.status === "Успешно" ? "✓" : step.status === "Ошибка" ? "✕" : "…";
       const row = document.createElement("div");
-      row.className = "text-xs text-slate-900";
+      row.className = "text-xs text-slate-900 hidden";
       row.innerHTML = `
         ${escapeText(step.dt)} | ${escapeText(step.text)}
         <span class="ml-2 inline-flex h-5 min-w-5 items-center justify-center rounded-full border px-1 text-[11px] font-semibold ${escapeText(
@@ -872,8 +884,11 @@ export function createModal() {
           ${escapeText(statusIcon)}
         </span>
       `;
+      auditRows.push(row);
       audit.appendChild(row);
     }
+    updateAuditProgressLabel(0, auditRows.length);
+    auditBox.appendChild(auditProgress);
     auditBox.appendChild(audit);
 
     const contextTabsWrap = document.createElement("div");
@@ -922,6 +937,37 @@ export function createModal() {
     makeContextTab("related", "Похожие сообщения");
     makeContextTab("audit", "Аудит-лог");
     activateContextTab("jurisdiction");
+
+    let auditProgressTimer = null;
+    let auditProgressFinished = false;
+    const stopAuditProgress = () => {
+      if (auditProgressTimer) {
+        clearInterval(auditProgressTimer);
+        auditProgressTimer = null;
+      }
+    };
+    const startAuditProgress = () => {
+      stopAuditProgress();
+      auditProgressFinished = false;
+      auditRows.forEach((row) => row.classList.add("hidden"));
+      activateContextTab("audit");
+      let index = 0;
+      updateAuditProgressLabel(0, auditRows.length);
+      auditProgressTimer = setInterval(() => {
+        if (index >= auditRows.length) {
+          stopAuditProgress();
+          if (!auditProgressFinished) {
+            auditProgressFinished = true;
+            updateAuditProgressLabel(auditRows.length, auditRows.length, true);
+            activateContextTab("jurisdiction");
+          }
+          return;
+        }
+        auditRows[index].classList.remove("hidden");
+        index += 1;
+        updateAuditProgressLabel(index, auditRows.length);
+      }, 1000);
+    };
 
     contextTabsWrap.appendChild(contextTabsBar);
     contextTabsWrap.appendChild(jurisdictionBox);
@@ -1244,7 +1290,7 @@ export function createModal() {
       })();
 
     const rightContent = createSectionStack([systemBox]);
-    return { rightContent, actionsBox, summaryBlock };
+    return { rightContent, actionsBox, summaryBlock, startAuditProgress, stopAuditProgress };
   };
 
   const open = (item) => {
@@ -1271,7 +1317,7 @@ export function createModal() {
     `;
     renderPhotoCarousel(item);
 
-    const { rightContent, actionsBox, summaryBlock } = buildStructured(item);
+    const { rightContent, actionsBox, summaryBlock, startAuditProgress, stopAuditProgress } = buildStructured(item);
     summary.innerHTML = "";
     summary.appendChild(summaryBlock);
     const prevDynamic = rightColumn.querySelector('[data-modal-dynamic="context"]');
@@ -1280,6 +1326,9 @@ export function createModal() {
     rightColumn.insertBefore(rightContent, hint);
     leftActions.innerHTML = "";
     leftActions.appendChild(actionsBox);
+    stopAuditProgressRef?.();
+    startAuditProgressRef = startAuditProgress;
+    stopAuditProgressRef = stopAuditProgress;
 
     isOpen = true;
     modal.classList.remove("hidden");
@@ -1288,6 +1337,7 @@ export function createModal() {
     modal.classList.remove("modal-open");
     void modal.offsetWidth;
     requestAnimationFrame(() => modal.classList.add("modal-open"));
+    startAuditProgressRef?.();
 
     document.body.style.overflow = "hidden";
   };
@@ -1300,6 +1350,9 @@ export function createModal() {
     leftActions.innerHTML = "";
     const prevDynamic = rightColumn.querySelector('[data-modal-dynamic="context"]');
     if (prevDynamic) prevDynamic.remove();
+    stopAuditProgressRef?.();
+    startAuditProgressRef = null;
+    stopAuditProgressRef = null;
 
     modal.classList.remove("modal-open");
     modal.classList.add("hidden");
