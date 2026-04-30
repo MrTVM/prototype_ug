@@ -16,6 +16,15 @@ export const POINT_STATUSES = Object.freeze({
   CANCELED: "Отменено"
 });
 
+export const STATUS_ORDER = Object.freeze([
+  POINT_STATUSES.NEW,
+  POINT_STATUSES.IN_PROGRESS,
+  POINT_STATUSES.UNDER_REVIEW,
+  POINT_STATUSES.COMPLETED,
+  POINT_STATUSES.SUSPENDED,
+  POINT_STATUSES.CANCELED
+]);
+
 export const POINT_SOURCES = Object.freeze({
   POS: "ПОС",
   SERVICE_112: "112",
@@ -359,6 +368,12 @@ const buildPoint = (pointEntity) => {
 
 export const points = Object.values(pointEntities).map(buildPoint);
 
+const DEFAULT_STATUS_BADGE = Object.freeze({
+  bg: "bg-slate-50",
+  text: "text-slate-700",
+  border: "border-slate-200"
+});
+
 const statusToBadgeMap = {
   [POINT_STATUSES.NEW]: { bg: "bg-emerald-50", text: "text-emerald-800", border: "border-emerald-200" },
   [POINT_STATUSES.IN_PROGRESS]: { bg: "bg-blue-50", text: "text-blue-800", border: "border-blue-200" },
@@ -369,11 +384,7 @@ const statusToBadgeMap = {
 };
 
 export const statusToBadge = (status) =>
-  statusToBadgeMap[status] || {
-    bg: "bg-slate-50",
-    text: "text-slate-700",
-    border: "border-slate-200"
-  };
+  statusToBadgeMap[status] || DEFAULT_STATUS_BADGE;
 
 export const statusToColorMap = {
   [POINT_STATUSES.NEW]: "#10b981",

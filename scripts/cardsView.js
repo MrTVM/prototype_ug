@@ -1,5 +1,5 @@
-import { POINT_STATUSES, statusToBadge } from "./constants.js";
-import { el, escapeHtml } from "./utils.js";
+import { STATUS_ORDER, statusToBadge } from "./constants.js";
+import { el, escapeHtml, groupBy } from "./utils.js";
 
 export function createCardsView() {
   const render = (items, onCardClick) => {
@@ -10,20 +10,7 @@ export function createCardsView() {
     count.textContent = String(items.length);
     kanban.innerHTML = "";
 
-    const statusOrder = [
-      POINT_STATUSES.NEW,
-      POINT_STATUSES.IN_PROGRESS,
-      POINT_STATUSES.UNDER_REVIEW,
-      POINT_STATUSES.COMPLETED,
-      POINT_STATUSES.SUSPENDED,
-      POINT_STATUSES.CANCELED
-    ];
-
-    const byStatus = new Map();
-    for (const item of items) {
-      if (!byStatus.has(item.status)) byStatus.set(item.status, []);
-      byStatus.get(item.status).push(item);
-    }
+    const byStatus = groupBy(items, (item) => item.status);
 
     const createColumn = (status) => {
       const colItems = byStatus.get(status) || [];
@@ -97,7 +84,7 @@ export function createCardsView() {
       return column;
     };
 
-    for (const status of statusOrder) {
+    for (const status of STATUS_ORDER) {
       // Даже если конкретной колонки нет в данных — она будет отображаться (как “канбан”).
       kanban.appendChild(createColumn(status));
     }

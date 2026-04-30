@@ -1,4 +1,4 @@
-import { el } from "./utils.js";
+import { el, indexById } from "./utils.js";
 import { OWNERSHIP_FORMS, POINT_STATUSES, points, rules, statusToBadge } from "./constants.js";
 
 function pad2(n) {
@@ -179,23 +179,18 @@ function createSectionStack(blocks) {
   return stack;
 }
 
+const DEFAULT_DRAFT_LABEL = "🟡 Черновик (требует согласования)";
+const draftLabelByStatus = {
+  [POINT_STATUSES.NEW]: DEFAULT_DRAFT_LABEL,
+  [POINT_STATUSES.IN_PROGRESS]: DEFAULT_DRAFT_LABEL,
+  [POINT_STATUSES.UNDER_REVIEW]: DEFAULT_DRAFT_LABEL,
+  [POINT_STATUSES.COMPLETED]: "🟢 Завершено (можно закрывать)",
+  [POINT_STATUSES.SUSPENDED]: "🟠 На паузе (ожидает уточнений)",
+  [POINT_STATUSES.CANCELED]: "🔴 Отменено (закрыто)"
+};
+
 function statusToDraftLabel(status) {
-  switch (status) {
-    case POINT_STATUSES.IN_PROGRESS:
-      return "🟡 Черновик (требует согласования)";
-    case POINT_STATUSES.UNDER_REVIEW:
-      return "🟡 Черновик (требует согласования)";
-    case POINT_STATUSES.COMPLETED:
-      return "🟢 Завершено (можно закрывать)";
-    case POINT_STATUSES.SUSPENDED:
-      return "🟠 На паузе (ожидает уточнений)";
-    case POINT_STATUSES.CANCELED:
-      return "🔴 Отменено (закрыто)";
-    case POINT_STATUSES.NEW:
-      return "🟡 Черновик (требует согласования)";
-    default:
-      return "🟡 Черновик (требует согласования)";
-  }
+  return draftLabelByStatus[status] || DEFAULT_DRAFT_LABEL;
 }
 
 export function createModal() {
@@ -230,6 +225,7 @@ export function createModal() {
   let currentPhotos = [];
   let currentPhotoMetas = [];
   let currentPhotoIndex = 0;
+  const pointsById = indexById(points);
 
   const ensurePhotoBadge = () => {
     const host = photoMain?.parentElement;
@@ -661,9 +657,7 @@ export function createModal() {
     relatedWrap.appendChild(relatedTitle);
 
     const relatedIds = Array.isArray(item.relatedPoints) ? item.relatedPoints : [];
-    const relatedPoints = relatedIds
-      .map((id) => points.find((point) => point?.id === id))
-      .filter(Boolean);
+    const relatedPoints = relatedIds.map((id) => pointsById.get(id)).filter(Boolean);
 
     if (relatedPoints.length === 0) {
       const empty = document.createElement("div");
