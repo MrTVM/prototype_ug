@@ -186,7 +186,7 @@ const pointEntities = {
       "Планируется замена участка трубопровода.\nСроки уточняются после выезда специалиста.",
     photoGallery: [
       {
-        source: "https://picsum.photos/seed/p1-1/1200/800",
+        source: "./src/photos/p1-before.svg",
         meta: {
           createdAt: "2026-04-28 08:50",
           updatedAt: "2026-04-28 09:05",
@@ -194,7 +194,7 @@ const pointEntities = {
         }
       },
       {
-        source: "https://picsum.photos/seed/p1-2/1200/800",
+        source: "./src/photos/p1-before.svg",
         meta: {
           createdAt: "2026-04-29 08:52",
           updatedAt: "2026-04-29 09:06",
@@ -202,7 +202,7 @@ const pointEntities = {
         }
       },
       {
-        source: "https://picsum.photos/seed/p1-3/1200/800",
+        source: "./src/photos/p1-before.svg",
         meta: {
           createdAt: "2026-04-29 08:55",
           updatedAt: "2026-04-29 09:10",
@@ -233,7 +233,7 @@ const pointEntities = {
       "Заявка направлена в профильный отдел.\nОжидаем подтверждение графика работ.",
     photoGallery: [
       {
-        source: "https://picsum.photos/seed/p2-1/1200/800",
+        source: "./src/photos/p2-before.svg",
         meta: {
           createdAt: "2026-04-29 09:50",
           updatedAt: "2026-04-29 10:00",
@@ -243,7 +243,7 @@ const pointEntities = {
     ],
     photoAfterGallery: [
       {
-        source: "https://picsum.photos/seed/p2-after-1/1200/800",
+        source: "./src/photos/p2-after.svg",
         meta: {
           createdAt: "2026-04-30 11:35",
           updatedAt: "2026-04-30 11:40",
@@ -274,7 +274,7 @@ const pointEntities = {
       "Неисправность устранена.\nПроведены проверки и включение нагрузки в штатный режим.",
     photoGallery: [
       {
-        source: "https://picsum.photos/seed/p3-1/1200/800",
+        source: "./src/photos/p3-before.svg",
         meta: {
           createdAt: "2026-04-27 21:15",
           updatedAt: "2026-04-27 21:30",
@@ -282,7 +282,7 @@ const pointEntities = {
         }
       },
       {
-        source: "https://picsum.photos/seed/p3-2/1200/800",
+        source: "./src/photos/p3-before.svg",
         meta: {
           createdAt: "2026-04-27 21:20",
           updatedAt: "2026-04-27 21:35",
@@ -292,7 +292,7 @@ const pointEntities = {
     ],
     photoAfterGallery: [
       {
-        source: "https://picsum.photos/seed/p3-after-1/1200/800",
+        source: "./src/photos/p3-after.svg",
         meta: {
           createdAt: "2026-04-29 13:30",
           updatedAt: "2026-04-29 13:40",
@@ -323,7 +323,7 @@ const pointEntities = {
       "Требуется вывоз мусора и первичная уборка.\nПосле согласования подготовим график выездов.",
     photoGallery: [
       {
-        source: "https://picsum.photos/seed/p4-1/1200/800",
+        source: "./src/photos/p4-before.svg",
         meta: {
           createdAt: "2026-04-29 08:00",
           updatedAt: "2026-04-29 08:10",
@@ -331,7 +331,7 @@ const pointEntities = {
         }
       },
       {
-        source: "https://picsum.photos/seed/p4-2/1200/800",
+        source: "./src/photos/p4-before.svg",
         meta: {
           createdAt: "2026-04-29 08:05",
           updatedAt: "2026-04-29 08:15",
@@ -339,7 +339,7 @@ const pointEntities = {
         }
       },
       {
-        source: "https://picsum.photos/seed/p4-3/1200/800",
+        source: "./src/photos/p4-before.svg",
         meta: {
           createdAt: "2026-04-29 08:08",
           updatedAt: "2026-04-29 08:18",
@@ -370,7 +370,7 @@ const pointEntities = {
       "Работы приостановлены до получения дополнительных согласований.\nПланируем возобновление после решения вопроса.",
     photoGallery: [
       {
-        source: "https://picsum.photos/seed/p5-1/1200/800",
+        source: "./src/photos/p5-before.svg",
         meta: {
           createdAt: "2026-04-27 13:20",
           updatedAt: "2026-04-27 13:35",
@@ -378,7 +378,7 @@ const pointEntities = {
         }
       },
       {
-        source: "https://picsum.photos/seed/p5-2/1200/800",
+        source: "./src/photos/p5-before.svg",
         meta: {
           createdAt: "2026-04-27 13:25",
           updatedAt: "2026-04-27 13:40",
@@ -409,7 +409,7 @@ const pointEntities = {
       "Заявка отклонена.\nПричина: несоответствие требованиям по регламенту.",
     photoGallery: [
       {
-        source: "https://picsum.photos/seed/p6-1/1200/800",
+        source: "./src/photos/p6-before.svg",
         meta: {
           createdAt: "2026-04-26 10:45",
           updatedAt: "2026-04-26 10:55",
@@ -417,7 +417,7 @@ const pointEntities = {
         }
       },
       {
-        source: "https://picsum.photos/seed/p6-2/1200/800",
+        source: "./src/photos/p6-before.svg",
         meta: {
           createdAt: "2026-04-26 10:50",
           updatedAt: "2026-04-26 11:00",
@@ -448,7 +448,7 @@ const pointEntities = {
       "У остановки образовалась просадка тротуарной плитки после дождя.\nНужно восстановить покрытие и проверить основание.",
     photoGallery: [
       {
-        source: "https://picsum.photos/seed/p7-1/1200/800",
+        source: "./src/photos/p7-before.svg",
         meta: {
           createdAt: "2026-04-30 07:31",
           updatedAt: "2026-04-30 07:40",
@@ -456,7 +456,7 @@ const pointEntities = {
         }
       },
       {
-        source: "https://picsum.photos/seed/p7-2/1200/800",
+        source: "./src/photos/p7-before.svg",
         meta: {
           createdAt: "2026-04-30 07:33",
           updatedAt: "2026-04-30 07:41",
@@ -487,7 +487,7 @@ const pointEntities = {
       "На площадке ведутся ночные работы, ограждение частично демонтировано.\nНужно проверить документы и приостановить работы до устранения нарушений.",
     photoGallery: [
       {
-        source: "https://picsum.photos/seed/p8-1/1200/800",
+        source: "./src/photos/p8-before.svg",
         meta: {
           createdAt: "2026-04-30 11:00",
           updatedAt: "2026-04-30 11:09",
@@ -497,7 +497,7 @@ const pointEntities = {
     ],
     photoAfterGallery: [
       {
-        source: "https://picsum.photos/seed/p8-after-1/1200/800",
+        source: "./src/photos/p8-after.svg",
         meta: {
           createdAt: "2026-04-30 12:00",
           updatedAt: "2026-04-30 12:05",
@@ -528,7 +528,7 @@ const pointEntities = {
       "Люк был открыт, вокруг отсутствовали предупреждающие знаки.\nУчасток оперативно оградили и закрыли колодец.",
     photoGallery: [
       {
-        source: "https://picsum.photos/seed/p9-1/1200/800",
+        source: "./src/photos/p9-before.svg",
         meta: {
           createdAt: "2026-04-30 03:05",
           updatedAt: "2026-04-30 03:14",
@@ -538,7 +538,7 @@ const pointEntities = {
     ],
     photoAfterGallery: [
       {
-        source: "https://picsum.photos/seed/p9-after-1/1200/800",
+        source: "./src/photos/p9-after.svg",
         meta: {
           createdAt: "2026-04-30 08:45",
           updatedAt: "2026-04-30 08:50",
@@ -567,7 +567,12 @@ const pointEntities = {
     status: POINT_STATUSES.NEW,
     description:
       "Во дворе складированы старые шкафы и строительный мусор.\nТребуется вывоз КГМ и санитарная обработка участка.",
-    photoGallery: [],
+    photoGallery: [
+      {
+        source: "./src/photos/p10-before.svg",
+        meta: {}
+      }
+    ],
     source: POINT_SOURCES.EMAIL,
     relatedPoints: ["p4"],
     coords: [55.6998, 37.7274]
@@ -591,7 +596,7 @@ const pointEntities = {
       "Обращение признано дублирующим существующий кейс.\nНовые материалы не приложены, карточка закрыта по регламенту.",
     photoGallery: [
       {
-        source: "https://picsum.photos/seed/p11-1/1200/800",
+        source: "./src/photos/p11-before.svg",
         meta: {
           createdAt: "2026-04-28 15:00",
           updatedAt: "2026-04-27 15:10",
@@ -622,7 +627,7 @@ const pointEntities = {
       "Зафиксированы повторные отключения электроснабжения в вечернее время.\nДо уточнения балансовой принадлежности заявка временно приостановлена.",
     photoGallery: [
       {
-        source: "https://picsum.photos/seed/p12-1/1200/800",
+        source: "./src/photos/p12-before.svg",
         meta: {}
       }
     ],

@@ -63,17 +63,19 @@ function extractDatePart(value) {
 }
 
 function createInlineFallbackImage(seed, index) {
-  const label = `Фото недоступно #${index + 1}`;
+  const label = `ЗАГЛУШКА #${index + 1}`;
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800">
   <defs>
     <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#e2e8f0"/>
-      <stop offset="100%" stop-color="#cbd5e1"/>
+      <stop offset="0%" stop-color="#334155"/>
+      <stop offset="100%" stop-color="#0f172a"/>
     </linearGradient>
   </defs>
   <rect width="1200" height="800" fill="url(#g)"/>
-  <text x="600" y="380" text-anchor="middle" font-family="Arial, sans-serif" font-size="42" fill="#334155">${label}</text>
-  <text x="600" y="430" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" fill="#475569">Источник: ${seed}</text>
+  <rect x="80" y="80" width="1040" height="640" rx="20" fill="none" stroke="#ef4444" stroke-width="8" stroke-dasharray="16 10"/>
+  <text x="600" y="360" text-anchor="middle" font-family="Arial, sans-serif" font-size="64" font-weight="700" fill="#fecaca">${label}</text>
+  <text x="600" y="430" text-anchor="middle" font-family="Arial, sans-serif" font-size="30" fill="#fca5a5">Файл отсутствует или недоступен</text>
+  <text x="600" y="485" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#fda4af">seed: ${seed}</text>
 </svg>`;
   return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
 }
@@ -81,6 +83,13 @@ function createInlineFallbackImage(seed, index) {
 function normalizePhotoSource(source, seed, index) {
   const src = String(source || "").trim();
   if (!src) return createInlineFallbackImage(seed, index);
+  if (/^\.?\/?src\//i.test(src)) {
+    try {
+      return new URL(src.replace(/^\.\//, ""), window.location.href).href;
+    } catch (_err) {
+      return src;
+    }
+  }
   // В прототипе исключаем внешние нестабильные источники (picsum), чтобы UI не зависел от сети.
   if (/^https?:\/\/picsum\.photos\//i.test(src)) {
     return createInlineFallbackImage(seed, index);
@@ -229,13 +238,6 @@ export function createModal() {
       .filter((photo) => Boolean(photo?.source));
     if (photoEntries.length === 0) {
       photoEntries = fallbackGallery.map((src) => ({ source: src, meta: {} }));
-    } else if (photoEntries.length === 1) {
-      // Даже при одном фото оставляем возможность листания на fallback-кадры.
-      photoEntries = [
-        photoEntries[0],
-        { source: fallbackGallery[1], meta: {} },
-        { source: fallbackGallery[2], meta: {} }
-      ];
     }
     currentPhotos = photoEntries.map((photo) => photo.source);
     currentAfterPhotos = sourceAfterGallery
