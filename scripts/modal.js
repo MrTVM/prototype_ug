@@ -408,7 +408,8 @@ export function createModal() {
     renderThumbs();
   };
 
-  const buildStructured = (item) => {
+  const buildStructured = (item, options = {}) => {
+    const onGarVerified = typeof options.onGarVerified === "function" ? options.onGarVerified : () => {};
     const now = new Date(item.createdAt);
     const city = getCity(item.address);
     const coords = formatCoords(item.coords);
@@ -854,6 +855,7 @@ export function createModal() {
       }
     ];
 
+    const garStepIndex = auditSteps.findIndex((step) => step.text === "Запрос к ГАР");
     const auditRows = [];
     for (const step of auditSteps) {
       const modeClass =
@@ -949,6 +951,7 @@ export function createModal() {
     const startAuditProgress = () => {
       stopAuditProgress();
       auditProgressFinished = false;
+      let garBadgeActivated = false;
       auditRows.forEach((row) => row.classList.add("hidden"));
       activateContextTab("audit");
       let index = 0;
@@ -964,6 +967,10 @@ export function createModal() {
           return;
         }
         auditRows[index].classList.remove("hidden");
+        if (!garBadgeActivated && garStepIndex >= 0 && index === garStepIndex) {
+          garBadgeActivated = true;
+          onGarVerified();
+        }
         index += 1;
         updateAuditProgressLabel(index, auditRows.length);
       }, 1000);
@@ -1307,7 +1314,7 @@ export function createModal() {
       <div class="rounded-xl border border-slate-200/90 bg-white px-3 py-2.5">
         <div class="flex items-start justify-between gap-3">
           <div class="text-sm text-slate-700 leading-relaxed">${escapeText(addressLine)}
-            <span class="inline-flex align-middle ml-2 rounded-md border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[11px] font-semibold text-emerald-700">проверено ГАР</span>
+            <span data-gar-badge class="hidden inline-flex align-middle ml-2 rounded-md border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[11px] font-semibold text-emerald-700">проверено ГАР</span>
           </div>
         </div>
         <div class="mt-2 text-xs text-slate-500">Координаты: ${escapeText(coordsLine)}</div>
@@ -1315,9 +1322,13 @@ export function createModal() {
         <div class="text-xs text-slate-500">Муниципальный район: ${escapeText(municipalDistrictLine)}</div>
       </div>
     `;
+    const garBadge = address.querySelector("[data-gar-badge]");
+    const showGarBadge = () => garBadge?.classList.remove("hidden");
     renderPhotoCarousel(item);
 
-    const { rightContent, actionsBox, summaryBlock, startAuditProgress, stopAuditProgress } = buildStructured(item);
+    const { rightContent, actionsBox, summaryBlock, startAuditProgress, stopAuditProgress } = buildStructured(item, {
+      onGarVerified: showGarBadge
+    });
     summary.innerHTML = "";
     summary.appendChild(summaryBlock);
     const prevDynamic = rightColumn.querySelector('[data-modal-dynamic="context"]');
