@@ -410,6 +410,9 @@ export function createModal() {
 
   const buildStructured = (item, options = {}) => {
     const onGarVerified = typeof options.onGarVerified === "function" ? options.onGarVerified : () => {};
+    const onPhotoVerified = typeof options.onPhotoVerified === "function" ? options.onPhotoVerified : () => {};
+    let onRecommendationReady =
+      typeof options.onRecommendationReady === "function" ? options.onRecommendationReady : () => {};
     const now = new Date(item.createdAt);
     const city = getCity(item.address);
     const coords = formatCoords(item.coords);
@@ -856,6 +859,10 @@ export function createModal() {
     ];
 
     const garStepIndex = auditSteps.findIndex((step) => step.text === "Запрос к ГАР");
+    const photoStepIndex = auditSteps.findIndex((step) => step.text.startsWith("Сверка мета фото:"));
+    const recommendationStepIndex = auditSteps.findIndex((step) =>
+      step.text.startsWith("Формирование рекомендаций:")
+    );
     const auditRows = [];
     for (const step of auditSteps) {
       const modeClass =
@@ -952,6 +959,8 @@ export function createModal() {
       stopAuditProgress();
       auditProgressFinished = false;
       let garBadgeActivated = false;
+      let photoBadgeActivated = false;
+      let recommendationActivated = false;
       auditRows.forEach((row) => row.classList.add("hidden"));
       activateContextTab("audit");
       let index = 0;
@@ -970,6 +979,14 @@ export function createModal() {
         if (!garBadgeActivated && garStepIndex >= 0 && index === garStepIndex) {
           garBadgeActivated = true;
           onGarVerified();
+        }
+        if (!photoBadgeActivated && photoStepIndex >= 0 && index === photoStepIndex) {
+          photoBadgeActivated = true;
+          onPhotoVerified();
+        }
+        if (!recommendationActivated && recommendationStepIndex >= 0 && index === recommendationStepIndex) {
+          recommendationActivated = true;
+          onRecommendationReady();
         }
         index += 1;
         updateAuditProgressLabel(index, auditRows.length);
@@ -1006,9 +1023,10 @@ export function createModal() {
                   ? "Текст включения в план закупок"
                   : "Текст эскалации"
             }</div>
-            <span class="inline-flex items-center rounded-full border border-violet-200 bg-violet-50 px-2 py-0.5 text-[10px] font-semibold text-violet-700">по рекомендации</span>
+            <span data-recommendation-badge class="hidden inline-flex items-center rounded-full border border-violet-200 bg-violet-50 px-2 py-0.5 text-[10px] font-semibold text-violet-700">по рекомендации</span>
           </div>
-          <div class="text-xs text-slate-700 whitespace-pre-line">${
+          <div data-recommendation-wait class="text-xs text-slate-500">Ожидание шага "Формирование рекомендаций" в аудит-логе...</div>
+          <div data-recommendation-text class="hidden text-xs text-slate-700 whitespace-pre-line">${
             useAssignmentFlow
               ? `Направить подрядчику ${escapeText(
                   contractor
@@ -1031,7 +1049,23 @@ export function createModal() {
 Приложения: ${escapeText(escalationRule?.attachments || "Добавьте пакет вручную")}.`
           }</div>
         `;
-
+        const recommendationTextBadge = panelText.querySelector("[data-recommendation-badge]");
+        const recommendationTextBody = panelText.querySelector("[data-recommendation-text]");
+        const recommendationTextWait = panelText.querySelector("[data-recommendation-wait]");
+        const revealRecommendationText = () => {
+          const actionsRow = wrapper.querySelector("[data-user-actions-row]");
+          recommendationTextBadge?.classList.remove("hidden");
+          recommendationTextBody?.classList.remove("hidden");
+          recommendationTextWait?.classList.add("hidden");
+          actionsRow?.classList.remove("hidden");
+        };
+        const hideRecommendationText = () => {
+          const actionsRow = wrapper.querySelector("[data-user-actions-row]");
+          recommendationTextBadge?.classList.add("hidden");
+          recommendationTextBody?.classList.add("hidden");
+          recommendationTextWait?.classList.remove("hidden");
+          actionsRow?.classList.add("hidden");
+        };
         const panelRecommendation = document.createElement("div");
         panelRecommendation.className = "p-3 hidden";
         panelRecommendation.innerHTML = `
@@ -1210,7 +1244,8 @@ export function createModal() {
         tabsWrap.appendChild(panelRelatedActions);
 
         const row = document.createElement("div");
-        row.className = "flex flex-wrap gap-3 items-center";
+        row.className = "hidden flex flex-wrap gap-3 items-center";
+        row.setAttribute("data-user-actions-row", "true");
 
         const mkBtn = ({ label, className, onClick }) => {
           const btn = document.createElement("button");
@@ -1291,6 +1326,8 @@ export function createModal() {
           })
         );
 
+        hideRecommendationText();
+        onRecommendationReady = revealRecommendationText;
         wrapper.appendChild(tabsWrap);
         wrapper.appendChild(row);
         return wrapper;
@@ -1303,7 +1340,10 @@ export function createModal() {
   const open = (item) => {
     currentItem = item;
     console.log("[photo-badge] modal open", { itemId: item?.id, photoGallery: item?.photoGallery });
-    ensurePhotoBadge();
+    const initialPhotoBadgeNodes = ensurePhotoBadge();
+    if (initialPhotoBadgeNodes?.badge) {
+      initialPhotoBadgeNodes.badge.style.visibility = "hidden";
+    }
     title.textContent = item.theme;
     const gar = item.gar || {};
     const addressLine = item.address || "—";
@@ -1326,8 +1366,13 @@ export function createModal() {
     const showGarBadge = () => garBadge?.classList.remove("hidden");
     renderPhotoCarousel(item);
 
+    const showPhotoBadge = () => {
+      const nodes = ensurePhotoBadge();
+      if (nodes?.badge) nodes.badge.style.visibility = "visible";
+    };
     const { rightContent, actionsBox, summaryBlock, startAuditProgress, stopAuditProgress } = buildStructured(item, {
-      onGarVerified: showGarBadge
+      onGarVerified: showGarBadge,
+      onPhotoVerified: showPhotoBadge
     });
     summary.innerHTML = "";
     summary.appendChild(summaryBlock);
