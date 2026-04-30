@@ -28,8 +28,8 @@ export const points = [
       {
         source: "https://picsum.photos/seed/p1-1/1200/800",
         meta: {
-          createdAt: "2026-04-29 08:50",
-          updatedAt: "2026-04-29 09:05",
+          createdAt: "2026-04-28 08:50",
+          updatedAt: "2026-04-28 09:05",
           coordinates: "55.751244, 37.618423"
         }
       },

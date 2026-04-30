@@ -55,6 +55,32 @@ function extractDatePart(value) {
   return `${parsed.getFullYear()}-${pad2(parsed.getMonth() + 1)}-${pad2(parsed.getDate())}`;
 }
 
+function createInlineFallbackImage(seed, index) {
+  const label = `Фото недоступно #${index + 1}`;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#e2e8f0"/>
+      <stop offset="100%" stop-color="#cbd5e1"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#g)"/>
+  <text x="600" y="380" text-anchor="middle" font-family="Arial, sans-serif" font-size="42" fill="#334155">${label}</text>
+  <text x="600" y="430" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" fill="#475569">Источник: ${seed}</text>
+</svg>`;
+  return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
+}
+
+function normalizePhotoSource(source, seed, index) {
+  const src = String(source || "").trim();
+  if (!src) return createInlineFallbackImage(seed, index);
+  // В прототипе исключаем внешние нестабильные источники (picsum), чтобы UI не зависел от сети.
+  if (/^https?:\/\/picsum\.photos\//i.test(src)) {
+    return createInlineFallbackImage(seed, index);
+  }
+  return src;
+}
+
 function escapeText(str) {
   // Для генерации HTML не используем: только в отдельных местах (риски минимальны).
   return String(str)
@@ -171,9 +197,6 @@ export function createModal() {
   const address = el("modal-address");
   const summary = el("modal-summary");
   const photoMain = el("modal-photo-main");
-  const photoBadge = el("modal-photo-badge");
-  const photoBadgeIcon = el("modal-photo-badge-icon");
-  const photoBadgeText = el("modal-photo-badge-text");
   const photoPrev = el("modal-photo-prev");
   const photoNext = el("modal-photo-next");
   const photoThumbs = el("modal-photo-thumbs");
@@ -196,12 +219,60 @@ export function createModal() {
   let currentPhotoMetas = [];
   let currentPhotoIndex = 0;
 
+  const ensurePhotoBadge = () => {
+    const host = photoMain?.parentElement;
+    if (!host) {
+      console.log("[photo-badge] host not found", { photoMainExists: Boolean(photoMain) });
+      return null;
+    }
+
+    let badge = el("modal-photo-badge");
+    if (!badge) {
+      badge = document.createElement("div");
+      badge.id = "modal-photo-badge";
+      host.appendChild(badge);
+    }
+    badge.style.position = "absolute";
+    badge.style.left = "12px";
+    badge.style.top = "12px";
+    badge.style.zIndex = "30";
+    badge.style.display = "inline-flex";
+    badge.style.alignItems = "center";
+    badge.style.gap = "4px";
+    badge.style.padding = "4px 10px";
+    badge.style.borderRadius = "9999px";
+    badge.style.fontSize = "12px";
+    badge.style.fontWeight = "600";
+    badge.style.boxShadow = "0 1px 2px rgba(0,0,0,0.08)";
+    badge.style.pointerEvents = "none";
+    badge.className =
+      "absolute left-3 top-3 z-10 inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white/95 px-2.5 py-1 text-xs font-semibold text-slate-700 shadow-sm";
+
+    let icon = el("modal-photo-badge-icon");
+    if (!icon) {
+      icon = document.createElement("span");
+      icon.id = "modal-photo-badge-icon";
+      icon.setAttribute("aria-hidden", "true");
+      badge.appendChild(icon);
+    }
+    if (!icon.textContent) icon.textContent = "⏳";
+
+    let text = el("modal-photo-badge-text");
+    if (!text) {
+      text = document.createElement("span");
+      text.id = "modal-photo-badge-text";
+      badge.appendChild(text);
+    }
+    if (!text.textContent) text.textContent = "Проверка фото...";
+    return { badge, icon, text };
+  };
+
   const renderPhotoCarousel = (item) => {
     const seedBase = String(item.id || "fallback");
     const fallbackGallery = [
-      `https://picsum.photos/seed/${seedBase}-1/1200/800`,
-      `https://picsum.photos/seed/${seedBase}-2/1200/800`,
-      `https://picsum.photos/seed/${seedBase}-3/1200/800`
+      createInlineFallbackImage(seedBase, 0),
+      createInlineFallbackImage(seedBase, 1),
+      createInlineFallbackImage(seedBase, 2)
     ];
 
     const sourceGallery = Array.isArray(item.photoGallery)
@@ -211,7 +282,13 @@ export function createModal() {
         : [];
 
     let photoEntries = sourceGallery
-      .map((photo) => (typeof photo === "string" ? { source: photo, meta: {} } : photo))
+      .map((photo, idx) => {
+        const normalized = typeof photo === "string" ? { source: photo, meta: {} } : photo;
+        return {
+          ...normalized,
+          source: normalizePhotoSource(normalized?.source, seedBase, idx)
+        };
+      })
       .filter((photo) => Boolean(photo?.source));
     if (photoEntries.length === 0) {
       photoEntries = fallbackGallery.map((src) => ({ source: src, meta: {} }));
@@ -229,24 +306,43 @@ export function createModal() {
     currentPhotoIndex = 0;
 
     const updatePhotoBadge = () => {
-      if (!photoBadge || !photoBadgeIcon || !photoBadgeText) return;
+      const badgeNodes = ensurePhotoBadge();
+      if (!badgeNodes) {
+        console.log("[photo-badge] update skipped: badge nodes missing");
+        return;
+      }
+      const { badge, icon, text } = badgeNodes;
       const photoMeta = currentPhotoMetas[currentPhotoIndex] || {};
       const pointCoords = parseCoords(item.coords);
-      const photoCoords = parseCoords(photoMeta.coordinates);
+      const photoCoords = parseCoords(photoMeta.coordinates || photoMeta.geoCoordinates);
       const pointDate = extractDatePart(item.createdAt);
-      const photoUpdatedDate = extractDatePart(photoMeta.updatedAt);
+      const photoUpdatedDate = extractDatePart(photoMeta.updatedAt || photoMeta.updated_at);
       const geoMatches =
         Boolean(pointCoords && photoCoords) && distanceMeters(pointCoords, photoCoords) <= 200;
       const dateMatches = Boolean(pointDate) && pointDate === photoUpdatedDate;
       const isVerified = geoMatches && dateMatches;
+      console.log("[photo-badge] update", {
+        currentPhotoIndex,
+        photoMeta,
+        pointCoords,
+        photoCoords,
+        pointDate,
+        photoUpdatedDate,
+        geoMatches,
+        dateMatches,
+        isVerified
+      });
 
-      photoBadge.className = `absolute left-3 top-3 inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold shadow-sm ${
+      badge.style.border = isVerified ? "1px solid #a7f3d0" : "1px solid #fde68a";
+      badge.style.background = isVerified ? "rgba(236,253,245,0.95)" : "rgba(255,251,235,0.95)";
+      badge.style.color = isVerified ? "#065f46" : "#92400e";
+      badge.className = `absolute left-3 top-3 z-10 inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold shadow-sm ${
         isVerified
           ? "border border-emerald-200 bg-emerald-50/95 text-emerald-800"
           : "border border-amber-200 bg-amber-50/95 text-amber-900"
       }`;
-      photoBadgeIcon.textContent = isVerified ? "✅" : "⚠️";
-      photoBadgeText.textContent = isVerified ? "Фото проверено" : "Фото требует проверки";
+      icon.textContent = isVerified ? "✅" : "⚠️";
+      text.textContent = isVerified ? "Фото проверено" : "Фото требует проверки";
     };
 
     const applyMain = () => {
@@ -769,6 +865,8 @@ export function createModal() {
 
   const open = (item) => {
     currentItem = item;
+    console.log("[photo-badge] modal open", { itemId: item?.id, photoGallery: item?.photoGallery });
+    ensurePhotoBadge();
     title.textContent = item.theme;
     const gar = item.gar || {};
     const addressLine = item.address || "—";
