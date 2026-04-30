@@ -1,5 +1,5 @@
 import { el } from "./utils.js";
-import { rules } from "./constants.js";
+import { points, rules } from "./constants.js";
 
 function pad2(n) {
   return String(n).padStart(2, "0");
@@ -642,6 +642,47 @@ export function createModal() {
     contractItems.appendChild(contractDetails);
     contractBox.appendChild(contractItems);
 
+    const relatedBox = document.createElement("div");
+    relatedBox.className = "p-3";
+    const relatedWrap = document.createElement("div");
+    relatedWrap.className = "mt-3 space-y-3";
+    const relatedTitle = document.createElement("div");
+    relatedTitle.className = "text-xs font-semibold text-slate-900";
+    relatedTitle.textContent = "Похожие сообщения";
+    relatedWrap.appendChild(relatedTitle);
+
+    const relatedIds = Array.isArray(item.relatedPoints) ? item.relatedPoints : [];
+    const relatedPoints = relatedIds
+      .map((id) => points.find((point) => point?.id === id))
+      .filter(Boolean);
+
+    if (relatedPoints.length === 0) {
+      const empty = document.createElement("div");
+      empty.className = "text-xs text-slate-600";
+      empty.textContent = "Связанные сообщения не найдены.";
+      relatedWrap.appendChild(empty);
+    } else {
+      relatedPoints.forEach((relatedPoint) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className =
+          "w-full text-left rounded-lg border border-slate-200 bg-white hover:bg-slate-50 px-3 py-2 transition";
+        btn.innerHTML = `
+          <div class="text-xs font-semibold text-slate-900">${escapeText(relatedPoint.theme || relatedPoint.id)}</div>
+          <div class="text-xs text-slate-600 mt-0.5">${escapeText(relatedPoint.address || "—")}</div>
+          <div class="text-[11px] text-slate-500 mt-1">ID: ${escapeText(relatedPoint.id)} · ${escapeText(
+          relatedPoint.requestType || "—"
+        )}</div>
+        `;
+        btn.addEventListener("click", () => {
+          close();
+          open(relatedPoint);
+        });
+        relatedWrap.appendChild(btn);
+      });
+    }
+    relatedBox.appendChild(relatedWrap);
+
     const deadlineStr = `${pad2(recommendedDeadline.getDate())}.${pad2(recommendedDeadline.getMonth() + 1)}.${recommendedDeadline.getFullYear()}`;
 
     const auditBox = document.createElement("div");
@@ -680,6 +721,7 @@ export function createModal() {
     const contextPanels = {
       jurisdiction: jurisdictionBox,
       contract: contractBox,
+      related: relatedBox,
       audit: auditBox
     };
     const contextTabButtons = {};
@@ -713,12 +755,14 @@ export function createModal() {
 
     makeContextTab("jurisdiction", "Юрисдикция");
     makeContextTab("contract", "Контрактные обязательства");
+    makeContextTab("related", "Похожие сообщения");
     makeContextTab("audit", "Аудит-лог");
     activateContextTab("jurisdiction");
 
     contextTabsWrap.appendChild(contextTabsBar);
     contextTabsWrap.appendChild(jurisdictionBox);
     contextTabsWrap.appendChild(contractBox);
+    contextTabsWrap.appendChild(relatedBox);
     contextTabsWrap.appendChild(auditBox);
     systemBox.appendChild(contextTabsWrap);
 

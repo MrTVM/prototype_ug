@@ -56,7 +56,7 @@ export const points = [
       }
     ],
     source: "ПОС",
-    relatedPoints: ["p3"],
+    relatedPoints: ["p3", "p1"],
     coords: [55.751244, 37.618423]
   },
   {
