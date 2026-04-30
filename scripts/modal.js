@@ -1,5 +1,6 @@
 import { el, escapeHtml, indexById } from "./utils.js";
 import { OWNERSHIP_FORMS, POINT_STATUSES, points, rules, statusToBadge } from "./constants.js";
+import { createUiFactory } from "./uiFactory.js";
 
 function pad2(n) {
   return String(n).padStart(2, "0");
@@ -86,56 +87,6 @@ function escapeText(str) {
   return escapeHtml(str);
 }
 
-function createText(parent, className, text) {
-  const node = document.createElement("div");
-  if (className) node.className = className;
-  node.textContent = text;
-  parent.appendChild(node);
-  return node;
-}
-
-function createRow(parent, label, value) {
-  const row = document.createElement("div");
-  row.className = "flex items-start justify-between gap-4";
-
-  const l = document.createElement("div");
-  l.className = "text-xs text-slate-500 min-w-[45%]";
-  l.textContent = label;
-
-  const v = document.createElement("div");
-  v.className = "text-xs text-slate-900 text-right flex-1";
-  v.textContent = value;
-
-  row.appendChild(l);
-  row.appendChild(v);
-  parent.appendChild(row);
-  return row;
-}
-
-function createBulletList(parent, items) {
-  const ul = document.createElement("ul");
-  ul.className = "space-y-1";
-
-  for (const item of items) {
-    const li = document.createElement("li");
-    li.className = "flex items-start gap-2";
-
-    const dot = document.createElement("span");
-    dot.className = "mt-0.5 inline-flex h-1.5 w-1.5 rounded-full bg-slate-300";
-
-    const text = document.createElement("span");
-    text.className = "text-xs text-slate-900";
-    text.textContent = item;
-
-    li.appendChild(dot);
-    li.appendChild(text);
-    ul.appendChild(li);
-  }
-
-  parent.appendChild(ul);
-  return ul;
-}
-
 function resolveAuthorityLevel(ownershipForm) {
   const normalized = String(ownershipForm || "").toLowerCase().trim();
   if (normalized.includes("муницип")) return "municipal";
@@ -143,46 +94,6 @@ function resolveAuthorityLevel(ownershipForm) {
   if (normalized.includes("част")) return "private";
   if (normalized.includes("федерал")) return "federal";
   return "federal";
-}
-
-function createBox({ title, children }) {
-  const box = document.createElement("div");
-  box.className = "rounded-xl border border-slate-200 bg-white/70 shadow-sm overflow-hidden";
-
-  const header = document.createElement("div");
-  header.className = "px-4 py-3 border-b border-slate-200/70";
-
-  const h = document.createElement("div");
-  h.className = "text-sm font-semibold text-slate-900 flex items-center gap-2";
-  h.textContent = title;
-  header.appendChild(h);
-
-  box.appendChild(header);
-  const content = document.createElement("div");
-  content.className = "p-4";
-  if (children) content.appendChild(children);
-  box.appendChild(content);
-
-  return box;
-}
-
-function createSectionStack(blocks) {
-  const stack = document.createElement("div");
-  stack.className = "space-y-4";
-  for (const b of blocks) stack.appendChild(b);
-  return stack;
-}
-
-function createPaddedSection(className = "p-3") {
-  const section = document.createElement("div");
-  section.className = className;
-  return section;
-}
-
-function createSectionContent(className = "mt-3 space-y-3") {
-  const content = document.createElement("div");
-  content.className = className;
-  return content;
 }
 
 const DEFAULT_DRAFT_LABEL = "🟡 Черновик (требует согласования)";
@@ -200,6 +111,7 @@ function statusToDraftLabel(status) {
 }
 
 export function createModal() {
+  const ui = createUiFactory();
   const modal = el("modal");
   const closeBtn = el("modal-close");
   const overlay = el("modal-overlay");
@@ -552,8 +464,8 @@ export function createModal() {
     const systemBox = document.createElement("div");
     systemBox.className = "space-y-4";
 
-    const jurisdictionBox = createPaddedSection();
-    const jurGrid = createSectionContent();
+    const jurisdictionBox = ui.createPaddedSection();
+    const jurGrid = ui.createSectionContent();
 
     const authorityInfo = document.createElement("div");
     authorityInfo.className = "space-y-2";
@@ -564,7 +476,7 @@ export function createModal() {
     )}</div>`;
     const authorityItems = document.createElement("div");
     authorityItems.className = "ml-2";
-    createBulletList(authorityItems, [
+    ui.createBulletList(authorityItems, [
       hasAuthorityWarning
         ? "Обнаружены неоднозначные формы собственности, требуется проверка"
         : "Класс полномочий определён автоматически"
@@ -585,7 +497,7 @@ export function createModal() {
             return `${index + 1}) КН: ${cadastralNumber}; Форма: ${ownershipForm}; ВРИ: ${vri}`;
           })
         : ["Объекты собственности не найдены"];
-    createBulletList(propItems, ownershipLines);
+    ui.createBulletList(propItems, ownershipLines);
     propOk.appendChild(propItems);
 
     const balanceInfo = document.createElement("div");
@@ -599,7 +511,7 @@ export function createModal() {
       uniqueBalanceHolderNames.length > 0
         ? uniqueBalanceHolderNames.map((name, index) => `${index + 1}) ${name}`)
         : ["Балансодержатели не найдены"];
-    createBulletList(balanceItems, balanceLines);
+    ui.createBulletList(balanceItems, balanceLines);
     balanceInfo.appendChild(balanceItems);
 
     jurGrid.appendChild(authorityInfo);
@@ -608,8 +520,8 @@ export function createModal() {
 
     jurisdictionBox.appendChild(jurGrid);
 
-    const contractBox = createPaddedSection();
-    const contractItems = createSectionContent();
+    const contractBox = ui.createPaddedSection();
+    const contractItems = ui.createSectionContent();
 
     const found = document.createElement("div");
     found.className = `text-xs font-semibold ${contract ? "text-emerald-900" : "text-rose-900"}`;
@@ -649,8 +561,8 @@ export function createModal() {
     contractItems.appendChild(contractDetails);
     contractBox.appendChild(contractItems);
 
-    const relatedBox = createPaddedSection();
-    const relatedWrap = createSectionContent();
+    const relatedBox = ui.createPaddedSection();
+    const relatedWrap = ui.createSectionContent();
     const relatedTitle = document.createElement("div");
     relatedTitle.className = "text-xs font-semibold text-slate-900";
     relatedTitle.textContent = "Похожие сообщения";
@@ -699,7 +611,7 @@ export function createModal() {
 
     const deadlineStr = `${pad2(recommendedDeadline.getDate())}.${pad2(recommendedDeadline.getMonth() + 1)}.${recommendedDeadline.getFullYear()}`;
 
-    const auditBox = createPaddedSection();
+    const auditBox = ui.createPaddedSection();
     const auditProgress = document.createElement("div");
     auditProgress.className = "inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-[11px] font-semibold text-slate-700";
     const updateAuditProgressLabel = (shownCount, totalCount, done = false) => {
@@ -1004,7 +916,7 @@ export function createModal() {
         const tabsBar = document.createElement("div");
         tabsBar.className = "flex flex-wrap items-end gap-1 bg-slate-50 border-b border-slate-200 px-2 pt-2";
 
-        const panelText = createPaddedSection();
+        const panelText = ui.createPaddedSection();
 
         panelText.innerHTML = `
           <div class="mb-2 flex flex-wrap items-center gap-2">
@@ -1097,7 +1009,7 @@ export function createModal() {
         panelWhy.appendChild(whyTitle);
         const whyItems = document.createElement("div");
         whyItems.className = "mt-2";
-        createBulletList(whyItems, [
+        ui.createBulletList(whyItems, [
           `Адрес: ${city}`,
           `Категория: ${category}`,
           useAssignmentFlow
@@ -1325,7 +1237,7 @@ export function createModal() {
         return wrapper;
       })();
 
-    const rightContent = createSectionStack([systemBox]);
+    const rightContent = ui.createSectionStack([systemBox]);
     return { rightContent, actionsBox, summaryBlock, startAuditProgress, stopAuditProgress };
   };
 
