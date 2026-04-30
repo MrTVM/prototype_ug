@@ -55,7 +55,7 @@ export const points = [
         }
       }
     ],
-    source: "https://example.com/complaint/p1",
+    source: "ПОС",
     coords: [55.751244, 37.618423]
   },
   {
@@ -110,7 +110,7 @@ export const points = [
         }
       }
     ],
-    source: "https://example.com/complaint/p2",
+    source: "112",
     coords: [55.7608, 37.606]
   },
   {
@@ -177,7 +177,7 @@ export const points = [
         }
       }
     ],
-    source: "https://example.com/complaint/p3",
+    source: "ЕДДС",
     coords: [55.739, 37.617]
   },
   {
@@ -227,7 +227,7 @@ export const points = [
         }
       }
     ],
-    source: "https://example.com/complaint/p4",
+    source: "Офлайн",
     coords: [55.7632, 37.5647]
   },
   {
@@ -278,7 +278,7 @@ export const points = [
         }
       }
     ],
-    source: "https://example.com/complaint/p5",
+    source: "Email",
     coords: [55.7492, 37.655]
   },
   {
@@ -337,7 +337,7 @@ export const points = [
         }
       }
     ],
-    source: "https://example.com/complaint/p6",
+    source: "ПОС",
     coords: [55.706, 37.61]
   }
 ];
