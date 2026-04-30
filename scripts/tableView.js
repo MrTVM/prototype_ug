@@ -11,7 +11,9 @@ export function createTableView() {
     body.innerHTML = "";
 
     items.forEach((item) => {
-      const b = statusToBadge(item.status);
+      const status = item?.status || "—";
+      const source = item?.source || "—";
+      const b = statusToBadge(status);
       const tr = document.createElement("tr");
       tr.className = "cursor-pointer transition bg-white hover:bg-slate-50";
 
@@ -23,8 +25,19 @@ export function createTableView() {
           <div class="text-sm text-slate-600">${escapeHtml(item.address)}</div>
         </td>
         <td class="py-4 px-5">
-          <span class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-semibold ${b.bg} ${b.text} border ${b.border}">
-            ${escapeHtml(item.status)}
+          <span
+            class="inline-flex items-center justify-center px-2.5 py-1 rounded-full text-xs font-semibold border border-slate-200 bg-slate-50 text-slate-700"
+            style="min-width: 8ch;"
+          >
+            ${escapeHtml(source)}
+          </span>
+        </td>
+        <td class="py-4 px-5">
+          <span
+            class="inline-flex items-center justify-center px-3 py-1.5 rounded-full text-sm font-semibold ${b.bg} ${b.text} border ${b.border}"
+            style="min-width: 16ch;"
+          >
+            ${escapeHtml(status)}
           </span>
         </td>
       `;
