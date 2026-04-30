@@ -792,9 +792,12 @@ export function createModal() {
         panelText.className = "p-3";
 
         panelText.innerHTML = `
-          <div class="text-xs font-semibold text-slate-900 mb-2">${
-            isMunicipalAuthority ? "Текст поручения (по рекомендации)" : "Текст эскалации (по рекомендации)"
-          }</div>
+          <div class="mb-2 flex flex-wrap items-center gap-2">
+            <div class="text-xs font-semibold text-slate-900">${
+              isMunicipalAuthority ? "Текст поручения" : "Текст эскалации"
+            }</div>
+            <span class="inline-flex items-center rounded-full border border-violet-200 bg-violet-50 px-2 py-0.5 text-[10px] font-semibold text-violet-700">по рекомендации</span>
+          </div>
           <div class="text-xs text-slate-700 whitespace-pre-line">${
             isMunicipalAuthority
               ? `Направить подрядчику ${escapeText(
