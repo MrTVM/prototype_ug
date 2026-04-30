@@ -1,4 +1,4 @@
-import { el, indexById } from "./utils.js";
+import { el, escapeHtml, indexById } from "./utils.js";
 import { OWNERSHIP_FORMS, POINT_STATUSES, points, rules, statusToBadge } from "./constants.js";
 
 function pad2(n) {
@@ -83,13 +83,7 @@ function normalizePhotoSource(source, seed, index) {
 }
 
 function escapeText(str) {
-  // Для генерации HTML не используем: только в отдельных местах (риски минимальны).
-  return String(str)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
+  return escapeHtml(str);
 }
 
 function createText(parent, className, text) {
@@ -177,6 +171,18 @@ function createSectionStack(blocks) {
   stack.className = "space-y-4";
   for (const b of blocks) stack.appendChild(b);
   return stack;
+}
+
+function createPaddedSection(className = "p-3") {
+  const section = document.createElement("div");
+  section.className = className;
+  return section;
+}
+
+function createSectionContent(className = "mt-3 space-y-3") {
+  const content = document.createElement("div");
+  content.className = className;
+  return content;
 }
 
 const DEFAULT_DRAFT_LABEL = "🟡 Черновик (требует согласования)";
@@ -546,10 +552,8 @@ export function createModal() {
     const systemBox = document.createElement("div");
     systemBox.className = "space-y-4";
 
-    const jurisdictionBox = document.createElement("div");
-    jurisdictionBox.className = "p-3";
-    const jurGrid = document.createElement("div");
-    jurGrid.className = "mt-3 space-y-3";
+    const jurisdictionBox = createPaddedSection();
+    const jurGrid = createSectionContent();
 
     const authorityInfo = document.createElement("div");
     authorityInfo.className = "space-y-2";
@@ -604,10 +608,8 @@ export function createModal() {
 
     jurisdictionBox.appendChild(jurGrid);
 
-    const contractBox = document.createElement("div");
-    contractBox.className = "p-3";
-    const contractItems = document.createElement("div");
-    contractItems.className = "mt-3 space-y-3";
+    const contractBox = createPaddedSection();
+    const contractItems = createSectionContent();
 
     const found = document.createElement("div");
     found.className = `text-xs font-semibold ${contract ? "text-emerald-900" : "text-rose-900"}`;
@@ -647,10 +649,8 @@ export function createModal() {
     contractItems.appendChild(contractDetails);
     contractBox.appendChild(contractItems);
 
-    const relatedBox = document.createElement("div");
-    relatedBox.className = "p-3";
-    const relatedWrap = document.createElement("div");
-    relatedWrap.className = "mt-3 space-y-3";
+    const relatedBox = createPaddedSection();
+    const relatedWrap = createSectionContent();
     const relatedTitle = document.createElement("div");
     relatedTitle.className = "text-xs font-semibold text-slate-900";
     relatedTitle.textContent = "Похожие сообщения";
@@ -699,8 +699,7 @@ export function createModal() {
 
     const deadlineStr = `${pad2(recommendedDeadline.getDate())}.${pad2(recommendedDeadline.getMonth() + 1)}.${recommendedDeadline.getFullYear()}`;
 
-    const auditBox = document.createElement("div");
-    auditBox.className = "p-3";
+    const auditBox = createPaddedSection();
     const auditProgress = document.createElement("div");
     auditProgress.className = "inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-[11px] font-semibold text-slate-700";
     const updateAuditProgressLabel = (shownCount, totalCount, done = false) => {
@@ -1005,8 +1004,7 @@ export function createModal() {
         const tabsBar = document.createElement("div");
         tabsBar.className = "flex flex-wrap items-end gap-1 bg-slate-50 border-b border-slate-200 px-2 pt-2";
 
-        const panelText = document.createElement("div");
-        panelText.className = "p-3";
+        const panelText = createPaddedSection();
 
         panelText.innerHTML = `
           <div class="mb-2 flex flex-wrap items-center gap-2">

@@ -6,6 +6,23 @@ export function createViewSwitch({ onChange } = {}) {
     cards: document.getElementById("view-cards")
   };
 
+  const ACTIVE_BUTTON_CLASSES = [
+    "bg-slate-900",
+    "text-white",
+    "shadow-sm",
+    "hover:bg-slate-800"
+  ];
+  const INACTIVE_BUTTON_CLASSES = ["bg-transparent", "text-slate-700"];
+
+  const toggleButtonClasses = (btn, isActive) => {
+    ACTIVE_BUTTON_CLASSES.forEach((className) => {
+      btn.classList.toggle(className, isActive);
+    });
+    INACTIVE_BUTTON_CLASSES.forEach((className) => {
+      btn.classList.toggle(className, !isActive);
+    });
+  };
+
   const setActive = (view) => {
     Object.entries(views).forEach(([key, node]) => {
       node?.classList.toggle("hidden", key !== view);
@@ -13,12 +30,7 @@ export function createViewSwitch({ onChange } = {}) {
 
     buttons.forEach((btn) => {
       const isActive = btn.getAttribute("data-view-btn") === view;
-      btn.classList.toggle("bg-slate-900", isActive);
-      btn.classList.toggle("text-white", isActive);
-      btn.classList.toggle("shadow-sm", isActive);
-      btn.classList.toggle("hover:bg-slate-800", isActive);
-      btn.classList.toggle("bg-transparent", !isActive);
-      btn.classList.toggle("text-slate-700", !isActive);
+      toggleButtonClasses(btn, isActive);
     });
   };
 
