@@ -1,4 +1,5 @@
 import { el } from "./utils.js";
+import { rules } from "./constants.js";
 
 function pad2(n) {
   return String(n).padStart(2, "0");
@@ -139,6 +140,15 @@ function createBulletList(parent, items) {
 
   parent.appendChild(ul);
   return ul;
+}
+
+function resolveAuthorityLevel(ownershipForm) {
+  const normalized = String(ownershipForm || "").toLowerCase().trim();
+  if (normalized.includes("муницип")) return "municipal";
+  if (normalized.includes("регион")) return "regional";
+  if (normalized.includes("част")) return "private";
+  if (normalized.includes("федерал")) return "federal";
+  return "federal";
 }
 
 function createBox({ title, children }) {
@@ -410,6 +420,9 @@ export function createModal() {
       .filter(Boolean);
     const uniqueOwnershipForms = [...new Set(ownershipFormsList)];
     const ownershipForms = uniqueOwnershipForms.join(" ");
+    const primaryOwnershipForm = uniqueOwnershipForms[0] || "";
+    const resolvedAuthorityLevel = resolveAuthorityLevel(primaryOwnershipForm);
+    const isMunicipalAuthority = resolvedAuthorityLevel === "municipal";
     const authoritySource = `${item.authority || ""} ${ownershipForms}`.toLowerCase();
     const authorityValue = authoritySource.includes("част")
       ? "частный"
@@ -441,6 +454,8 @@ export function createModal() {
 
     // Подстановка из данных (прототипные значения, но зависят от переданного item)
     const category = item.requestType || "—";
+    const escalationRule =
+      rules?.[category]?.[resolvedAuthorityLevel] || null;
     const applicant = item.applicant || {};
     const applicantFioRaw = String(applicant.fio || "").trim();
     const fioParts = applicantFioRaw.split(/\s+/).filter(Boolean);
@@ -722,26 +737,48 @@ export function createModal() {
         panelText.className = "p-3";
 
         panelText.innerHTML = `
-          <div class="text-xs font-semibold text-slate-900 mb-2">Текст поручения (по рекомендации)</div>
-          <div class="text-xs text-slate-700 whitespace-pre-line">Направить подрядчику ${escapeText(
-            contractor
-          )} поручение на устранение дефекта.
+          <div class="text-xs font-semibold text-slate-900 mb-2">${
+            isMunicipalAuthority ? "Текст поручения (по рекомендации)" : "Текст эскалации (по рекомендации)"
+          }</div>
+          <div class="text-xs text-slate-700 whitespace-pre-line">${
+            isMunicipalAuthority
+              ? `Направить подрядчику ${escapeText(
+                  contractor
+                )} поручение на устранение дефекта.
 Адрес: ${escapeText(item.address || "—")}.
 Суть: ${escapeText(item.theme || "—")}.
 Срок исполнения: до ${escapeText(deadlineStr)} (СЛА: 5 дней).
 Основание: п.3.1 Договора №45/25.
-Приложения: ${escapeText(attachmentLabel)}.</div>
+Приложения: ${escapeText(attachmentLabel)}.`
+              : `Эскалировать обращение по компетенции.
+Категория: ${escapeText(category)}.
+Куда: ${escapeText(escalationRule?.to || "Не определено в rules")}.
+Основание: ${escapeText(escalationRule?.basis || "Не определено в rules")}.
+Приложения: ${escapeText(escalationRule?.attachments || "Добавьте пакет вручную")}.`
+          }</div>
         `;
 
         const panelRecommendation = document.createElement("div");
         panelRecommendation.className = "p-3 hidden";
         panelRecommendation.innerHTML = `
-          <div class="text-xs font-semibold text-slate-900">✉️ Создать поручение подрядчику ← РЕКОМЕНДУЕТСЯ</div>
-          <div class="text-xs text-slate-600 mt-2 whitespace-pre-line">• Исполнитель: ${escapeText(contractor)}
+          <div class="text-xs font-semibold text-slate-900">${
+            isMunicipalAuthority
+              ? "✉️ Создать поручение подрядчику ← РЕКОМЕНДУЕТСЯ"
+              : "📤 Эскалировать обращение ← РЕКОМЕНДУЕТСЯ"
+          }</div>
+          <div class="text-xs text-slate-600 mt-2 whitespace-pre-line">${
+            isMunicipalAuthority
+              ? `• Исполнитель: ${escapeText(contractor)}
 • Срок исполнения: ${escapeText(deadlineStr)} (5 дней)
 • Основание: п.3.1 Договора №45/25
 • Шаблон: «Уведомление о дефекте с фотофиксацией»
-• Статус: ${escapeText(statusToDraftLabel(status))}</div>
+• Статус: ${escapeText(statusToDraftLabel(status))}`
+              : `• Полномочия: ${escapeText(primaryOwnershipForm || "не определены")}
+• Куда эскалировать: ${escapeText(escalationRule?.to || "не найдено правило")}
+• Основание: ${escapeText(escalationRule?.basis || "не найдено правило")}
+• Пакет: ${escapeText(escalationRule?.attachments || "сформировать вручную")}
+• Статус: ${escapeText(statusToDraftLabel(status))}`
+          }</div>
         `;
 
         const panelWhy = document.createElement("div");
@@ -754,9 +791,16 @@ export function createModal() {
         whyItems.className = "mt-2";
         createBulletList(whyItems, [
           `Адрес: ${city}`,
-          "Тип объекта: дорога местного значения",
-          "В ЕИС найден действующий контракт → можно направить требование",
-          "СЛА: 5 дней → дедлайн: " + deadlineStr
+          `Категория: ${category}`,
+          isMunicipalAuthority
+            ? "Муниципальные полномочия → можно сформировать поручение исполнителю"
+            : "Немуниципальные полномочия → нужна эскалация по матрице rules",
+          isMunicipalAuthority
+            ? "В ЕИС найден действующий контракт → можно направить требование"
+            : `Точка эскалации: ${escalationRule?.to || "не определена"}`,
+          isMunicipalAuthority
+            ? "СЛА: 5 дней → дедлайн: " + deadlineStr
+            : `Нормативка: ${escalationRule?.basis || "не определена"}`
         ]);
         panelWhy.appendChild(whyItems);
 
@@ -833,9 +877,12 @@ export function createModal() {
 
         row.appendChild(
           mkBtn({
-            label: "✅ Утвердить поручение",
-            className:
-              "rounded-xl bg-emerald-900 text-white px-4 py-2 text-sm font-semibold shadow-sm hover:bg-emerald-800 transition",
+            label: isMunicipalAuthority
+              ? "Утвердить поручение"
+              : `Эскалировать`,
+            className: isMunicipalAuthority
+              ? "rounded-xl bg-emerald-900 text-white px-4 py-2 text-sm font-semibold shadow-sm hover:bg-emerald-800 transition"
+              : "rounded-xl bg-blue-900 text-white px-4 py-2 text-sm font-semibold shadow-sm hover:bg-blue-800 transition",
             onClick: () => {
               if (!currentItem) return;
               window.open(currentItem.source, "_blank", "noreferrer");
@@ -846,7 +893,7 @@ export function createModal() {
 
         row.appendChild(
           mkBtn({
-            label: "✏️ Редактировать",
+            label: "Редактировать",
             className:
               "rounded-xl border border-slate-200 bg-white hover:bg-slate-50 px-4 py-2 text-sm font-medium shadow-sm transition",
             onClick: () => close()
@@ -855,7 +902,7 @@ export function createModal() {
 
         row.appendChild(
           mkBtn({
-            label: "❌ Отклонить",
+            label: "Отклонить",
             className:
               "rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-100 px-4 py-2 text-sm font-medium text-rose-800 shadow-sm transition",
             onClick: () => close()
