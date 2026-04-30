@@ -8,6 +8,7 @@ export function createModalActionsBox({
   onClose,
   useAssignmentFlow,
   useProcurementFlow,
+  contract,
   contractor,
   deadlineStr,
   attachmentLabel,
@@ -261,22 +262,74 @@ export function createModalActionsBox({
   tabsWrap.appendChild(panelWhy);
   tabsWrap.appendChild(panelRelatedActions);
 
-  if (isCompleted) {
+  const hasCompletionReport = isUnderReview || isCompleted;
+  if (hasCompletionReport) {
     const reportBox = ui.createPaddedSection();
     reportBox.className = "rounded-xl border border-emerald-200 bg-white px-3 py-3";
     const completedAt = item.plannedCloseAt || item.createdAt || "—";
+    const reportBadgeLabel = isCompleted ? "Принято" : "Выполнено";
+    const contractNumber = contract?.number || "—";
+    const contractSla = contract?.sla || "—";
+    const contractPenalty = contract?.penalty || "—";
+    const hasContractDetails = Boolean(contract);
+    const ownerships = Array.isArray(item?.ownerships) ? item.ownerships : [];
+    const balanceHolderNames = [
+      ...new Set(
+        ownerships
+          .map((entry) => String(entry?.balanceHolder?.name || "").trim())
+          .filter(Boolean)
+      )
+    ];
+    const cadastralNumbers = [
+      ...new Set(
+        ownerships
+          .map((entry) => String(entry?.cadastralNumber || "").trim())
+          .filter(Boolean)
+      )
+    ];
+    const balanceHolderLabel = balanceHolderNames.length > 0 ? balanceHolderNames.join(", ") : "не определен";
+    const cadastralNumbersLabel = cadastralNumbers.length > 0 ? cadastralNumbers.join(", ") : "—";
+    const isEscalationFlow = !useAssignmentFlow && !useProcurementFlow;
+    const escalationTarget = escalationRule?.to || "не определено";
+    const escalationBasis = escalationRule?.basis || "не определено";
+    const escalationAttachments = escalationRule?.attachments || "сформировать вручную";
     reportBox.innerHTML = `
       <div class="flex items-start justify-between gap-3">
         <div class="text-sm font-semibold text-slate-900">Отчет по выполненным работам</div>
         <span class="inline-flex items-center rounded-full border border-emerald-200 bg-emerald-100 px-2 py-0.5 text-[11px] font-semibold text-emerald-800">
-          Выполнено
+          ${reportBadgeLabel}
         </span>
       </div>
       <div class="mt-3 space-y-1.5 text-xs text-slate-700">
-        <div><span class="text-slate-500">Подрядчик:</span> ${escapeText(contractor)}</div>
+        ${
+          hasContractDetails
+            ? `<div><span class="text-slate-500">Подрядчик:</span> ${escapeText(contractor)}</div>
+        <div><span class="text-slate-500">Договор:</span> ${escapeText(`№ ${contractNumber}`)}</div>
+        <div><span class="text-slate-500">СЛА по договору:</span> ${escapeText(contractSla)}</div>`
+            : `<div><span class="text-slate-500">Балансодержатель:</span> ${escapeText(balanceHolderLabel)}</div>
+        <div><span class="text-slate-500">Кадастровые номера:</span> ${escapeText(cadastralNumbersLabel)}</div>`
+        }
         <div><span class="text-slate-500">Дата завершения:</span> ${escapeText(completedAt)}</div>
         <div><span class="text-slate-500">Адрес:</span> ${escapeText(item.address || "—")}</div>
-        <div><span class="text-slate-500">Результат:</span> дефект устранен, фото до/после загружены, контрольный осмотр выполнен.</div>
+        <div><span class="text-slate-500">Результат:</span> ${
+          isEscalationFlow
+            ? "обращение эскалировано по компетенции, пакет материалов сформирован."
+            : `дефект устранен, фото до/после загружены, контрольный осмотр выполнен${
+                hasContractDetails ? ", обязательства по договору исполнены." : "."
+              }`
+        }</div>
+        ${
+          isEscalationFlow
+            ? `<div><span class="text-slate-500">Эскалация:</span> ${escapeText(escalationTarget)}</div>
+        <div><span class="text-slate-500">Основание:</span> ${escapeText(escalationBasis)}</div>
+        <div><span class="text-slate-500">Пакет для эскалации:</span> ${escapeText(escalationAttachments)}</div>`
+            : ""
+        }
+        ${
+          hasContractDetails
+            ? `<div><span class="text-slate-500">Штрафные санкции:</span> ${escapeText(contractPenalty)}</div>`
+            : ""
+        }
         <div class="pt-1 flex items-center gap-3">
           <a href="#" class="text-xs font-semibold text-slate-900 hover:underline">Скачать XML</a>
           <a href="#" class="text-xs font-semibold text-slate-900 hover:underline">Скачать PDF</a>
@@ -286,8 +339,10 @@ export function createModalActionsBox({
     wrapper.appendChild(reportBox);
   }
 
+  const shouldShowRecommendationTabs = !isCompleted && !isUnderReview;
+
   const row = document.createElement("div");
-  row.className = `${isCompleted ? "" : "hidden "}flex flex-wrap gap-3 items-center mt-auto pt-3`;
+  row.className = `${isCompleted || isUnderReview ? "" : "hidden "}flex flex-wrap gap-3 items-center mt-auto pt-3`;
   row.setAttribute("data-user-actions-row", "true");
 
   const mkBtn = ({ label, className, onClick }) => {
@@ -437,12 +492,14 @@ export function createModalActionsBox({
 
   if (!isCompleted) {
     hideRecommendationText();
-    wrapper.appendChild(tabsWrap);
+    if (shouldShowRecommendationTabs) {
+      wrapper.appendChild(tabsWrap);
+    }
   }
   wrapper.appendChild(row);
 
   return {
     actionsBox: wrapper,
-    onRecommendationReady: isCompleted ? () => {} : revealRecommendationText
+    onRecommendationReady: shouldShowRecommendationTabs ? revealRecommendationText : () => {}
   };
 }

@@ -99,11 +99,12 @@ export function createModalAuditSection({
     municipalRows.length > 0
       ? municipalRows.map((entry, idx) => {
           const kn = entry?.cadastralNumber || "—";
+          const balanceHolder = entry?.balanceHolder?.name || "не определен";
           const number = entry?.contract?.number;
           return {
             dt: mkDateTime(9 + idx),
             mode: "Автоматически",
-            text: `Запрос в ЕИС по КН ${kn}: ${number ? `найден контракт №${number}` : "контракт не найден"}`,
+            text: `Запрос в ЕИС по балансодержателю ${balanceHolder}: ${number ? `найден контракт №${number}` : "контракт не найден"}`,
             status: number ? "Успешно" : "Ожидание"
           };
         })

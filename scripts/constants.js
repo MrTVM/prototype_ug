@@ -495,16 +495,6 @@ const pointEntities = {
         }
       }
     ],
-    photoAfterGallery: [
-      {
-        source: "./src/photos/p8-after.svg",
-        meta: {
-          createdAt: "2026-04-30 12:00",
-          updatedAt: "2026-04-30 12:05",
-          coordinates: "55.7577, 37.6153"
-        }
-      }
-    ],
     source: POINT_SOURCES.SERVICE_112,
     relatedPoints: ["p5"],
     coords: [55.7577, 37.6153]

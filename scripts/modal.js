@@ -492,7 +492,8 @@ export function createModal({ statusMachine = {}, onStatusChanged = () => {} } =
     const recommendedDeadline = new Date(now.getTime() + 5 * 24 * 60 * 60 * 1000);
 
     const contractor =
-      /дорог|благо|территор|коммун/i.test(String(item.theme || "")) ? "ООО «Асфальт»" : "ООО «Спектр»";
+      contract?.contractor ||
+      (/дорог|благо|территор|коммун/i.test(String(item.theme || "")) ? "ООО «Асфальт»" : "ООО «Спектр»");
 
     const summaryBlock = createModalSummary({
       item,
@@ -584,6 +585,7 @@ export function createModal({ statusMachine = {}, onStatusChanged = () => {} } =
       onClose: close,
       useAssignmentFlow,
       useProcurementFlow,
+      contract,
       contractor,
       deadlineStr,
       attachmentLabel,
