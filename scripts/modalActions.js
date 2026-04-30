@@ -1,0 +1,348 @@
+export function createModalActionsBox({
+  ui,
+  item,
+  relatedPoints,
+  currentItemRef,
+  onClose,
+  useAssignmentFlow,
+  useProcurementFlow,
+  contractor,
+  deadlineStr,
+  attachmentLabel,
+  category,
+  escalationRule,
+  statusToDraftLabel,
+  status,
+  primaryOwnershipForm,
+  city,
+  escapeText
+}) {
+  const wrapper = document.createElement("div");
+  wrapper.className = "space-y-3";
+
+  const tabsWrap = document.createElement("div");
+  tabsWrap.className = "rounded-xl border border-slate-200 bg-white overflow-hidden";
+
+  const tabsBar = document.createElement("div");
+  tabsBar.className = "flex flex-wrap items-end gap-1 bg-slate-50 border-b border-slate-200 px-2 pt-2";
+
+  const panelText = ui.createPaddedSection();
+  panelText.innerHTML = `
+    <div class="mb-2 flex flex-wrap items-center gap-2">
+      <div class="text-xs font-semibold text-slate-900">${
+        useAssignmentFlow
+          ? "Текст поручения"
+          : useProcurementFlow
+            ? "Текст включения в план закупок"
+            : "Текст эскалации"
+      }</div>
+      <span data-recommendation-badge class="hidden inline-flex items-center rounded-full border border-violet-200 bg-violet-50 px-2 py-0.5 text-[10px] font-semibold text-violet-700">по рекомендации</span>
+    </div>
+    <div data-recommendation-wait class="text-xs text-slate-500">Ожидание шага "Формирование рекомендаций" в аудит-логе...</div>
+    <div data-recommendation-text class="hidden text-xs text-slate-700 whitespace-pre-line">${
+      useAssignmentFlow
+        ? `Направить подрядчику ${escapeText(contractor)} поручение на устранение дефекта.
+Адрес: ${escapeText(item.address || "—")}.
+Суть: ${escapeText(item.theme || "—")}.
+Срок исполнения: до ${escapeText(deadlineStr)} (СЛА: 5 дней).
+Основание: п.3.1 Договора №45/25.
+Приложения: ${escapeText(attachmentLabel)}.`
+        : useProcurementFlow
+          ? `Включить обращение в план закупок муниципалитета.
+Категория: ${escapeText(category)}.
+Адрес: ${escapeText(item.address || "—")}.
+Основание: контрактные обязательства не найдены.
+Пакет: описание дефекта, фотофиксация, обоснование потребности.`
+          : `Эскалировать обращение по компетенции.
+Категория: ${escapeText(category)}.
+Куда: ${escapeText(escalationRule?.to || "Не определено в rules")}.
+Основание: ${escapeText(escalationRule?.basis || "Не определено в rules")}.
+Приложения: ${escapeText(escalationRule?.attachments || "Добавьте пакет вручную")}.`
+    }</div>
+  `;
+  const recommendationTextBadge = panelText.querySelector("[data-recommendation-badge]");
+  const recommendationTextBody = panelText.querySelector("[data-recommendation-text]");
+  const recommendationTextWait = panelText.querySelector("[data-recommendation-wait]");
+  const revealRecommendationText = () => {
+    const actionsRow = wrapper.querySelector("[data-user-actions-row]");
+    recommendationTextBadge?.classList.remove("hidden");
+    recommendationTextBody?.classList.remove("hidden");
+    recommendationTextWait?.classList.add("hidden");
+    actionsRow?.classList.remove("hidden");
+  };
+  const hideRecommendationText = () => {
+    const actionsRow = wrapper.querySelector("[data-user-actions-row]");
+    recommendationTextBadge?.classList.add("hidden");
+    recommendationTextBody?.classList.add("hidden");
+    recommendationTextWait?.classList.remove("hidden");
+    actionsRow?.classList.add("hidden");
+  };
+
+  const panelRecommendation = document.createElement("div");
+  panelRecommendation.className = "p-3 hidden";
+  panelRecommendation.innerHTML = `
+    <div class="text-xs font-semibold text-slate-900">${
+      useAssignmentFlow
+        ? "✉️ Создать поручение подрядчику ← РЕКОМЕНДУЕТСЯ"
+        : useProcurementFlow
+          ? "🗂️ Включить в план закупок ← РЕКОМЕНДУЕТСЯ"
+          : "📤 Эскалировать обращение ← РЕКОМЕНДУЕТСЯ"
+    }</div>
+    <div class="text-xs text-slate-600 mt-2 whitespace-pre-line">${
+      useAssignmentFlow
+        ? `• Исполнитель: ${escapeText(contractor)}
+• Срок исполнения: ${escapeText(deadlineStr)} (5 дней)
+• Основание: п.3.1 Договора №45/25
+• Шаблон: «Уведомление о дефекте с фотофиксацией»
+• Статус: ${escapeText(statusToDraftLabel(status))}`
+        : useProcurementFlow
+          ? `• Полномочия: ${escapeText(primaryOwnershipForm || "не определены")}
+• Решение: включить задачу в план закупок
+• Основание: контрактные обязательства отсутствуют
+• Пакет: дефектовка, фото, расчет объема работ
+• Статус: ${escapeText(statusToDraftLabel(status))}`
+          : `• Полномочия: ${escapeText(primaryOwnershipForm || "не определены")}
+• Куда эскалировать: ${escapeText(escalationRule?.to || "не найдено правило")}
+• Основание: ${escapeText(escalationRule?.basis || "не найдено правило")}
+• Пакет: ${escapeText(escalationRule?.attachments || "сформировать вручную")}
+• Статус: ${escapeText(statusToDraftLabel(status))}`
+    }</div>
+  `;
+
+  const panelWhy = document.createElement("div");
+  panelWhy.className = "p-3 hidden";
+  const whyTitle = document.createElement("div");
+  whyTitle.className = "text-xs font-semibold text-slate-900";
+  whyTitle.textContent = "🔍 Почему система это предлагает";
+  panelWhy.appendChild(whyTitle);
+  const whyItems = document.createElement("div");
+  whyItems.className = "mt-2";
+  ui.createBulletList(whyItems, [
+    `Адрес: ${city}`,
+    `Категория: ${category}`,
+    useAssignmentFlow
+      ? "Муниципальные полномочия → можно сформировать поручение исполнителю"
+      : useProcurementFlow
+        ? "Муниципальные полномочия + нет контракта → включение в план закупок"
+        : "Поручение по договору недоступно → нужна эскалация по матрице rules",
+    useAssignmentFlow
+      ? "В ЕИС найден действующий контракт → можно направить требование"
+      : useProcurementFlow
+        ? "Контрактные обязательства не найдены → требуется закупочная процедура"
+        : `Точка эскалации: ${escalationRule?.to || "не определена"}`,
+    useAssignmentFlow
+      ? `СЛА: 5 дней → дедлайн: ${deadlineStr}`
+      : useProcurementFlow
+        ? "Действие: сформировать карточку в план закупок"
+        : `Нормативка: ${escalationRule?.basis || "не определена"}`
+  ]);
+  panelWhy.appendChild(whyItems);
+
+  const whyLinks = document.createElement("div");
+  whyLinks.className = "mt-3 flex flex-wrap gap-2";
+  const mkLink = (text) => {
+    const a = document.createElement("a");
+    a.href = "#";
+    a.className = "text-xs font-semibold text-slate-900 hover:underline";
+    a.textContent = text;
+    a.addEventListener("click", (e) => e.preventDefault());
+    return a;
+  };
+  whyLinks.appendChild(mkLink("❓ Оспорить рекомендацию"));
+  whyLinks.appendChild(mkLink("📥 Скачать обоснование"));
+  panelWhy.appendChild(whyLinks);
+
+  const panelRelatedActions = document.createElement("div");
+  panelRelatedActions.className = "p-3 hidden";
+  const relatedActionsTitle = document.createElement("div");
+  relatedActionsTitle.className = "text-xs font-semibold text-slate-900";
+  relatedActionsTitle.textContent = "Похожие сообщения";
+  panelRelatedActions.appendChild(relatedActionsTitle);
+
+  const bulkSelection = new Set();
+  const bulkPoints = [item, ...relatedPoints.filter((p) => p?.id !== item?.id)];
+  const hasOnlyCurrentRelated = bulkPoints.length === 1;
+  const relatedActionsBody = document.createElement("div");
+  relatedActionsBody.className = "mt-2 space-y-2";
+
+  if (bulkPoints.length === 0) {
+    const empty = document.createElement("div");
+    empty.className = "text-xs text-slate-600";
+    empty.textContent = "Нет связанных сообщений для массового действия.";
+    relatedActionsBody.appendChild(empty);
+  } else {
+    bulkPoints.forEach((relatedPoint) => {
+      const row = document.createElement("label");
+      row.className =
+        "flex items-start gap-2 rounded-lg border border-slate-200 bg-white px-2.5 py-2 cursor-pointer hover:bg-slate-50";
+      const checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.checked = true;
+      checkbox.className = "mt-0.5 accent-slate-900";
+      bulkSelection.add(relatedPoint.id);
+      checkbox.addEventListener("change", () => {
+        if (checkbox.checked) bulkSelection.add(relatedPoint.id);
+        else bulkSelection.delete(relatedPoint.id);
+        updateBulkActionLabel();
+      });
+      const meta = document.createElement("div");
+      meta.className = "min-w-0";
+      meta.innerHTML = `
+        <div class="flex flex-wrap items-center gap-2">
+          <div class="text-xs font-semibold text-slate-900">${escapeText(relatedPoint.theme || relatedPoint.id)}</div>
+          ${
+            relatedPoint.id === item.id
+              ? '<span class="inline-flex items-center rounded-full border border-violet-200 bg-violet-50 px-2 py-0.5 text-[10px] font-semibold text-violet-700">текущее</span>'
+              : ""
+          }
+        </div>
+        <div class="text-[11px] text-slate-600 mt-0.5">${escapeText(relatedPoint.address || "—")}</div>
+        <div class="text-[11px] text-slate-500 mt-0.5">ID: ${escapeText(relatedPoint.id)} · ${escapeText(
+        relatedPoint.status || "—"
+      )}</div>
+      `;
+      row.appendChild(checkbox);
+      row.appendChild(meta);
+      relatedActionsBody.appendChild(row);
+    });
+  }
+  panelRelatedActions.appendChild(relatedActionsBody);
+
+  const panels = {
+    text: panelText,
+    recommendation: panelRecommendation,
+    why: panelWhy,
+    relatedActions: panelRelatedActions
+  };
+
+  const tabButtons = {};
+  const makeTab = (key, label) => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "rounded-t-lg px-3 py-1.5 text-xs font-medium transition border";
+    btn.textContent = label;
+    btn.addEventListener("click", () => activateTab(key));
+    tabButtons[key] = btn;
+    tabsBar.appendChild(btn);
+  };
+
+  const activateTab = (key) => {
+    Object.entries(panels).forEach(([k, panel]) => {
+      panel.classList.toggle("hidden", k !== key);
+    });
+    Object.entries(tabButtons).forEach(([k, btn]) => {
+      const active = k === key;
+      btn.classList.toggle("bg-white", active);
+      btn.classList.toggle("text-slate-900", active);
+      btn.classList.toggle("border-slate-200", active);
+      btn.classList.toggle("border-b-white", active);
+      btn.classList.toggle("bg-transparent", !active);
+      btn.classList.toggle("text-slate-600", !active);
+      btn.classList.toggle("border-transparent", !active);
+      btn.classList.toggle("hover:text-slate-900", !active);
+    });
+  };
+
+  makeTab("text", "Текст поручения");
+  makeTab("recommendation", "Рекомендация");
+  makeTab("why", "Почему");
+  makeTab("relatedActions", "Похожие сообщения");
+  activateTab("text");
+
+  tabsWrap.appendChild(tabsBar);
+  tabsWrap.appendChild(panelText);
+  tabsWrap.appendChild(panelRecommendation);
+  tabsWrap.appendChild(panelWhy);
+  tabsWrap.appendChild(panelRelatedActions);
+
+  const row = document.createElement("div");
+  row.className = "hidden flex flex-wrap gap-3 items-center";
+  row.setAttribute("data-user-actions-row", "true");
+
+  const mkBtn = ({ label, className, onClick }) => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = className;
+    btn.textContent = label;
+    btn.addEventListener("click", onClick);
+    return btn;
+  };
+
+  const bulkBtn = mkBtn({
+    label: useAssignmentFlow
+      ? "Утвердить по всем"
+      : useProcurementFlow
+        ? "Запланировать по всем"
+        : "Эскалировать по всем",
+    className: useAssignmentFlow
+      ? "rounded-xl bg-emerald-100 text-emerald-900 px-4 py-2 text-sm font-semibold border border-emerald-200 shadow-sm hover:bg-emerald-200 transition"
+      : useProcurementFlow
+        ? "rounded-xl bg-amber-100 text-amber-900 px-4 py-2 text-sm font-semibold border border-amber-200 shadow-sm hover:bg-amber-200 transition"
+        : "rounded-xl bg-blue-100 text-blue-900 px-4 py-2 text-sm font-semibold border border-blue-200 shadow-sm hover:bg-blue-200 transition",
+    onClick: () => {
+      if (bulkSelection.size === 0 || hasOnlyCurrentRelated) return;
+      onClose();
+    }
+  });
+
+  const updateBulkActionLabel = () => {
+    const selectedCount = bulkSelection.size;
+    const base = useAssignmentFlow
+      ? "Утвердить по всем"
+      : useProcurementFlow
+        ? "Запланировать по всем"
+        : "Эскалировать по всем";
+    bulkBtn.textContent = selectedCount > 0 ? `${base} (${selectedCount})` : base;
+    const shouldDisable = selectedCount === 0 || hasOnlyCurrentRelated;
+    bulkBtn.disabled = shouldDisable;
+    bulkBtn.classList.toggle("opacity-50", shouldDisable);
+    bulkBtn.classList.toggle("cursor-not-allowed", shouldDisable);
+  };
+  updateBulkActionLabel();
+
+  row.appendChild(
+    mkBtn({
+      label: useAssignmentFlow
+        ? "Утвердить поручение"
+        : useProcurementFlow
+          ? "Запланировать"
+          : "Эскалировать",
+      className: useAssignmentFlow
+        ? "rounded-xl bg-emerald-900 text-white px-4 py-2 text-sm font-semibold shadow-sm hover:bg-emerald-800 transition"
+        : useProcurementFlow
+          ? "rounded-xl bg-amber-900 text-white px-4 py-2 text-sm font-semibold shadow-sm hover:bg-amber-800 transition"
+          : "rounded-xl bg-blue-900 text-white px-4 py-2 text-sm font-semibold shadow-sm hover:bg-blue-800 transition",
+      onClick: () => {
+        const currentItem = currentItemRef();
+        if (!currentItem) return;
+        window.open(currentItem.source, "_blank", "noreferrer");
+        onClose();
+      }
+    })
+  );
+  row.appendChild(bulkBtn);
+
+  row.appendChild(
+    mkBtn({
+      label: "Редактировать",
+      className:
+        "rounded-xl border border-slate-200 bg-white hover:bg-slate-50 px-4 py-2 text-sm font-medium shadow-sm transition",
+      onClick: () => onClose()
+    })
+  );
+
+  row.appendChild(
+    mkBtn({
+      label: "Отклонить",
+      className:
+        "rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-100 px-4 py-2 text-sm font-medium text-rose-800 shadow-sm transition",
+      onClick: () => onClose()
+    })
+  );
+
+  hideRecommendationText();
+  wrapper.appendChild(tabsWrap);
+  wrapper.appendChild(row);
+
+  return { actionsBox: wrapper, onRecommendationReady: revealRecommendationText };
+}
