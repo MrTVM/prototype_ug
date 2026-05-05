@@ -55,12 +55,12 @@ export function createModalActionsBox({
 Основание: п.3.1 Договора №45/25.
 Приложения: ${escapeText(attachmentLabel)}.`
         : useProcurementFlow
-          ? `Включить обращение в план закупок муниципалитета.
+          ? `Включить сообщение в план закупок муниципалитета.
 Категория: ${escapeText(category)}.
 Адрес: ${escapeText(item.address || "—")}.
 Основание: контрактные обязательства не найдены.
 Пакет: описание дефекта, фотофиксация, обоснование потребности.`
-          : `Эскалировать обращение по компетенции.
+          : `Эскалировать сообщение по компетенции.
 Категория: ${escapeText(category)}.
 Куда: ${escapeText(escalationRule?.to || "Не определено в rules")}.
 Основание: ${escapeText(escalationRule?.basis || "Не определено в rules")}.
@@ -93,7 +93,7 @@ export function createModalActionsBox({
         ? "✉️ Создать поручение подрядчику ← РЕКОМЕНДУЕТСЯ"
         : useProcurementFlow
           ? "🗂️ Включить в план закупок ← РЕКОМЕНДУЕТСЯ"
-          : "📤 Эскалировать обращение ← РЕКОМЕНДУЕТСЯ"
+          : "📤 Эскалировать сообщение ← РЕКОМЕНДУЕТСЯ"
     }</div>
     <div class="text-xs text-slate-600 mt-2 whitespace-pre-line">${
       useAssignmentFlow
@@ -313,7 +313,7 @@ export function createModalActionsBox({
         <div><span class="text-slate-500">Адрес:</span> ${escapeText(item.address || "—")}</div>
         <div><span class="text-slate-500">Результат:</span> ${
           isEscalationFlow
-            ? "обращение эскалировано по компетенции, пакет материалов сформирован."
+            ? "сообщение эскалировано по компетенции, пакет материалов сформирован."
             : `дефект устранен, фото до/после загружены, контрольный осмотр выполнен${
                 hasContractDetails ? ", обязательства по договору исполнены." : "."
               }`
