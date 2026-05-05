@@ -95,7 +95,7 @@ export function createModalSections({
       <div class="text-slate-600 ml-4">• Подрядчик: ${escapeText(contractContractor)} (ИНН ${escapeText(contractContractorInn)}) 🏢</div>
       <div class="text-slate-600 ml-4">• Контакт: ${escapeText(contractContact)}</div>
       <div class="text-slate-600 ml-4">• Сумма: ${escapeText(contractAmount)} | Окончание: ${escapeText(contractEndDate)}</div>
-      <div class="mt-2 text-slate-700">⏱ СЛА по договору: ${escapeText(contractSla)}</div>
+      <div class="mt-2 text-slate-700">⏱ SLA по договору: ${escapeText(contractSla)}</div>
       <div class="text-slate-700">💰 Штрафные санкции: ${escapeText(contractPenalty)}</div>
       <div class="mt-2 font-semibold text-slate-900">🟢 Статус: ${escapeText(status)}</div>
     `;

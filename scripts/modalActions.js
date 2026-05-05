@@ -51,7 +51,7 @@ export function createModalActionsBox({
         ? `Направить подрядчику ${escapeText(contractor)} поручение на устранение дефекта.
 Адрес: ${escapeText(item.address || "—")}.
 Суть: ${escapeText(item.theme || "—")}.
-Срок исполнения: до ${escapeText(deadlineStr)} (СЛА: 5 дней).
+Срок исполнения: до ${escapeText(deadlineStr)} (SLA: 5 дней).
 Основание: п.3.1 Договора №45/25.
 Приложения: ${escapeText(attachmentLabel)}.`
         : useProcurementFlow
@@ -138,7 +138,7 @@ export function createModalActionsBox({
         ? "Контрактные обязательства не найдены → требуется закупочная процедура"
         : `Точка эскалации: ${escalationRule?.to || "не определена"}`,
     useAssignmentFlow
-      ? `СЛА: 5 дней → дедлайн: ${deadlineStr}`
+      ? `SLA: 5 дней → дедлайн: ${deadlineStr}`
       : useProcurementFlow
         ? "Действие: сформировать карточку в план закупок"
         : `Нормативка: ${escalationRule?.basis || "не определена"}`
@@ -305,7 +305,7 @@ export function createModalActionsBox({
           hasContractDetails
             ? `<div><span class="text-slate-500">Подрядчик:</span> ${escapeText(contractor)}</div>
         <div><span class="text-slate-500">Договор:</span> ${escapeText(`№ ${contractNumber}`)}</div>
-        <div><span class="text-slate-500">СЛА по договору:</span> ${escapeText(contractSla)}</div>`
+        <div><span class="text-slate-500">SLA по договору:</span> ${escapeText(contractSla)}</div>`
             : `<div><span class="text-slate-500">Балансодержатель:</span> ${escapeText(balanceHolderLabel)}</div>
         <div><span class="text-slate-500">Кадастровые номера:</span> ${escapeText(cadastralNumbersLabel)}</div>`
         }
