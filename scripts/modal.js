@@ -598,6 +598,7 @@ export function createModal({ statusMachine = {}, onStatusChanged = () => {} } =
       city,
       escapeText,
       getAllowedTransitions: statusMachine.getAllowedTransitions,
+      comments: Array.isArray(item.comments) ? item.comments : [],
       onTransitionRequest: (nextStatus) => {
         const transitionFn = statusMachine.transitionPointStatus;
         if (typeof transitionFn !== "function") return;

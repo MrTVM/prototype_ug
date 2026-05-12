@@ -218,6 +218,7 @@ const pointEntities = {
     ],
     source: POINT_SOURCES.POS,
     relatedPoints: ["p4"],
+    commentIds: [],
     coords: [51.765908, 36.222592]
   },
   p2: {
@@ -259,6 +260,7 @@ const pointEntities = {
     ],
     source: POINT_SOURCES.SERVICE_112,
     relatedPoints: [],
+    commentIds: [],
     coords: [51.728626, 36.109831]
   },
   p3: {
@@ -290,6 +292,7 @@ const pointEntities = {
     ],
     source: POINT_SOURCES.OFFLINE,
     relatedPoints: [],
+    commentIds: ["cm_p3_01", "cm_p3_02"],
     coords: [51.753541, 36.203372]
   },
   p4: {
@@ -321,6 +324,7 @@ const pointEntities = {
     ],
     source: POINT_SOURCES.EDDS,
     relatedPoints: ["p1"],
+    commentIds: [],
     coords: [51.730846, 36.193015]
   },
   p5: {
@@ -352,6 +356,7 @@ const pointEntities = {
     ],
     source: POINT_SOURCES.EMAIL,
     relatedPoints: [],
+    commentIds: [],
     coords: [51.72611, 36.166901]
   },
   p8: {
@@ -383,6 +388,7 @@ const pointEntities = {
     ],
     source: POINT_SOURCES.EDDS,
     relatedPoints: ["p12"],
+    commentIds: [],
     coords: [51.675125, 36.095808]
   },
   p10: {
@@ -414,6 +420,7 @@ const pointEntities = {
     ],
     source: POINT_SOURCES.EMAIL,
     relatedPoints: ["p3"],
+    commentIds: [],
     coords: [51.753541, 36.203372]
   },
   p12: {
@@ -455,6 +462,7 @@ const pointEntities = {
     ],
     source: POINT_SOURCES.POS,
     relatedPoints: [],
+    commentIds: ["cm_p12_01", "cm_p12_02", "cm_p12_03", "cm_p12_04"],
     coords: [51.6824, 36.0921]
   },
   p13: {
@@ -496,16 +504,46 @@ const pointEntities = {
     ],
     source: POINT_SOURCES.EDDS,
     relatedPoints: ["p8"],
+    commentIds: [],
     coords: [51.6899, 36.1107]
   }
 };
 
+/** Комментарии пользователей (прототип). Связь с сообщением — через `commentIds` в сущности точки. */
+const messageCommentsById = {
+  cm_p12_01: {
+    id: "cm_p12_01",
+    createdAt: "2026-05-10 14:42",
+    author: "Громова О. В.",
+    text: "Работы приостановлены: нет разрешения на вскрытие покрытия, запрос в МКУ направлен."
+  },
+  cm_p12_02: {
+    id: "cm_p12_02",
+    createdAt: "2026-05-11 09:15",
+    author: "Беляев Р. К.",
+    text: "Подрядчик подтвердил готовность после получения согласования, ждём ответ МКУ."
+  },
+  cm_p12_03: {
+    id: "cm_p12_03",
+    createdAt: "2026-05-12 12:45",
+    author: "Тихонова Н. А.",
+    text: "Фото «после» частичных подготовительных работ загружены для истории; статус остаётся приостановлено до пакета документов."
+  },
+  cm_p12_04: {
+    id: "cm_p12_04",
+    createdAt: "2026-05-12 13:10",
+    author: "Иванов И. И.",
+    text: "Напоминание: при возобновлении проверить SLA по договору НО-7/26."
+  }
+};
+
 const buildPoint = (pointEntity) => {
-  const { applicantId, ownershipIds, ...pointData } = pointEntity;
+  const { applicantId, ownershipIds, commentIds, ...pointData } = pointEntity;
   return {
     ...pointData,
     applicant: applicantsById[applicantId] || null,
-    ownerships: ownershipIds.map((ownershipId) => ownershipsById[ownershipId]).filter(Boolean)
+    ownerships: ownershipIds.map((ownershipId) => ownershipsById[ownershipId]).filter(Boolean),
+    comments: (commentIds || []).map((commentId) => messageCommentsById[commentId]).filter(Boolean)
   };
 };
 

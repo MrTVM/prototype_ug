@@ -20,7 +20,8 @@ export function createModalActionsBox({
   city,
   escapeText,
   getAllowedTransitions,
-  onTransitionRequest
+  onTransitionRequest,
+  comments = []
 }) {
   const wrapper = document.createElement("div");
   wrapper.className = "space-y-3 flex flex-col h-full";
@@ -28,6 +29,9 @@ export function createModalActionsBox({
   const isCompleted = status === POINT_STATUSES.COMPLETED;
   const isCanceled = status === POINT_STATUSES.CANCELED;
   const isSuspended = status === POINT_STATUSES.SUSPENDED;
+  const commentsList = Array.isArray(comments) ? comments : [];
+  const showFullRecommendationTabs = !isCompleted && !isUnderReview;
+  const showTabsStrip = showFullRecommendationTabs;
   const primaryRelatedPoint = relatedPoints[0] || null;
   const duplicateRelatedLabel =
     relatedPoints.length > 0
@@ -264,24 +268,55 @@ export function createModalActionsBox({
   }
   panelRelatedActions.appendChild(relatedActionsBody);
 
-  const panels = {
-    text: panelText,
-    recommendation: panelRecommendation,
-    why: panelWhy,
-    relatedActions: panelRelatedActions
+  const panelComments = document.createElement("div");
+  panelComments.className = "p-3 hidden";
+  if (commentsList.length === 0) {
+    const emptyComments = document.createElement("div");
+    emptyComments.className = "text-xs text-slate-500";
+    emptyComments.textContent = "Комментариев пока нет.";
+    panelComments.appendChild(emptyComments);
+  } else {
+    [...commentsList]
+      .slice()
+      .sort((a, b) => String(a.createdAt).localeCompare(String(b.createdAt)))
+      .forEach((entry) => {
+        const block = document.createElement("div");
+        block.className =
+          "border-b border-slate-100 pb-2 mb-2 last:border-0 last:pb-0 last:mb-0 text-xs text-slate-700";
+        const metaLine = document.createElement("div");
+        metaLine.className = "text-slate-500";
+        metaLine.textContent = `${entry.createdAt || "—"} · ${entry.author || "—"}`;
+        const textLine = document.createElement("div");
+        textLine.className = "mt-1 whitespace-pre-line text-slate-800";
+        textLine.textContent = entry.text || "";
+        block.appendChild(metaLine);
+        block.appendChild(textLine);
+        panelComments.appendChild(block);
+      });
+  }
+
+  const tabOrder = showFullRecommendationTabs
+    ? ["text", "recommendation", "why", "relatedActions", "comments"]
+    : ["comments"];
+  const panels = { comments: panelComments };
+  if (showFullRecommendationTabs) {
+    Object.assign(panels, {
+      text: panelText,
+      recommendation: panelRecommendation,
+      why: panelWhy,
+      relatedActions: panelRelatedActions
+    });
+  }
+
+  const tabLabels = {
+    text: "Текст поручения",
+    recommendation: "Рекомендация",
+    why: "Почему",
+    relatedActions: "Похожие сообщения",
+    comments: "Комментарии"
   };
 
   const tabButtons = {};
-  const makeTab = (key, label) => {
-    const btn = document.createElement("button");
-    btn.type = "button";
-    btn.className = "rounded-t-lg px-3 py-1.5 text-xs font-medium transition border";
-    btn.textContent = label;
-    btn.addEventListener("click", () => activateTab(key));
-    tabButtons[key] = btn;
-    tabsBar.appendChild(btn);
-  };
-
   const activateTab = (key) => {
     Object.entries(panels).forEach(([k, panel]) => {
       panel.classList.toggle("hidden", k !== key);
@@ -299,17 +334,25 @@ export function createModalActionsBox({
     });
   };
 
-  makeTab("text", "Текст поручения");
-  makeTab("recommendation", "Рекомендация");
-  makeTab("why", "Почему");
-  makeTab("relatedActions", "Похожие сообщения");
-  activateTab("text");
+  const makeTab = (key, label) => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "rounded-t-lg px-3 py-1.5 text-xs font-medium transition border";
+    btn.textContent = label;
+    btn.addEventListener("click", () => activateTab(key));
+    tabButtons[key] = btn;
+    tabsBar.appendChild(btn);
+  };
+
+  tabOrder.forEach((key) => {
+    makeTab(key, tabLabels[key]);
+  });
+  activateTab(tabOrder[0]);
 
   tabsWrap.appendChild(tabsBar);
-  tabsWrap.appendChild(panelText);
-  tabsWrap.appendChild(panelRecommendation);
-  tabsWrap.appendChild(panelWhy);
-  tabsWrap.appendChild(panelRelatedActions);
+  tabOrder.forEach((key) => {
+    tabsWrap.appendChild(panels[key]);
+  });
 
   const hasCompletionReport = isUnderReview || isCompleted;
   if (hasCompletionReport) {
@@ -387,8 +430,6 @@ export function createModalActionsBox({
     `;
     wrapper.appendChild(reportBox);
   }
-
-  const shouldShowRecommendationTabs = !isCompleted && !isUnderReview;
 
   const row = document.createElement("div");
   row.className = `${isCompleted || isUnderReview ? "" : "hidden "}flex flex-wrap gap-3 items-center mt-auto pt-3`;
@@ -566,14 +607,14 @@ export function createModalActionsBox({
 
   if (!isCompleted) {
     hideRecommendationText();
-    if (shouldShowRecommendationTabs) {
-      wrapper.appendChild(tabsWrap);
-    }
+  }
+  if (showTabsStrip) {
+    wrapper.appendChild(tabsWrap);
   }
   wrapper.appendChild(row);
 
   return {
     actionsBox: wrapper,
-    onRecommendationReady: shouldShowRecommendationTabs ? revealRecommendationText : () => {}
+    onRecommendationReady: showFullRecommendationTabs ? revealRecommendationText : () => {}
   };
 }
