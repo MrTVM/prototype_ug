@@ -410,6 +410,16 @@ const pointEntities = {
         }
       }
     ],
+    photoAfterGallery: [
+      {
+        source: "./src/photos/p7-after.webp",
+        meta: {
+          createdAt: "2026-05-12 12:10",
+          updatedAt: "2026-05-12 12:20",
+          coordinates: "51.730846, 36.193015"
+        }
+      }
+    ],
     source: POINT_SOURCES.OFFLINE,
     relatedPoints: ["p4"],
     coords: [51.730846, 36.193015]
@@ -540,6 +550,16 @@ const pointEntities = {
         meta: {
           createdAt: "2026-05-10 14:20",
           updatedAt: "2026-05-10 14:30",
+          coordinates: "51.682400, 36.092100"
+        }
+      }
+    ],
+    photoAfterGallery: [
+      {
+        source: "./src/photos/p12-after.webp",
+        meta: {
+          createdAt: "2026-05-12 12:30",
+          updatedAt: "2026-05-12 12:40",
           coordinates: "51.682400, 36.092100"
         }
       }
