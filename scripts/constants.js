@@ -379,7 +379,7 @@ const pointEntities = {
         }
       }
     ],
-    source: "https://pos.gosuslugi.ru/report/8488043",
+    source: "ПОС",
     relatedPoints: ["p5"],
     coords: [51.747376, 36.134759]
   },
