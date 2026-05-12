@@ -445,32 +445,6 @@ const pointEntities = {
     relatedPoints: ["p12"],
     coords: [51.675125, 36.095808]
   },
-  p9: {
-    id: "p9",
-    applicantId: "u-9999",
-    ownershipIds: [],
-    requestType: REQUEST_TYPES.POWER_SUPPLY_EMERGENCY,
-    createdAt: "2026-05-10 12:55",
-    plannedCloseAt: "2026-05-17 22:00",
-    gar: {
-      objectType: "",
-      coordinate: "51.672500, 36.101200",
-      municipalDistrict: ""
-    },
-    theme: "",
-    address: "",
-    status: POINT_STATUSES.NEW,
-    description: "",
-    photoGallery: [
-      {
-        source: "./src/photos/p9-before.webp",
-        meta: {}
-      }
-    ],
-    source: "",
-    relatedPoints: ["p404"],
-    coords: [51.6725, 36.1012]
-  },
   p10: {
     id: "p10",
     applicantId: "u-1010",
