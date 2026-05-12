@@ -266,7 +266,7 @@ const pointEntities = {
   p3: {
     id: "p3",
     applicantId: "u-1003",
-    ownershipIds: ["own_9", "own_10"],
+    ownershipIds: ["own_10"],
     requestType: REQUEST_TYPES.IMPROVEMENT_CLEANING,
     createdAt: "2026-05-10 09:20",
     plannedCloseAt: "2026-05-18 20:00",
@@ -291,8 +291,8 @@ const pointEntities = {
       }
     ],
     source: POINT_SOURCES.OFFLINE,
-    relatedPoints: [],
-    commentIds: ["cm_p3_01", "cm_p3_02"],
+    relatedPoints: ["p10"],
+    commentIds: [],
     coords: [51.753541, 36.203372]
   },
   p4: {
@@ -394,7 +394,7 @@ const pointEntities = {
   p10: {
     id: "p10",
     applicantId: "u-1010",
-    ownershipIds: ["own_9", "own_10"],
+    ownershipIds: ["own_10"],
     requestType: REQUEST_TYPES.IMPROVEMENT_CLEANING,
     createdAt: "2026-05-10 13:20",
     plannedCloseAt: "2026-05-19 18:00",
@@ -407,7 +407,7 @@ const pointEntities = {
     address: "г.о. Курск, Центральный округ",
     status: POINT_STATUSES.CANCELED,
     description:
-      "Повторное обращение без новых материалов.",
+      "Друзья, кто-нибудь знает, чьи строительные блоки перекрыли въезд на парковку? Машину поставить невозможно.",
     photoGallery: [
       {
         source: "./src/photos/p3-before.webp",
@@ -461,7 +461,7 @@ const pointEntities = {
       }
     ],
     source: POINT_SOURCES.POS,
-    relatedPoints: [],
+    relatedPoints: ["p8"],
     commentIds: ["cm_p12_01", "cm_p12_02", "cm_p12_03", "cm_p12_04"],
     coords: [51.6824, 36.0921]
   },
@@ -503,7 +503,7 @@ const pointEntities = {
       }
     ],
     source: POINT_SOURCES.EDDS,
-    relatedPoints: ["p8"],
+    relatedPoints: [],
     commentIds: [],
     coords: [51.6899, 36.1107]
   }
