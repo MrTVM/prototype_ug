@@ -27,6 +27,7 @@ export function createModalActionsBox({
   const isUnderReview = status === POINT_STATUSES.UNDER_REVIEW;
   const isCompleted = status === POINT_STATUSES.COMPLETED;
   const isCanceled = status === POINT_STATUSES.CANCELED;
+  const isSuspended = status === POINT_STATUSES.SUSPENDED;
   const primaryRelatedPoint = relatedPoints[0] || null;
   const duplicateRelatedLabel =
     relatedPoints.length > 0
@@ -471,24 +472,28 @@ export function createModalActionsBox({
 
   row.appendChild(
     mkBtn({
-      label: isCompleted
-        ? "Отправить отчет"
-        : useAssignmentFlow
-          ? isUnderReview
-            ? "Принять"
-            : "Утвердить поручение"
-          : useProcurementFlow
+      label: isSuspended
+        ? "Возобновить"
+        : isCompleted
+          ? "Отправить отчет"
+          : useAssignmentFlow
             ? isUnderReview
               ? "Принять"
-              : "Запланировать"
-            : isUnderReview
-              ? "Принять"
-              : "Эскалировать",
-      className: useAssignmentFlow
+              : "Утвердить поручение"
+            : useProcurementFlow
+              ? isUnderReview
+                ? "Принять"
+                : "Запланировать"
+              : isUnderReview
+                ? "Принять"
+                : "Эскалировать",
+      className: isSuspended
         ? "rounded-xl bg-emerald-900 text-white px-4 py-2 text-sm font-semibold shadow-sm hover:bg-emerald-800 transition"
-        : useProcurementFlow
-          ? "rounded-xl bg-amber-900 text-white px-4 py-2 text-sm font-semibold shadow-sm hover:bg-amber-800 transition"
-          : "rounded-xl bg-blue-900 text-white px-4 py-2 text-sm font-semibold shadow-sm hover:bg-blue-800 transition",
+        : useAssignmentFlow
+          ? "rounded-xl bg-emerald-900 text-white px-4 py-2 text-sm font-semibold shadow-sm hover:bg-emerald-800 transition"
+          : useProcurementFlow
+            ? "rounded-xl bg-amber-900 text-white px-4 py-2 text-sm font-semibold shadow-sm hover:bg-amber-800 transition"
+            : "rounded-xl bg-blue-900 text-white px-4 py-2 text-sm font-semibold shadow-sm hover:bg-blue-800 transition",
       onClick: () => {
         const currentItem = currentItemRef();
         if (!currentItem) return;
@@ -506,7 +511,7 @@ export function createModalActionsBox({
       }
     })
   );
-  if (!isCompleted) {
+  if (!isCompleted && !isSuspended) {
     row.appendChild(bulkBtn);
   }
 
@@ -520,22 +525,43 @@ export function createModalActionsBox({
   );
 
   if (!isCompleted) {
-    row.appendChild(
-      mkBtn({
-        label: isUnderReview ? "Вернуть на доработку" : "Отклонить",
-        className:
-          "rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-100 px-4 py-2 text-sm font-medium text-rose-800 shadow-sm transition",
-        onClick: () => {
-          const rejectTargetStatus = resolveRejectTargetStatus();
-          if (!rejectTargetStatus) return;
-          if (!allowedTransitions.includes(rejectTargetStatus)) {
-            window.alert(`Недоступный переход статуса: ${status} -> ${rejectTargetStatus}`);
-            return;
+    if (isSuspended) {
+      row.appendChild(
+        mkBtn({
+          label: "Эскалировать",
+          className:
+            "rounded-xl bg-blue-900 text-white px-4 py-2 text-sm font-semibold shadow-sm hover:bg-blue-800 transition",
+          onClick: () => {
+            const lines = [
+              "Запрос на эскалацию приостановленного сообщения (прототип).",
+              `Категория: ${category || "—"}`,
+              `Куда: ${escalationRule?.to || "—"}`,
+              `Основание: ${escalationRule?.basis || "—"}`,
+              `Пакет: ${escalationRule?.attachments || "сформировать вручную"}`
+            ];
+            window.alert(lines.join("\n"));
+            onClose();
           }
-          if (requestTransition(rejectTargetStatus)) onClose();
-        }
-      })
-    );
+        })
+      );
+    } else {
+      row.appendChild(
+        mkBtn({
+          label: isUnderReview ? "Вернуть на доработку" : "Отклонить",
+          className:
+            "rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-100 px-4 py-2 text-sm font-medium text-rose-800 shadow-sm transition",
+          onClick: () => {
+            const rejectTargetStatus = resolveRejectTargetStatus();
+            if (!rejectTargetStatus) return;
+            if (!allowedTransitions.includes(rejectTargetStatus)) {
+              window.alert(`Недоступный переход статуса: ${status} -> ${rejectTargetStatus}`);
+              return;
+            }
+            if (requestTransition(rejectTargetStatus)) onClose();
+          }
+        })
+      );
+    }
   }
 
   if (!isCompleted) {

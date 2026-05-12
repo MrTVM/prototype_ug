@@ -114,7 +114,19 @@ const ownershipsById = {
     cadastralNumber: "77:01:0006006:6",
     ownershipForm: OWNERSHIP_FORMS.MUNICIPAL,
     vri: "Для обслуживания городской территории",
-    balanceHolder: { name: "Не определён" }
+    contract: {
+      number: "НО-7/26",
+      date: "01.02.2026",
+      subject: "Содержание сетей наружного освещения и аварийное восстановление",
+      contractor: "ООО «ГорСвет+»",
+      contractorInn: "4610011122",
+      contact: "avaria@gorsvetplus.ru | +7 (4712) 55-66-77",
+      amount: "4,2 млн руб.",
+      endDate: "31.12.2026",
+      sla: "48 часов с момента фиксации аварии по наружному освещению",
+      penalty: "0,15% от цены этапа за каждый день просрочки"
+    },
+    balanceHolder: { name: "ГБУ «Курск — наружное освещение»" }
   },
   own_9: {
     cadastralNumber: "77:01:0007007:14",
