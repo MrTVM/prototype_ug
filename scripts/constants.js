@@ -181,7 +181,7 @@ const pointEntities = {
     },
     theme: "Нарушение дорожного покрытия на региональной дороге",
     address: "Курск, ул. Дубровинского",
-    status: POINT_STATUSES.UNDER_REVIEW,
+    status: POINT_STATUSES.COMPLETED,
     description:
       "Основано на реальном сообщении о ямах на региональной дороге.\nСтатус ожидает подтверждения от профильного ведомства.",
     photoGallery: [
@@ -246,7 +246,7 @@ const pointEntities = {
       }
     ],
     source: POINT_SOURCES.SERVICE_112,
-    relatedPoints: ["p11"],
+    relatedPoints: [],
     coords: [51.728626, 36.109831]
   },
   p3: {
@@ -308,7 +308,7 @@ const pointEntities = {
       }
     ],
     source: POINT_SOURCES.EDDS,
-    relatedPoints: ["p1", "p7"],
+    relatedPoints: ["p1"],
     coords: [51.730846, 36.193015]
   },
   p5: {
@@ -339,90 +339,8 @@ const pointEntities = {
       }
     ],
     source: POINT_SOURCES.EMAIL,
-    relatedPoints: ["p6"],
+    relatedPoints: [],
     coords: [51.72611, 36.166901]
-  },
-  p6: {
-    id: "p6",
-    applicantId: "u-1006",
-    ownershipIds: ["own_12"],
-    requestType: REQUEST_TYPES.HOUSING_UTILITIES_NETWORKS,
-    createdAt: "2026-05-10 11:05",
-    plannedCloseAt: "2026-06-06 18:00",
-    gar: {
-      objectType: "Коммуникационный колодец",
-      coordinate: "51.747376, 36.134759",
-      municipalDistrict: "Сеймский округ"
-    },
-    theme: "Отсутствие люков на коммуникационных колодцах",
-    address: "Курск, Орловская улица, 12",
-    status: POINT_STATUSES.COMPLETED,
-    description:
-      "Люк восстановлен подрядчиком в день обращения.\nКейс закрыт, добавлены фото после работ.",
-    photoGallery: [
-      {
-        source: "./src/photos/p6-before.webp",
-        meta: {
-          createdAt: "2026-05-10 10:50",
-          updatedAt: "2026-05-10 10:55",
-          coordinates: "51.747376, 36.134759"
-        }
-      }
-    ],
-    photoAfterGallery: [
-      {
-        source: "./src/photos/p6-after.webp",
-        meta: {
-          createdAt: "2026-05-11 15:15",
-          updatedAt: "2026-05-11 15:20",
-          coordinates: "51.747376, 36.134759"
-        }
-      }
-    ],
-    source: "ПОС",
-    relatedPoints: ["p5"],
-    coords: [51.747376, 36.134759]
-  },
-  p7: {
-    id: "p7",
-    applicantId: "u-1007",
-    ownershipIds: ["own_13"],
-    requestType: REQUEST_TYPES.APPROVALS_WORK_SUSPENSION,
-    createdAt: "2026-05-10 11:40",
-    plannedCloseAt: "2026-05-17 18:00",
-    gar: {
-      objectType: "Фасад здания",
-      coordinate: "51.730846, 36.193015",
-      municipalDistrict: "Центральный округ"
-    },
-    theme: "Неудовлетворительное содержание фасадов",
-    address: "Курск, Красная площадь, 1",
-    status: POINT_STATUSES.SUSPENDED,
-    description:
-      "Фасад не обслуживается, есть осыпание штукатурки.\nРаботы временно приостановлены до согласования доступа.",
-    photoGallery: [
-      {
-        source: "./src/photos/p7-before.webp",
-        meta: {
-          createdAt: "2026-05-10 11:25",
-          updatedAt: "2026-05-10 11:35",
-          coordinates: "51.730846, 36.193015"
-        }
-      }
-    ],
-    photoAfterGallery: [
-      {
-        source: "./src/photos/p7-after.webp",
-        meta: {
-          createdAt: "2026-05-12 12:10",
-          updatedAt: "2026-05-12 12:20",
-          coordinates: "51.730846, 36.193015"
-        }
-      }
-    ],
-    source: POINT_SOURCES.OFFLINE,
-    relatedPoints: ["p4"],
-    coords: [51.730846, 36.193015]
   },
   p8: {
     id: "p8",
@@ -486,52 +404,11 @@ const pointEntities = {
     relatedPoints: ["p3"],
     coords: [51.753541, 36.203372]
   },
-  p11: {
-    id: "p11",
-    applicantId: "u-1011",
-    ownershipIds: ["own_14"],
-    requestType: REQUEST_TYPES.QUALITY_CONTROL_CANCELLATION,
-    createdAt: "2026-05-10 14:05",
-    plannedCloseAt: "2026-05-20 11:00",
-    gar: {
-      objectType: "Производственная площадка",
-      coordinate: "51.758200, 36.146700",
-      municipalDistrict: "Сеймский округ"
-    },
-    theme: "Парковка перекрыта частным ограждением",
-    address: "Курск, ул. Карла Маркса, 68",
-    status: POINT_STATUSES.UNDER_REVIEW,
-    description:
-      "Поступила жалоба на самовольный захват муниципальных мест.\nТребуется правовая оценка и проверка границ участка.",
-    photoGallery: [
-      {
-        source: "./src/photos/p11-before.webp",
-        meta: {
-          createdAt: "2026-05-10 13:50",
-          updatedAt: "2026-05-10 14:00",
-          coordinates: "51.758200, 36.146700"
-        }
-      }
-    ],
-    photoAfterGallery: [
-      {
-        source: "./src/photos/p11-after.webp",
-        meta: {
-          createdAt: "2026-05-12 10:10",
-          updatedAt: "2026-05-12 10:20",
-          coordinates: "51.758200, 36.146700"
-        }
-      }
-    ],
-    source: POINT_SOURCES.SERVICE_112,
-    relatedPoints: ["p2"],
-    coords: [51.7582, 36.1467]
-  },
   p12: {
     id: "p12",
     applicantId: "u-1012",
-    ownershipIds: ["own_7", "own_8"],
-    requestType: REQUEST_TYPES.APPROVALS_WORK_SUSPENSION,
+    ownershipIds: ["own_8"],
+    requestType: REQUEST_TYPES.POWER_SUPPLY_EMERGENCY,
     createdAt: "2026-05-10 14:40",
     plannedCloseAt: "2026-05-22 18:00",
     gar: {
@@ -565,7 +442,7 @@ const pointEntities = {
       }
     ],
     source: POINT_SOURCES.POS,
-    relatedPoints: ["p8", "p404"],
+    relatedPoints: [],
     coords: [51.6824, 36.0921]
   },
   p13: {
