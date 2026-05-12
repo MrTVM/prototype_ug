@@ -170,460 +170,446 @@ const pointEntities = {
   p1: {
     id: "p1",
     applicantId: "u-1001",
-    ownershipIds: ["own_1"],
-    requestType: REQUEST_TYPES.HOUSING_UTILITIES_NETWORKS,
-    createdAt: "2026-04-29 09:15",
-    plannedCloseAt: "2026-05-04 18:00",
+    ownershipIds: ["own_11"],
+    requestType: REQUEST_TYPES.ROADS_PATCH_REPAIR,
+    createdAt: "2026-05-10 08:10",
+    plannedCloseAt: "2026-05-17 18:00",
     gar: {
-      objectType: "Инженерные коммуникации",
-      coordinate: "55.751244, 37.618423",
-      municipalDistrict: "Центральный"
+      objectType: "Дорога регионального значения",
+      coordinate: "51.765908, 36.222592",
+      municipalDistrict: "Центральный округ"
     },
-    theme: "Ремонт коммуникаций",
-    address: "Москва, ул. Примерная, 1",
-    status: POINT_STATUSES.IN_PROGRESS,
+    theme: "Нарушение дорожного покрытия на региональной дороге",
+    address: "Курск, ул. Дубровинского",
+    status: POINT_STATUSES.UNDER_REVIEW,
     description:
-      "Планируется замена участка трубопровода.\nСроки уточняются после выезда специалиста.",
+      "Основано на реальном сообщении о ямах на региональной дороге.\nСтатус ожидает подтверждения от профильного ведомства.",
     photoGallery: [
       {
-        source: "./src/photos/p1-before.svg",
+        source: "./src/photos/p1-before.webp",
         meta: {
-          createdAt: "2026-04-28 08:50",
-          updatedAt: "2026-04-28 09:05",
-          coordinates: "55.751244, 37.618423"
+          createdAt: "2026-05-10 07:55",
+          updatedAt: "2026-05-10 08:05",
+          coordinates: "51.765908, 36.222592"
         }
-      },
+      }
+    ],
+    photoAfterGallery: [
       {
-        source: "./src/photos/p1-before.svg",
+        source: "./src/photos/p1-after.webp",
         meta: {
-          createdAt: "2026-04-29 08:52",
-          updatedAt: "2026-04-29 09:06",
-          coordinates: "55.751244, 37.618423"
-        }
-      },
-      {
-        source: "./src/photos/p1-before.svg",
-        meta: {
-          createdAt: "2026-04-29 08:55",
-          updatedAt: "2026-04-29 09:10",
-          coordinates: "55.751244, 37.618423"
+          createdAt: "2026-05-11 16:40",
+          updatedAt: "2026-05-11 16:55",
+          coordinates: "51.765908, 36.222592"
         }
       }
     ],
     source: POINT_SOURCES.POS,
-    relatedPoints: [],
-    coords: [55.751244, 37.618423]
+    relatedPoints: ["p4"],
+    coords: [51.765908, 36.222592]
   },
   p2: {
     id: "p2",
     applicantId: "u-1002",
-    ownershipIds: ["own_2"],
+    ownershipIds: ["own_6"],
     requestType: REQUEST_TYPES.ROADS_PATCH_REPAIR,
-    createdAt: "2026-04-29 10:05",
-    plannedCloseAt: "2026-05-05 17:30",
+    createdAt: "2026-05-10 08:45",
+    plannedCloseAt: "2026-05-18 16:30",
     gar: {
-      objectType: "Дорога местного значения",
-      coordinate: "55.7608, 37.606",
-      municipalDistrict: "Тверской"
+      objectType: "Светофорный объект",
+      coordinate: "51.728626, 36.109831",
+      municipalDistrict: "Сеймский округ"
     },
-    theme: "Восстановление дорожного полотна",
-    address: "Москва, пр-т Тестовый, 17",
+    theme: "Светофоры на дорогах в границах поселений",
+    address: "Курск, пр. Дружбы, 114",
     status: POINT_STATUSES.UNDER_REVIEW,
     description:
-      "Заявка направлена в профильный отдел.\nОжидаем подтверждение графика работ.",
+      "Синтетический кейс по теме из CSV: отказ контроллера светофора.\nТребуется подтверждение выезда и временная схема движения.",
     photoGallery: [
       {
-        source: "./src/photos/p2-before.svg",
+        source: "./src/photos/p2-before.webp",
         meta: {
-          createdAt: "2026-04-29 09:50",
-          updatedAt: "2026-04-29 10:00",
-          coordinates: "55.7608, 37.606"
+          createdAt: "2026-05-10 08:20",
+          updatedAt: "2026-05-10 08:35",
+          coordinates: "51.728626, 36.109831"
         }
       }
     ],
     photoAfterGallery: [
       {
-        source: "./src/photos/p2-after.svg",
+        source: "./src/photos/p2-after.webp",
         meta: {
-          createdAt: "2026-04-30 11:35",
-          updatedAt: "2026-04-30 11:40",
-          coordinates: "55.7608, 37.606"
+          createdAt: "2026-05-11 12:05",
+          updatedAt: "2026-05-11 12:15",
+          coordinates: "51.728626, 36.109831"
         }
       }
     ],
     source: POINT_SOURCES.SERVICE_112,
-    relatedPoints: ["p7"],
-    coords: [55.7608, 37.606]
+    relatedPoints: ["p11"],
+    coords: [51.728626, 36.109831]
   },
   p3: {
     id: "p3",
     applicantId: "u-1003",
-    ownershipIds: ["own_3", "own_4", "own_5"],
-    requestType: REQUEST_TYPES.POWER_SUPPLY_EMERGENCY,
-    createdAt: "2026-04-28 21:40",
-    plannedCloseAt: "2026-04-29 14:00",
+    ownershipIds: ["own_9", "own_10"],
+    requestType: REQUEST_TYPES.IMPROVEMENT_CLEANING,
+    createdAt: "2026-05-10 09:20",
+    plannedCloseAt: "2026-05-18 20:00",
     gar: {
-      objectType: "Объект электросетевого хозяйства",
-      coordinate: "55.739, 37.617",
-      municipalDistrict: "Якиманка"
+      objectType: "Парковочное пространство",
+      coordinate: "51.753541, 36.203372",
+      municipalDistrict: "Центральный округ"
     },
-    theme: "Устранение аварии электроснабжения",
-    address: "Москва, ул. Сервисная, 9",
-    status: POINT_STATUSES.COMPLETED,
+    theme: "Парковки на дорогах в границах городских округов",
+    address: "г.о. Курск, Центральный округ",
+    status: POINT_STATUSES.NEW,
     description:
-      "Неисправность устранена.\nПроведены проверки и включение нагрузки в штатный режим.",
+      "Въезд на парковку занят строительными блоками.\nКейс отражает проблему содержания прилегающей территории.",
     photoGallery: [
       {
-        source: "./src/photos/p3-before.svg",
+        source: "./src/photos/p3-before.webp",
         meta: {
-          createdAt: "2026-04-27 21:15",
-          updatedAt: "2026-04-27 21:30",
-          coordinates: "55.739, 37.617"
+          createdAt: "2026-05-10 09:10",
+          updatedAt: "2026-05-10 09:15",
+          coordinates: "51.753541, 36.203372"
         }
-      },
+      }
+    ],
+    source: POINT_SOURCES.OFFLINE,
+    relatedPoints: [],
+    coords: [51.753541, 36.203372]
+  },
+  p4: {
+    id: "p4",
+    applicantId: "u-1004",
+    ownershipIds: ["own_2"],
+    requestType: REQUEST_TYPES.ROADS_PATCH_REPAIR,
+    createdAt: "2026-05-10 10:00",
+    plannedCloseAt: "2026-05-17 14:00",
+    gar: {
+      objectType: "Дорога местного значения",
+      coordinate: "51.730846, 36.193015",
+      municipalDistrict: "Центральный округ"
+    },
+    theme: "Ямы на дорогах местного значения",
+    address: "Курск, Красная площадь, 1",
+    status: POINT_STATUSES.IN_PROGRESS,
+    description:
+      "Дефекты покрытия у административного здания.\nЕсть действующий контракт на содержание дорог.",
+    photoGallery: [
       {
-        source: "./src/photos/p3-before.svg",
+        source: "./src/photos/p4-before.webp",
         meta: {
-          createdAt: "2026-04-27 21:20",
-          updatedAt: "2026-04-27 21:35",
-          coordinates: "55.739, 37.617"
+          createdAt: "2026-05-10 09:35",
+          updatedAt: "2026-05-10 09:45",
+          coordinates: "51.730846, 36.193015"
+        }
+      }
+    ],
+    source: POINT_SOURCES.EDDS,
+    relatedPoints: ["p1", "p7"],
+    coords: [51.730846, 36.193015]
+  },
+  p5: {
+    id: "p5",
+    applicantId: "u-1005",
+    ownershipIds: ["own_1"],
+    requestType: REQUEST_TYPES.HOUSING_UTILITIES_NETWORKS,
+    createdAt: "2026-05-10 10:40",
+    plannedCloseAt: "2026-06-06 18:00",
+    gar: {
+      objectType: "Коммуникационный колодец",
+      coordinate: "51.726110, 36.166901",
+      municipalDistrict: "Центральный округ"
+    },
+    theme: "Отсутствие люков на коммуникационных колодцах",
+    address: "Курск, ул. Павлуновского, 55",
+    status: POINT_STATUSES.IN_PROGRESS,
+    description:
+      "Люк отсутствует, место ограждено сигнальной лентой.\nНеобходим срочный монтаж и проверка шахты.",
+    photoGallery: [
+      {
+        source: "./src/photos/p5-before.webp",
+        meta: {
+          createdAt: "2026-05-10 10:25",
+          updatedAt: "2026-05-10 10:30",
+          coordinates: "51.726110, 36.166901"
+        }
+      }
+    ],
+    source: POINT_SOURCES.EMAIL,
+    relatedPoints: ["p6"],
+    coords: [51.72611, 36.166901]
+  },
+  p6: {
+    id: "p6",
+    applicantId: "u-1006",
+    ownershipIds: ["own_12"],
+    requestType: REQUEST_TYPES.HOUSING_UTILITIES_NETWORKS,
+    createdAt: "2026-05-10 11:05",
+    plannedCloseAt: "2026-06-06 18:00",
+    gar: {
+      objectType: "Коммуникационный колодец",
+      coordinate: "51.747376, 36.134759",
+      municipalDistrict: "Сеймский округ"
+    },
+    theme: "Отсутствие люков на коммуникационных колодцах",
+    address: "Курск, Орловская улица, 12",
+    status: POINT_STATUSES.COMPLETED,
+    description:
+      "Люк восстановлен подрядчиком в день обращения.\nКейс закрыт, добавлены фото после работ.",
+    photoGallery: [
+      {
+        source: "./src/photos/p6-before.webp",
+        meta: {
+          createdAt: "2026-05-10 10:50",
+          updatedAt: "2026-05-10 10:55",
+          coordinates: "51.747376, 36.134759"
         }
       }
     ],
     photoAfterGallery: [
       {
-        source: "./src/photos/p3-after.svg",
+        source: "./src/photos/p6-after.webp",
         meta: {
-          createdAt: "2026-04-29 13:30",
-          updatedAt: "2026-04-29 13:40",
-          coordinates: "55.739, 37.617"
+          createdAt: "2026-05-11 15:15",
+          updatedAt: "2026-05-11 15:20",
+          coordinates: "51.747376, 36.134759"
+        }
+      }
+    ],
+    source: "https://pos.gosuslugi.ru/report/8488043",
+    relatedPoints: ["p5"],
+    coords: [51.747376, 36.134759]
+  },
+  p7: {
+    id: "p7",
+    applicantId: "u-1007",
+    ownershipIds: ["own_13"],
+    requestType: REQUEST_TYPES.APPROVALS_WORK_SUSPENSION,
+    createdAt: "2026-05-10 11:40",
+    plannedCloseAt: "2026-05-17 18:00",
+    gar: {
+      objectType: "Фасад здания",
+      coordinate: "51.730846, 36.193015",
+      municipalDistrict: "Центральный округ"
+    },
+    theme: "Неудовлетворительное содержание фасадов",
+    address: "Курск, Красная площадь, 1",
+    status: POINT_STATUSES.SUSPENDED,
+    description:
+      "Фасад не обслуживается, есть осыпание штукатурки.\nРаботы временно приостановлены до согласования доступа.",
+    photoGallery: [
+      {
+        source: "./src/photos/p7-before.webp",
+        meta: {
+          createdAt: "2026-05-10 11:25",
+          updatedAt: "2026-05-10 11:35",
+          coordinates: "51.730846, 36.193015"
+        }
+      }
+    ],
+    source: POINT_SOURCES.OFFLINE,
+    relatedPoints: ["p4"],
+    coords: [51.730846, 36.193015]
+  },
+  p8: {
+    id: "p8",
+    applicantId: "u-1008",
+    ownershipIds: ["own_3", "own_4", "own_5"],
+    requestType: REQUEST_TYPES.POWER_SUPPLY_EMERGENCY,
+    createdAt: "2026-05-10 12:15",
+    plannedCloseAt: "2026-05-17 18:00",
+    gar: {
+      objectType: "Наружное освещение",
+      coordinate: "51.675125, 36.095808",
+      municipalDistrict: "Железнодорожный округ"
+    },
+    theme: "Неработающее наружное освещение",
+    address: "Курск, ул. Родниковая, 14А",
+    status: POINT_STATUSES.IN_PROGRESS,
+    description:
+      "Не работает линия уличного освещения на квартале.\nТребуется определить балансодержателя и восстановить питание.",
+    photoGallery: [
+      {
+        source: "./src/photos/p8-before.webp",
+        meta: {
+          createdAt: "2026-05-10 12:00",
+          updatedAt: "2026-05-10 12:10",
+          coordinates: "51.675125, 36.095808"
         }
       }
     ],
     source: POINT_SOURCES.EDDS,
     relatedPoints: ["p12"],
-    coords: [55.739, 37.617]
-  },
-  p4: {
-    id: "p4",
-    applicantId: "u-1004",
-    ownershipIds: [],
-    requestType: REQUEST_TYPES.IMPROVEMENT_CLEANING,
-    createdAt: "2026-04-29 08:20",
-    plannedCloseAt: "2026-05-03 16:00",
-    gar: {
-      objectType: "Общественная территория",
-      coordinate: "55.7632, 37.5647",
-      municipalDistrict: "Пресненский"
-    },
-    theme: "Очистка и благоустройство территории",
-    address: "Москва, наб. Прототипная, 3",
-    status: POINT_STATUSES.NEW,
-    description:
-      "Требуется вывоз мусора и первичная уборка.\nПосле согласования подготовим график выездов.",
-    photoGallery: [
-      {
-        source: "./src/photos/p4-before.svg",
-        meta: {
-          createdAt: "2026-04-29 08:00",
-          updatedAt: "2026-04-29 08:10",
-          coordinates: "55.7632, 37.5647"
-        }
-      },
-      {
-        source: "./src/photos/p4-before.svg",
-        meta: {
-          createdAt: "2026-04-29 08:05",
-          updatedAt: "2026-04-29 08:15",
-          coordinates: "55.7632, 37.5647"
-        }
-      },
-      {
-        source: "./src/photos/p4-before.svg",
-        meta: {
-          createdAt: "2026-04-29 08:08",
-          updatedAt: "2026-04-29 08:18",
-          coordinates: "55.7632, 37.5647"
-        }
-      }
-    ],
-    source: POINT_SOURCES.OFFLINE,
-    relatedPoints: ["p10"],
-    coords: [55.7632, 37.5647]
-  },
-  p5: {
-    id: "p5",
-    applicantId: "u-1005",
-    ownershipIds: ["own_6"],
-    requestType: REQUEST_TYPES.APPROVALS_WORK_SUSPENSION,
-    createdAt: "2026-04-27 13:50",
-    plannedCloseAt: "2026-05-10 12:00",
-    gar: {
-      objectType: "Улично-дорожная сеть",
-      coordinate: "55.7492, 37.655",
-      municipalDistrict: "Басманный"
-    },
-    theme: "Приостановка работ по согласованию",
-    address: "Москва, ул. Адаптерная, 22",
-    status: POINT_STATUSES.SUSPENDED,
-    description:
-      "Работы приостановлены до получения дополнительных согласований.\nПланируем возобновление после решения вопроса.",
-    photoGallery: [
-      {
-        source: "./src/photos/p5-before.svg",
-        meta: {
-          createdAt: "2026-04-27 13:20",
-          updatedAt: "2026-04-27 13:35",
-          coordinates: "55.7492, 37.655"
-        }
-      },
-      {
-        source: "./src/photos/p5-before.svg",
-        meta: {
-          createdAt: "2026-04-27 13:25",
-          updatedAt: "2026-04-27 13:40",
-          coordinates: "55.7492, 37.655"
-        }
-      }
-    ],
-    source: POINT_SOURCES.EMAIL,
-    relatedPoints: ["p8"],
-    coords: [55.7492, 37.655]
-  },
-  p6: {
-    id: "p6",
-    applicantId: "u-1006",
-    ownershipIds: ["own_7", "own_8"],
-    requestType: REQUEST_TYPES.QUALITY_CONTROL_CANCELLATION,
-    createdAt: "2026-04-26 11:10",
-    plannedCloseAt: "2026-04-26 12:00",
-    gar: {
-      objectType: "Городская территория",
-      coordinate: "55.706, 37.61",
-      municipalDistrict: "Донской"
-    },
-    theme: "Отмена заявки по причине несоответствия",
-    address: "Москва, ул. Несовпадений, 5",
-    status: POINT_STATUSES.CANCELED,
-    description:
-      "Заявка отклонена.\nПричина: несоответствие требованиям по регламенту.",
-    photoGallery: [
-      {
-        source: "./src/photos/p6-before.svg",
-        meta: {
-          createdAt: "2026-04-26 10:45",
-          updatedAt: "2026-04-26 10:55",
-          coordinates: "55.706, 37.61"
-        }
-      },
-      {
-        source: "./src/photos/p6-before.svg",
-        meta: {
-          createdAt: "2026-04-26 10:50",
-          updatedAt: "2026-04-26 11:00",
-          coordinates: "55.706, 37.61"
-        }
-      }
-    ],
-    source: POINT_SOURCES.POS,
-    relatedPoints: ["p11"],
-    coords: [55.706, 37.61]
-  },
-  p7: {
-    id: "p7",
-    applicantId: "u-1007",
-    ownershipIds: ["own_9"],
-    requestType: REQUEST_TYPES.ROADS_PATCH_REPAIR,
-    createdAt: "2026-04-30 07:42",
-    plannedCloseAt: "2026-05-06 20:00",
-    gar: {
-      objectType: "Пешеходная инфраструктура",
-      coordinate: "55.7429, 37.6538",
-      municipalDistrict: "Таганский"
-    },
-    theme: "Просадка тротуарной плитки у остановки",
-    address: "Москва, пр-т Тестовый, 17",
-    status: POINT_STATUSES.IN_PROGRESS,
-    description:
-      "У остановки образовалась просадка тротуарной плитки после дождя.\nНужно восстановить покрытие и проверить основание.",
-    photoGallery: [
-      {
-        source: "./src/photos/p7-before.svg",
-        meta: {
-          createdAt: "2026-04-30 07:31",
-          updatedAt: "2026-04-30 07:40",
-          coordinates: "55.7429, 37.6538"
-        }
-      },
-      {
-        source: "./src/photos/p7-before.svg",
-        meta: {
-          createdAt: "2026-04-30 07:33",
-          updatedAt: "2026-04-30 07:41",
-          coordinates: "55.7429, 37.6538"
-        }
-      }
-    ],
-    source: POINT_SOURCES.POS,
-    relatedPoints: ["p2"],
-    coords: [55.7429, 37.6538]
-  },
-  p8: {
-    id: "p8",
-    applicantId: "u-1008",
-    ownershipIds: ["own_10", "own_11"],
-    requestType: REQUEST_TYPES.APPROVALS_WORK_SUSPENSION,
-    createdAt: "2026-04-30 11:12",
-    plannedCloseAt: "2026-05-12 18:00",
-    gar: {
-      objectType: "Зона строительства",
-      coordinate: "55.7577, 37.6153",
-      municipalDistrict: "Тверской"
-    },
-    theme: "Шумные ночные работы без ограждения",
-    address: "Москва, ул. Адаптерная, 22",
-    status: POINT_STATUSES.UNDER_REVIEW,
-    description:
-      "На площадке ведутся ночные работы, ограждение частично демонтировано.\nНужно проверить документы и приостановить работы до устранения нарушений.",
-    photoGallery: [
-      {
-        source: "./src/photos/p8-before.svg",
-        meta: {
-          createdAt: "2026-04-30 11:00",
-          updatedAt: "2026-04-30 11:09",
-          coordinates: "55.7599, 37.619"
-        }
-      }
-    ],
-    source: POINT_SOURCES.SERVICE_112,
-    relatedPoints: ["p5"],
-    coords: [55.7577, 37.6153]
+    coords: [51.675125, 36.095808]
   },
   p9: {
     id: "p9",
-    applicantId: "u-1009",
-    ownershipIds: ["own_12"],
-    requestType: REQUEST_TYPES.HOUSING_UTILITIES_NETWORKS,
-    createdAt: "2026-04-30 03:18",
-    plannedCloseAt: "2026-04-30 09:00",
+    applicantId: "u-9999",
+    ownershipIds: [],
+    requestType: REQUEST_TYPES.POWER_SUPPLY_EMERGENCY,
+    createdAt: "2026-05-10 12:55",
+    plannedCloseAt: "2026-05-17 22:00",
     gar: {
-      objectType: "Колодец инженерных сетей",
-      coordinate: "55.7332, 37.5884",
-      municipalDistrict: "Хамовники"
+      objectType: "",
+      coordinate: "51.672500, 36.101200",
+      municipalDistrict: ""
     },
-    theme: "Открытый люк на техническом колодце",
-    address: "Москва, Комсомольский пр-т, 26",
-    status: POINT_STATUSES.COMPLETED,
-    description:
-      "Люк был открыт, вокруг отсутствовали предупреждающие знаки.\nУчасток оперативно оградили и закрыли колодец.",
+    theme: "",
+    address: "",
+    status: POINT_STATUSES.NEW,
+    description: "",
     photoGallery: [
       {
-        source: "./src/photos/p9-before.svg",
-        meta: {
-          createdAt: "2026-04-30 03:05",
-          updatedAt: "2026-04-30 03:14",
-          coordinates: "55.7332, 37.5884"
-        }
+        source: "./src/photos/p9-before.webp",
+        meta: {}
       }
     ],
-    photoAfterGallery: [
-      {
-        source: "./src/photos/p9-after.svg",
-        meta: {
-          createdAt: "2026-04-30 08:45",
-          updatedAt: "2026-04-30 08:50",
-          coordinates: "55.7332, 37.5884"
-        }
-      }
-    ],
-    source: POINT_SOURCES.EDDS,
-    relatedPoints: [],
-    coords: [55.7332, 37.5884]
+    source: "",
+    relatedPoints: ["p404"],
+    coords: [51.6725, 36.1012]
   },
   p10: {
     id: "p10",
     applicantId: "u-1010",
-    ownershipIds: ["own_13"],
+    ownershipIds: ["own_8"],
     requestType: REQUEST_TYPES.IMPROVEMENT_CLEANING,
-    createdAt: "2026-04-29 22:50",
-    plannedCloseAt: "2026-05-02 16:00",
+    createdAt: "2026-05-10 13:20",
+    plannedCloseAt: "2026-05-19 18:00",
     gar: {
       objectType: "Дворовая территория",
-      coordinate: "55.6998, 37.7274",
-      municipalDistrict: "Люблино"
+      coordinate: "51.739100, 36.188000",
+      municipalDistrict: "Центральный округ"
     },
-    theme: "Скопление крупногабаритного мусора во дворе",
-    address: "Москва, наб. Прототипная, 3",
-    status: POINT_STATUSES.NEW,
+    theme: "Парковки и прилегающая территория захламлены",
+    address: "Курск, ул. Ленина, 40",
+    status: POINT_STATUSES.CANCELED,
     description:
-      "Во дворе складированы старые шкафы и строительный мусор.\nТребуется вывоз КГМ и санитарная обработка участка.",
+      "Повторное обращение без новых материалов.\nКейс закрыт как дублирующий.",
     photoGallery: [
       {
-        source: "./src/photos/p10-before.svg",
+        source: "./src/photos/p10-before.webp",
         meta: {}
       }
     ],
     source: POINT_SOURCES.EMAIL,
-    relatedPoints: ["p4"],
-    coords: [55.6998, 37.7274]
+    relatedPoints: ["p3"],
+    coords: [51.7391, 36.188]
   },
   p11: {
     id: "p11",
     applicantId: "u-1011",
     ownershipIds: ["own_14"],
     requestType: REQUEST_TYPES.QUALITY_CONTROL_CANCELLATION,
-    createdAt: "2026-04-28 15:22",
-    plannedCloseAt: "2026-04-28 18:00",
+    createdAt: "2026-05-10 14:05",
+    plannedCloseAt: "2026-05-20 11:00",
     gar: {
       objectType: "Производственная площадка",
-      coordinate: "55.6894, 37.6481",
-      municipalDistrict: "Нагатинский Затон"
+      coordinate: "51.758200, 36.146700",
+      municipalDistrict: "Сеймский округ"
     },
-    theme: "Дублирующее сообщение без новых фактов",
-    address: "Москва, ул. Несовпадений, 5",
-    status: POINT_STATUSES.CANCELED,
+    theme: "Парковка перекрыта частным ограждением",
+    address: "Курск, ул. Карла Маркса, 68",
+    status: POINT_STATUSES.UNDER_REVIEW,
     description:
-      "Сообщение признано дублирующим существующий кейс.\nНовые материалы не приложены, карточка закрыта по регламенту.",
+      "Поступила жалоба на самовольный захват муниципальных мест.\nТребуется правовая оценка и проверка границ участка.",
     photoGallery: [
       {
-        source: "./src/photos/p11-before.svg",
+        source: "./src/photos/p11-before.webp",
         meta: {
-          createdAt: "2026-04-28 15:00",
-          updatedAt: "2026-04-27 15:10",
-          coordinates: "55.6894, 37.6481"
+          createdAt: "2026-05-10 13:50",
+          updatedAt: "2026-05-10 14:00",
+          coordinates: "51.758200, 36.146700"
         }
       }
     ],
-    source: POINT_SOURCES.OFFLINE,
-    relatedPoints: ["p6"],
-    coords: [55.6894, 37.6481]
+    photoAfterGallery: [
+      {
+        source: "./src/photos/p11-after.webp",
+        meta: {
+          createdAt: "2026-05-12 10:10",
+          updatedAt: "2026-05-12 10:20",
+          coordinates: "51.758200, 36.146700"
+        }
+      }
+    ],
+    source: POINT_SOURCES.SERVICE_112,
+    relatedPoints: ["p2"],
+    coords: [51.7582, 36.1467]
   },
   p12: {
     id: "p12",
     applicantId: "u-1012",
-    ownershipIds: [],
-    requestType: REQUEST_TYPES.POWER_SUPPLY_EMERGENCY,
-    createdAt: "2026-04-30 12:28",
-    plannedCloseAt: "2026-04-30 16:00",
+    ownershipIds: ["own_7", "own_8"],
+    requestType: REQUEST_TYPES.APPROVALS_WORK_SUSPENSION,
+    createdAt: "2026-05-10 14:40",
+    plannedCloseAt: "2026-05-22 18:00",
     gar: {
-      objectType: "",
-      coordinate: "55.7811, 37.7003",
-      municipalDistrict: "Сокольники"
+      objectType: "Опора наружного освещения",
+      coordinate: "51.682400, 36.092100",
+      municipalDistrict: "Железнодорожный округ"
     },
-    theme: "Кратковременные отключения света в доме",
-    address: "Москва, ул. Сервисная, 9",
+    theme: "Наружное освещение требует согласования земляных работ",
+    address: "Курск, ул. Родниковая, 14А",
     status: POINT_STATUSES.SUSPENDED,
     description:
-      "Зафиксированы повторные отключения электроснабжения в вечернее время.\nДо уточнения балансовой принадлежности заявка временно приостановлена.",
+      "Для ремонта сети требуется согласование вскрытия покрытия.\nДо получения документов работы приостановлены.",
     photoGallery: [
       {
-        source: "./src/photos/p12-before.svg",
-        meta: {}
+        source: "./src/photos/p12-before.webp",
+        meta: {
+          createdAt: "2026-05-10 14:20",
+          updatedAt: "2026-05-10 14:30",
+          coordinates: "51.682400, 36.092100"
+        }
       }
     ],
-    source: "",
-    relatedPoints: ["p3"],
-    coords: [55.7811, 37.7003]
+    source: POINT_SOURCES.POS,
+    relatedPoints: ["p8", "p404"],
+    coords: [51.6824, 36.0921]
+  },
+  p13: {
+    id: "p13",
+    applicantId: "u-1009",
+    ownershipIds: ["own_4"],
+    requestType: REQUEST_TYPES.POWER_SUPPLY_EMERGENCY,
+    createdAt: "2026-05-10 15:10",
+    plannedCloseAt: "2026-05-18 10:00",
+    gar: {
+      objectType: "Линия наружного освещения",
+      coordinate: "51.689900, 36.110700",
+      municipalDistrict: "Железнодорожный округ"
+    },
+    theme: "Неработающее наружное освещение у школы",
+    address: "Курск, ул. Вокзальная, 20",
+    status: POINT_STATUSES.COMPLETED,
+    description:
+      "Линия восстановлена аварийной бригадой.\nПриложены фотографии до и после ремонта.",
+    photoGallery: [
+      {
+        source: "./src/photos/p13-before.webp",
+        meta: {
+          createdAt: "2026-05-10 14:55",
+          updatedAt: "2026-05-10 15:05",
+          coordinates: "51.689900, 36.110700"
+        }
+      }
+    ],
+    photoAfterGallery: [
+      {
+        source: "./src/photos/p13-after.webp",
+        meta: {
+          createdAt: "2026-05-11 09:40",
+          updatedAt: "2026-05-11 09:45",
+          coordinates: "51.689900, 36.110700"
+        }
+      }
+    ],
+    source: POINT_SOURCES.EDDS,
+    relatedPoints: ["p8"],
+    coords: [51.6899, 36.1107]
   }
 };
 
