@@ -26,6 +26,29 @@ export function createModalActionsBox({
   wrapper.className = "space-y-3 flex flex-col h-full";
   const isUnderReview = status === POINT_STATUSES.UNDER_REVIEW;
   const isCompleted = status === POINT_STATUSES.COMPLETED;
+  const isCanceled = status === POINT_STATUSES.CANCELED;
+  const primaryRelatedPoint = relatedPoints[0] || null;
+  const duplicateRelatedLabel =
+    relatedPoints.length > 0
+      ? relatedPoints.map((point) => escapeText(point?.id || "—")).join(", ")
+      : "не найдены";
+  const currentPhotoSource = String(item?.photoGallery?.[0]?.source || "").trim();
+  const relatedPhotoSource = String(primaryRelatedPoint?.photoGallery?.[0]?.source || "").trim();
+  const hasSamePhoto = Boolean(currentPhotoSource && relatedPhotoSource && currentPhotoSource === relatedPhotoSource);
+  const currentGarCoordinate = String(item?.gar?.coordinate || "").trim();
+  const relatedGarCoordinate = String(primaryRelatedPoint?.gar?.coordinate || "").trim();
+  const hasSameGarCoordinate = Boolean(
+    currentGarCoordinate && relatedGarCoordinate && currentGarCoordinate === relatedGarCoordinate
+  );
+  const currentAddress = String(item?.address || "").trim();
+  const relatedAddress = String(primaryRelatedPoint?.address || "").trim();
+  const hasSameAddress = Boolean(currentAddress && relatedAddress && currentAddress === relatedAddress);
+  const currentTheme = String(item?.theme || "").trim();
+  const relatedTheme = String(primaryRelatedPoint?.theme || "").trim();
+  const hasSameTheme = Boolean(currentTheme && relatedTheme && currentTheme === relatedTheme);
+  const currentCategory = String(category || "").trim();
+  const relatedCategory = String(primaryRelatedPoint?.requestType || "").trim();
+  const hasSameCategory = Boolean(currentCategory && relatedCategory && currentCategory === relatedCategory);
 
   const tabsWrap = document.createElement("div");
   tabsWrap.className = "rounded-xl border border-slate-200 bg-white overflow-hidden";
@@ -37,7 +60,9 @@ export function createModalActionsBox({
   panelText.innerHTML = `
     <div class="mb-2 flex flex-wrap items-center gap-2">
       <div class="text-xs font-semibold text-slate-900">${
-        useAssignmentFlow
+        isCanceled
+          ? "Текст закрытия"
+          : useAssignmentFlow
           ? "Текст поручения"
           : useProcurementFlow
             ? "Текст включения в план закупок"
@@ -47,7 +72,11 @@ export function createModalActionsBox({
     </div>
     <div data-recommendation-wait class="text-xs text-slate-500">Ожидание шага "Формирование рекомендаций" в аудит-логе...</div>
     <div data-recommendation-text class="hidden text-xs text-slate-700 whitespace-pre-line">${
-      useAssignmentFlow
+      isCanceled
+        ? `Закрыть сообщение как дублирующее.
+Связанное сообщение: ${duplicateRelatedLabel}.
+Статус: ${escapeText(statusToDraftLabel(status))}.`
+        : useAssignmentFlow
         ? `Направить подрядчику ${escapeText(contractor)} поручение на устранение дефекта.
 Адрес: ${escapeText(item.address || "—")}.
 Суть: ${escapeText(item.theme || "—")}.
@@ -89,14 +118,21 @@ export function createModalActionsBox({
   panelRecommendation.className = "p-3 hidden";
   panelRecommendation.innerHTML = `
     <div class="text-xs font-semibold text-slate-900">${
-      useAssignmentFlow
+      isCanceled
+        ? "🗂️ Закрыть как дубликат ← РЕКОМЕНДУЕТСЯ"
+        : useAssignmentFlow
         ? "✉️ Создать поручение подрядчику ← РЕКОМЕНДУЕТСЯ"
         : useProcurementFlow
           ? "🗂️ Включить в план закупок ← РЕКОМЕНДУЕТСЯ"
           : "📤 Эскалировать сообщение ← РЕКОМЕНДУЕТСЯ"
     }</div>
     <div class="text-xs text-slate-600 mt-2 whitespace-pre-line">${
-      useAssignmentFlow
+      isCanceled
+        ? `• Решение: закрыть сообщение как дублирующее
+• Связанное сообщение: ${duplicateRelatedLabel}
+• Действие: не создавать новое поручение
+• Статус: ${escapeText(statusToDraftLabel(status))}`
+        : useAssignmentFlow
         ? `• Исполнитель: ${escapeText(contractor)}
 • Срок исполнения: ${escapeText(deadlineStr)} (5 дней)
 • Основание: п.3.1 Договора №45/25
@@ -124,25 +160,37 @@ export function createModalActionsBox({
   panelWhy.appendChild(whyTitle);
   const whyItems = document.createElement("div");
   whyItems.className = "mt-2";
-  ui.createBulletList(whyItems, [
-    `Адрес: ${city}`,
-    `Категория: ${category}`,
-    useAssignmentFlow
-      ? "Муниципальные полномочия → можно сформировать поручение исполнителю"
-      : useProcurementFlow
-        ? "Муниципальные полномочия + нет контракта → включение в план закупок"
-        : "Поручение по договору недоступно → нужна эскалация по матрице rules",
-    useAssignmentFlow
-      ? "В ЕИС найден действующий контракт → можно направить требование"
-      : useProcurementFlow
-        ? "Контрактные обязательства не найдены → требуется закупочная процедура"
-        : `Точка эскалации: ${escalationRule?.to || "не определена"}`,
-    useAssignmentFlow
-      ? `SLA: 5 дней → дедлайн: ${deadlineStr}`
-      : useProcurementFlow
-        ? "Действие: сформировать карточку в план закупок"
-        : `Нормативка: ${escalationRule?.basis || "не определена"}`
-  ]);
+  const whyBullets = isCanceled
+    ? [
+        "Повторное обращение без новых материалов",
+        `Совпадение адреса: ${hasSameAddress ? "идентичен" : "не подтверждено"}`,
+        `Совпадение категории/темы: ${
+          hasSameCategory && hasSameTheme ? "идентичны" : hasSameCategory ? "категория идентична" : "не подтверждено"
+        }`,
+        `Совпадение фото: ${hasSamePhoto ? "идентично" : "не подтверждено"}`,
+        `Совпадение координат/ГАР: ${hasSameGarCoordinate ? "идентично" : "не подтверждено"}`,
+        `Связанное сообщение: ${duplicateRelatedLabel}`
+      ]
+    : [
+        `Адрес: ${city}`,
+        `Категория: ${category}`,
+        useAssignmentFlow
+          ? "Муниципальные полномочия → можно сформировать поручение исполнителю"
+          : useProcurementFlow
+            ? "Муниципальные полномочия + нет контракта → включение в план закупок"
+            : "Поручение по договору недоступно → нужна эскалация по матрице rules",
+        useAssignmentFlow
+          ? "В ЕИС найден действующий контракт → можно направить требование"
+          : useProcurementFlow
+            ? "Контрактные обязательства не найдены → требуется закупочная процедура"
+            : `Точка эскалации: ${escalationRule?.to || "не определена"}`,
+        useAssignmentFlow
+          ? `SLA: 5 дней → дедлайн: ${deadlineStr}`
+          : useProcurementFlow
+            ? "Действие: сформировать карточку в план закупок"
+            : `Нормативка: ${escalationRule?.basis || "не определена"}`
+      ];
+  ui.createBulletList(whyItems, whyBullets);
   panelWhy.appendChild(whyItems);
 
   const whyLinks = document.createElement("div");

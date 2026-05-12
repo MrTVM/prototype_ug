@@ -474,29 +474,33 @@ const pointEntities = {
   p10: {
     id: "p10",
     applicantId: "u-1010",
-    ownershipIds: ["own_8"],
+    ownershipIds: ["own_9", "own_10"],
     requestType: REQUEST_TYPES.IMPROVEMENT_CLEANING,
     createdAt: "2026-05-10 13:20",
     plannedCloseAt: "2026-05-19 18:00",
     gar: {
-      objectType: "Дворовая территория",
-      coordinate: "51.739100, 36.188000",
+      objectType: "Парковочное пространство",
+      coordinate: "51.753541, 36.203372",
       municipalDistrict: "Центральный округ"
     },
-    theme: "Парковки и прилегающая территория захламлены",
-    address: "Курск, ул. Ленина, 40",
+    theme: "Парковки на дорогах в границах городских округов",
+    address: "г.о. Курск, Центральный округ",
     status: POINT_STATUSES.CANCELED,
     description:
-      "Повторное обращение без новых материалов.\nКейс закрыт как дублирующий.",
+      "Повторное обращение без новых материалов.",
     photoGallery: [
       {
-        source: "./src/photos/p10-before.webp",
-        meta: {}
+        source: "./src/photos/p3-before.webp",
+        meta: {
+          createdAt: "2026-05-10 09:10",
+          updatedAt: "2026-05-10 09:15",
+          coordinates: "51.753541, 36.203372"
+        }
       }
     ],
     source: POINT_SOURCES.EMAIL,
     relatedPoints: ["p3"],
-    coords: [51.7391, 36.188]
+    coords: [51.753541, 36.203372]
   },
   p11: {
     id: "p11",
