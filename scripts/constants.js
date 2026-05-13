@@ -303,7 +303,7 @@ const pointEntities = {
         }
       }
     ],
-    source: POINT_SOURCES.OFFLINE,
+    source: POINT_SOURCES.POS,
     relatedPoints: ["p10"],
     commentIds: [],
     coords: [51.753541, 36.203372]
